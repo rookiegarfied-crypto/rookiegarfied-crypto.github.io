@@ -2,24 +2,22 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Word Generator Demo</title>
-    <style>
-        .hidden { display: none; }
-        .param { margin-bottom: 8px; }
+    <title>Checklist → DOCX Generator</title>
 
-        /* 顶部背景图区域 */
+    <style>
+        body { font-family: Arial; }
+        .hidden { display: none; }
+
+        /* 顶部背景图 */
         #headerArea {
             width: 100%;
-            height: 200px;
-            background-image: url("https://picsum.photos/1200/300"); /* 你可以换成自己的图片 */
+            height: 220px;
+            background-image: url("https://picsum.photos/1200/300");
             background-size: cover;
             background-position: center;
             position: relative;
-            padding: 20px;
-            box-sizing: border-box;
         }
 
-        /* 顶部按钮区 */
         #topButtons {
             position: absolute;
             bottom: 20px;
@@ -32,112 +30,169 @@
             font-size: 14px;
         }
 
-        /* 内容区的基本样式 */
-        #content { margin: 20px; }
+        #content {
+            margin: 20px;
+        }
 
+        table {
+            width: 60%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, td, th {
+            border: 1px solid #aaa;
+        }
+
+        td, th {
+            padding: 8px;
+        }
     </style>
 </head>
+
 <body>
 
 <!-- ============================== -->
-<!--  顶部背景图 + 按钮区域          -->
+<!-- 顶部背景图 + 按钮区域 -->
 <!-- ============================== -->
 <div id="headerArea">
     <div id="topButtons">
-        <button id="btnToStep1">Input Parameters</button>
+        <button id="btnToTable">Checklist</button>
         <button>Button 2 (TBD)</button>
         <button>Button 3 (TBD)</button>
         <button>Button 4 (TBD)</button>
     </div>
 </div>
 
+<!-- ============================== -->
+<!-- 内容区域 -->
+<!-- ============================== -->
 <div id="content">
 
-    <!-- Step 1: 输入 9 个参数 -->
-    <div id="step1" class="hidden">
-        <h2>Step 1: Input 9 Parameters</h2>
+    <!-- Step 1: 打勾表格 -->
+    <div id="stepTable" class="hidden">
+        <h2>Checklist Table</h2>
 
-        <div id="params"></div>
+        <table>
+            <thead>
+                <tr>
+                    <th>Select</th>
+                    <th>Item Description</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+        </table>
 
         <button id="nextBtn">Next Step</button>
     </div>
 
-    <!-- Step 2: 提供下载链接 -->
-    <h2 class="hidden" id="step2Title">Step 2: Download the Generated Word Document</h2>
+    <!-- Step 2: 下载 DOCX -->
+    <h2 id="step2Title" class="hidden">Download Generated DOCX</h2>
     <div id="step2" class="hidden">
-        <a id="downloadLink" href="#" download="Generated.doc">Click here to download</a>
+        <a id="downloadLink" href="#">Click to Download</a>
     </div>
 
 </div>
 
+
+<!-- ============================== -->
+<!-- 必要库：docxtemplater + pizzip + FileSaver -->
+<!-- ============================== -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.1.4/pizzip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.37.14/docxtemplater.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+
 <script>
-// -------------------------------
-// 0. 点击顶部按钮跳转到参数输入区
-// -------------------------------
-document.getElementById("btnToStep1").addEventListener("click", () => {
-    document.getElementById("step1").classList.remove("hidden");
-    window.scrollTo({ top: document.getElementById("step1").offsetTop, behavior: "smooth" });
+
+// -------------------------------------------
+// 1. Checklist 数据（可更改）
+// -------------------------------------------
+const checklistItems = [
+    "Inspect blade surface",
+    "Check drivetrain lubrication",
+    "Verify generator temperature",
+    "Inspect tower bolts",
+    "Check transformer connections",
+    "Test emergency stop system"
+];
+
+// 生成表格行
+const tableBody = document.getElementById("tableBody");
+checklistItems.forEach((item, index) => {
+    tableBody.innerHTML += `
+        <tr>
+            <td><input type="checkbox" class="chkItem" data-index="${index}"></td>
+            <td>${item}</td>
+        </tr>
+    `;
 });
 
-// -------------------------------
-// 1. 自动生成 9 个输入框
-// -------------------------------
-for (let i = 1; i <= 9; i++) {
-    let div = document.createElement("div");
-    div.className = "param";
-    div.innerHTML = `Param ${i}: <input id="param${i}" type="text">`;
-    document.getElementById("params").appendChild(div);
-}
+// -------------------------------------------
+// 2. 按钮 1：进入表格页面
+// -------------------------------------------
+document.getElementById("btnToTable").addEventListener("click", () => {
+    document.getElementById("stepTable").classList.remove("hidden");
+    window.scrollTo({ top: document.getElementById("stepTable").offsetTop, behavior: "smooth" });
+});
 
-// -------------------------------
-// 2. 下一步 → 生成 Word 文档
-// -------------------------------
-document.getElementById("generateBtn").addEventListener("click", async () => {
+// -------------------------------------------
+// 3. 点击下一步 → 根据打勾行生成 DOCX
+// -------------------------------------------
+document.getElementById("nextBtn").addEventListener("click", () => {
 
-    // 获取参数
-    const data = {};
-    for (let i = 1; i <= 9; i++) {
-        data[`p${i}`] = document.getElementById(`param${i}`).value;
-    }
-
-    // -------------------------------
-    // 加载 DOCX 模板
-    // -------------------------------
-    const templateUrl = "https://cdn.jsdelivr.net/gh/OfficeDev/docxtemplater-require-example/template.docx";
-
-    const response = await fetch(templateUrl);
-    const arrayBuffer = await response.arrayBuffer();
-
-    const zip = new PizZip(arrayBuffer);
-
-    const doc = new window.docxtemplater(zip, {
-        paragraphLoop: true,
-        linebreaks: true,
+    const selectedItems = [];
+    document.querySelectorAll(".chkItem").forEach(chk => {
+        if (chk.checked) {
+            selectedItems.push(checklistItems[chk.dataset.index]);
+        }
     });
 
-    // DOCX 模板中需要使用 {{p1}}, {{p2}} ... {{p9}}
-    doc.setData(data);
-
-    try {
-        doc.render();
-    } catch (error) {
-        console.error("Docxtemplater Error:", error);
-        alert("Error rendering the DOCX file.");
+    if (selectedItems.length === 0) {
+        alert("Please select at least one item.");
         return;
     }
 
-    const out = doc.getZip().generate({
+    generateDocx(selectedItems);
+});
+
+// -------------------------------------------
+// 4. 生成 DOCX
+// -------------------------------------------
+function generateDocx(items) {
+
+    // 构建 docx 文本内容（简单模板）
+    const docContent = `
+Checklist Report
+
+Selected Items:
+
+${items.map(i => "- " + i).join("\n")}
+    `;
+
+    // 创建 DOCX（最简单文字版）
+    const zip = new PizZip();
+    zip.file("word/document.xml",
+`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
+    <w:body>
+        <w:p><w:r><w:t>${docContent.replace(/\n/g, "</w:t></w:r></w:p><w:p><w:r><w:t>")}</w:t></w:r></w:p>
+    </w:body>
+</w:document>`);
+
+    const doc = zip.generate({
         type: "blob",
-        mimeType:
-            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     });
 
-    // 下载文件
-    saveAs(out, "Generated.docx");
+    // 下载
+    const fileName = "Checklist_Report.docx";
+    saveAs(doc, fileName);
 
     document.getElementById("step2Title").classList.remove("hidden");
     document.getElementById("step2").classList.remove("hidden");
-});
+    document.getElementById("downloadLink").href = "#"; // 实际下载已完成
+}
+
 </script>
 
 </body>
