@@ -1,149 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>按钮+表格生成Word示例</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-  }
-
-  .header {
-    background-image: url('https://via.placeholder.com/1200x200'); /* 替换为你的背景图 */
-    background-size: cover;
-    background-position: center;
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .header h1 {
-    color: white;
-    text-shadow: 1px 1px 2px #000;
-  }
-
-  .button-container {
-    margin: 20px;
-    display: flex;
-    gap: 10px;
-  }
-
-  button {
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-  }
-
-  #table-section {
-    display: none;
-    margin: 20px;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-
-  th, td {
-    border: 1px solid #999;
-    padding: 8px;
-    text-align: left;
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>勾选生成 Word 示例 — docshift</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
+    .header {
+      background-image: url('https://via.placeholder.com/1200x200');
+      background-size: cover;
+      background-position: center;
+      height: 200px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .header h1 { color: white; text-shadow: 1px 1px 2px #000; }
+    .button-container { margin: 20px; display: flex; gap: 10px; }
+    button { padding: 10px 20px; font-size: 16px; cursor: pointer; }
+    #table-section { display: none; margin: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { border: 1px solid #999; padding: 8px; text-align: left; }
+  </style>
 </head>
 <body>
+  <div class="header">
+    <h1>欢迎页面</h1>
+  </div>
 
-<div class="header">
-  <h1>欢迎页面</h1>
-</div>
+  <div class="button-container">
+    <button id="btnTable">跳转到表格</button>
+    <button id="btn2">按钮2</button>
+    <button id="btn3">按钮3</button>
+  </div>
 
-<div class="button-container">
-  <button id="btnTable">跳转到表格</button>
-  <button id="btn2">按钮2</button>
-  <button id="btn3">按钮3</button>
-</div>
+  <div id="table-section">
+    <h2>请选择内容</h2>
+    <table id="itemTable">
+      <thead>
+        <tr><th>选择</th><th>内容</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><input type="checkbox" /></td><td>内容1</td></tr>
+        <tr><td><input type="checkbox" /></td><td>内容2</td></tr>
+        <tr><td><input type="checkbox" /></td><td>内容3</td></tr>
+      </tbody>
+    </table>
+    <br>
+    <button id="btnNext">下一步</button>
+  </div>
 
-<div id="table-section">
-  <h2>请选择内容</h2>
-  <table id="itemTable">
-    <thead>
-      <tr>
-        <th>选择</th>
-        <th>内容</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td><input type="checkbox" /></td>
-        <td>内容1</td>
-      </tr>
-      <tr>
-        <td><input type="checkbox" /></td>
-        <td>内容2</td>
-      </tr>
-      <tr>
-        <td><input type="checkbox" /></td>
-        <td>内容3</td>
-      </tr>
-    </tbody>
-  </table>
-  <br>
-  <button id="btnNext">下一步</button>
-</div>
+  <!-- 引入 docshift（通过 jsDelivr CDN） -->
+  <script src="https://cdn.jsdelivr.net/npm/docshift@latest/dist/docshift.min.js"></script>
+  <script>
+    const btnTable = document.getElementById('btnTable');
+    const tableSection = document.getElementById('table-section');
+    const btnNext = document.getElementById('btnNext');
 
-<!-- 引入 docx.js 库 -->
-<script src="https://unpkg.com/docx@7.2.1/build/index.umd.js"></script>
-<script>
-  const btnTable = document.getElementById('btnTable');
-  const tableSection = document.getElementById('table-section');
-  const btnNext = document.getElementById('btnNext');
+    btnTable.addEventListener('click', () => {
+      tableSection.style.display = 'block';
+      window.scrollTo({ top: tableSection.offsetTop, behavior: 'smooth' });
+    });
 
-  // 点击跳转显示表格
-  btnTable.addEventListener('click', () => {
-    tableSection.style.display = 'block';
-    window.scrollTo({ top: tableSection.offsetTop, behavior: 'smooth' });
-  });
-
-  // 点击下一步生成Word
-  btnNext.addEventListener('click', async () => {
-    const rows = document.querySelectorAll('#itemTable tbody tr');
-    const selectedItems = [];
-
-    rows.forEach(row => {
-      const checkbox = row.querySelector('input[type="checkbox"]');
-      if (checkbox.checked) {
-        selectedItems.push(row.cells[1].innerText);
+    btnNext.addEventListener('click', async () => {
+      const rows = document.querySelectorAll('#itemTable tbody tr');
+      const selected = [];
+      rows.forEach(row => {
+        const cb = row.querySelector('input[type="checkbox"]');
+        if (cb.checked) {
+          selected.push(row.cells[1].innerText);
+        }
+      });
+      if (selected.length === 0) {
+        alert('请至少选择一项');
+        return;
+      }
+      // 构造简单的 HTML 内容
+      const html = '<h1>选择内容列表</h1>' +
+                   '<ul>' +
+                   selected.map(t => `<li>${t}</li>`).join('') +
+                   '</ul>';
+      try {
+        const blob = await docshift.toDocx(html);
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'selected.docx';
+        a.click();
+        URL.revokeObjectURL(url);
+      } catch (err) {
+        console.error(err);
+        alert('生成 docx 时出错');
       }
     });
-
-    if (selectedItems.length === 0) {
-      alert('请至少选择一项内容');
-      return;
-    }
-
-    // 使用 docx.js 生成 Word
-    const { Document, Packer, Paragraph } = window.docx;
-
-    const doc = new Document({
-      sections: [{
-        properties: {},
-        children: selectedItems.map(item => new Paragraph(item))
-      }]
-    });
-
-    const blob = await Packer.toBlob(doc);
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'selected_items.docx';
-    a.click();
-    URL.revokeObjectURL(url);
-  });
-</script>
-
+  </script>
 </body>
 </html>
