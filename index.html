@@ -1,136 +1,148 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>纯前端生成 Word 文档</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>按钮+表格生成Word示例</title>
 <style>
   body {
+    font-family: Arial, sans-serif;
     margin: 0;
-    font-family: Arial;
+    padding: 0;
   }
+
   .header {
-    background-image: url(https://picsum.photos/1200/300); /* 你自己的背景图 */
+    background-image: url('https://via.placeholder.com/1200x200'); /* 替换为你的背景图 */
     background-size: cover;
     background-position: center;
     height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
+  }
+
+  .header h1 {
     color: white;
-    font-size: 24px;
+    text-shadow: 1px 1px 2px #000;
   }
-  .buttons {
+
+  .button-container {
     margin: 20px;
+    display: flex;
+    gap: 10px;
   }
+
   button {
     padding: 10px 20px;
-    margin-right: 10px;
     font-size: 16px;
+    cursor: pointer;
   }
-  .page {
+
+  #table-section {
     display: none;
-    padding: 20px;
+    margin: 20px;
   }
-  .page.active {
-    display: block;
-  }
+
   table {
+    width: 100%;
     border-collapse: collapse;
   }
-  table, th, td {
-    border: 1px solid black;
-  }
+
   th, td {
+    border: 1px solid #999;
     padding: 8px;
+    text-align: left;
   }
 </style>
-<!-- 引入 docx 库（浏览器版本） -->
-<script src="https://unpkg.com/pizzip@3.1.1/js/index.js"></script>
 </head>
 <body>
 
 <div class="header">
-  我的应用
+  <h1>欢迎页面</h1>
 </div>
 
-<!-- 首页 -->
-<div id="homePage" class="page active">
-  <div class="buttons">
-    <button onclick="goToPage('tablePage')">表格页面</button>
-    <button>按钮2（暂定）</button>
-    <button>按钮3（暂定）</button>
-  </div>
+<div class="button-container">
+  <button id="btnTable">跳转到表格</button>
+  <button id="btn2">按钮2</button>
+  <button id="btn3">按钮3</button>
 </div>
 
-<!-- 表格页面 -->
-<div id="tablePage" class="page">
-  <h2>请选择需要生成文档的内容</h2>
-  <form id="tableForm">
-    <table>
+<div id="table-section">
+  <h2>请选择内容</h2>
+  <table id="itemTable">
+    <thead>
       <tr>
         <th>选择</th>
         <th>内容</th>
       </tr>
+    </thead>
+    <tbody>
       <tr>
-        <td><input type="checkbox" name="rows" value="内容A"></td>
-        <td>内容A</td>
+        <td><input type="checkbox" /></td>
+        <td>内容1</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="rows" value="内容B"></td>
-        <td>内容B</td>
+        <td><input type="checkbox" /></td>
+        <td>内容2</td>
       </tr>
       <tr>
-        <td><input type="checkbox" name="rows" value="内容C"></td>
-        <td>内容C</td>
+        <td><input type="checkbox" /></td>
+        <td>内容3</td>
       </tr>
-    </table>
-    <br>
-    <button type="button" onclick="submitSelection()">下一步</button>
-    <button type="button" onclick="goToPage('homePage')">返回首页</button>
-  </form>
+    </tbody>
+  </table>
+  <br>
+  <button id="btnNext">下一步</button>
 </div>
 
-<!-- 下载页面 -->
-<div id="downloadPage" class="page">
-  <h2>文档已生成</h2>
-  <div id="downloadLink"></div>
-  <button onclick="goToPage('homePage')">返回首页</button>
-</div>
-
+<!-- 引入 docx.js 库 -->
+<script src="https://cdn.jsdelivr.net/npm/docx@8.2.2/build/index.min.js"></script>
 <script>
-function goToPage(pageId) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-    document.getElementById(pageId).classList.add('active');
-}
+  const btnTable = document.getElementById('btnTable');
+  const tableSection = document.getElementById('table-section');
+  const btnNext = document.getElementById('btnNext');
 
-function submitSelection() {
-    const formData = new FormData(document.getElementById('tableForm'));
-    const selected = formData.getAll('rows');
-    if (selected.length === 0) {
-        alert('请至少选择一项');
-        return;
+  // 点击跳转显示表格
+  btnTable.addEventListener('click', () => {
+    tableSection.style.display = 'block';
+    window.scrollTo({ top: tableSection.offsetTop, behavior: 'smooth' });
+  });
+
+  // 点击下一步生成Word
+  btnNext.addEventListener('click', async () => {
+    const rows = document.querySelectorAll('#itemTable tbody tr');
+    const selectedItems = [];
+
+    rows.forEach(row => {
+      const checkbox = row.querySelector('input[type="checkbox"]');
+      if (checkbox.checked) {
+        selectedItems.push(row.cells[1].innerText);
+      }
+    });
+
+    if (selectedItems.length === 0) {
+      alert('请至少选择一项内容');
+      return;
     }
 
-    // 使用 docx 库生成 Word 文档
+    // 使用 docx.js 生成 Word
     const { Document, Packer, Paragraph } = window.docx;
 
     const doc = new Document({
-        sections: [{
-            children: selected.map(text => new Paragraph(text)),
-        }],
+      sections: [{
+        properties: {},
+        children: selectedItems.map(item => new Paragraph(item))
+      }]
     });
 
-    Packer.toBlob(doc).then(blob => {
-        const fileName = `doc_${Date.now()}.docx`;
-        const url = URL.createObjectURL(blob);
-        document.getElementById('downloadLink').innerHTML =
-            `<a href="${url}" download="${fileName}">点击这里下载Word文档</a>`;
-        goToPage('downloadPage');
-    }).catch(err => {
-        console.error(err);
-        alert('生成文档失败');
-    });
-}
+    const blob = await Packer.toBlob(doc);
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'selected_items.docx';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
 </script>
 
 </body>
