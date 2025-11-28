@@ -1,198 +1,136 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <title>Checklist → DOCX Generator</title>
-
-    <style>
-        body { font-family: Arial; }
-        .hidden { display: none; }
-
-        /* 顶部背景图 */
-        #headerArea {
-            width: 100%;
-            height: 220px;
-            background-image: url("https://picsum.photos/1200/300");
-            background-size: cover;
-            background-position: center;
-            position: relative;
-        }
-
-        #topButtons {
-            position: absolute;
-            bottom: 20px;
-            left: 20px;
-        }
-
-        #topButtons button {
-            margin-right: 10px;
-            padding: 10px 15px;
-            font-size: 14px;
-        }
-
-        #content {
-            margin: 20px;
-        }
-
-        table {
-            width: 60%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        table, td, th {
-            border: 1px solid #aaa;
-        }
-
-        td, th {
-            padding: 8px;
-        }
-    </style>
+<meta charset="UTF-8">
+<title>纯前端生成 Word 文档</title>
+<style>
+  body {
+    margin: 0;
+    font-family: Arial;
+  }
+  .header {
+    background-image: url("https://picsum.photos/1200/300"); /* 你自己的背景图 */
+    background-size: cover;
+    background-position: center;
+    height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+  }
+  .buttons {
+    margin: 20px;
+  }
+  button {
+    padding: 10px 20px;
+    margin-right: 10px;
+    font-size: 16px;
+  }
+  .page {
+    display: none;
+    padding: 20px;
+  }
+  .page.active {
+    display: block;
+  }
+  table {
+    border-collapse: collapse;
+  }
+  table, th, td {
+    border: 1px solid black;
+  }
+  th, td {
+    padding: 8px;
+  }
+</style>
+<!-- 引入 docx 库（浏览器版本） -->
+<script src="https://unpkg.com/docx@8.5.0/build/index.js"></script>
 </head>
-
 <body>
 
-<!-- ============================== -->
-<!-- 顶部背景图 + 按钮区域 -->
-<!-- ============================== -->
-<div id="headerArea">
-    <div id="topButtons">
-        <button id="btnToTable">Checklist</button>
-        <button>Button 2 (TBD)</button>
-        <button>Button 3 (TBD)</button>
-        <button>Button 4 (TBD)</button>
-    </div>
+<div class="header">
+  我的应用
 </div>
 
-<!-- ============================== -->
-<!-- 内容区域 -->
-<!-- ============================== -->
-<div id="content">
-
-    <!-- Step 1: 打勾表格 -->
-    <div id="stepTable" class="hidden">
-        <h2>Checklist Table</h2>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Select</th>
-                    <th>Item Description</th>
-                </tr>
-            </thead>
-            <tbody id="tableBody"></tbody>
-        </table>
-
-        <button id="nextBtn">Next Step</button>
-    </div>
-
-    <!-- Step 2: 下载 DOCX -->
-    <h2 id="step2Title" class="hidden">Download Generated DOCX</h2>
-    <div id="step2" class="hidden">
-        <a id="downloadLink" href="#">Click to Download</a>
-    </div>
-
+<!-- 首页 -->
+<div id="homePage" class="page active">
+  <div class="buttons">
+    <button onclick="goToPage('tablePage')">表格页面</button>
+    <button>按钮2（暂定）</button>
+    <button>按钮3（暂定）</button>
+  </div>
 </div>
 
+<!-- 表格页面 -->
+<div id="tablePage" class="page">
+  <h2>请选择需要生成文档的内容</h2>
+  <form id="tableForm">
+    <table>
+      <tr>
+        <th>选择</th>
+        <th>内容</th>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="rows" value="内容A"></td>
+        <td>内容A</td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="rows" value="内容B"></td>
+        <td>内容B</td>
+      </tr>
+      <tr>
+        <td><input type="checkbox" name="rows" value="内容C"></td>
+        <td>内容C</td>
+      </tr>
+    </table>
+    <br>
+    <button type="button" onclick="submitSelection()">下一步</button>
+    <button type="button" onclick="goToPage('homePage')">返回首页</button>
+  </form>
+</div>
 
-<!-- ============================== -->
-<!-- 必要库：docxtemplater + pizzip + FileSaver -->
-<!-- ============================== -->
-<script src="https://cdn.jsdelivr.net/npm/pizzip@3.1.4/dist/pizzip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.37.14/docxtemplater.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+<!-- 下载页面 -->
+<div id="downloadPage" class="page">
+  <h2>文档已生成</h2>
+  <div id="downloadLink"></div>
+  <button onclick="goToPage('homePage')">返回首页</button>
+</div>
 
 <script>
+function goToPage(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+}
 
-// -------------------------------------------
-// 1. Checklist 数据（可更改）
-// -------------------------------------------
-const checklistItems = [
-    "Inspect blade surface",
-    "Check drivetrain lubrication",
-    "Verify generator temperature",
-    "Inspect tower bolts",
-    "Check transformer connections",
-    "Test emergency stop system"
-];
-
-// 生成表格行
-const tableBody = document.getElementById("tableBody");
-checklistItems.forEach((item, index) => {
-    tableBody.innerHTML += `
-        <tr>
-            <td><input type="checkbox" class="chkItem" data-index="${index}"></td>
-            <td>${item}</td>
-        </tr>
-    `;
-});
-
-// -------------------------------------------
-// 2. 按钮 1：进入表格页面
-// -------------------------------------------
-document.getElementById("btnToTable").addEventListener("click", () => {
-    document.getElementById("stepTable").classList.remove("hidden");
-    window.scrollTo({ top: document.getElementById("stepTable").offsetTop, behavior: "smooth" });
-});
-
-// -------------------------------------------
-// 3. 点击下一步 → 根据打勾行生成 DOCX
-// -------------------------------------------
-document.getElementById("nextBtn").addEventListener("click", () => {
-
-    const selectedItems = [];
-    document.querySelectorAll(".chkItem").forEach(chk => {
-        if (chk.checked) {
-            selectedItems.push(checklistItems[chk.dataset.index]);
-        }
-    });
-
-    if (selectedItems.length === 0) {
-        alert("Please select at least one item.");
+function submitSelection() {
+    const formData = new FormData(document.getElementById('tableForm'));
+    const selected = formData.getAll('rows');
+    if (selected.length === 0) {
+        alert('请至少选择一项');
         return;
     }
 
-    generateDocx(selectedItems);
-});
+    // 使用 docx 库生成 Word 文档
+    const { Document, Packer, Paragraph } = window.docx;
 
-// -------------------------------------------
-// 4. 生成 DOCX
-// -------------------------------------------
-function generateDocx(items) {
-
-    // 构建 docx 文本内容（简单模板）
-    const docContent = `
-Checklist Report
-
-Selected Items:
-
-${items.map(i => "- " + i).join("\n")}
-    `;
-
-    // 创建 DOCX（最简单文字版）
-    const zip = new PizZip();
-    zip.file("word/document.xml",
-`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<w:document xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main">
-    <w:body>
-        <w:p><w:r><w:t>${docContent.replace(/\n/g, "</w:t></w:r></w:p><w:p><w:r><w:t>")}</w:t></w:r></w:p>
-    </w:body>
-</w:document>`);
-
-    const doc = zip.generate({
-        type: "blob",
-        mimeType: "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    const doc = new Document({
+        sections: [{
+            children: selected.map(text => new Paragraph(text)),
+        }],
     });
 
-    // 下载
-    const fileName = "Checklist_Report.docx";
-    saveAs(doc, fileName);
-
-    document.getElementById("step2Title").classList.remove("hidden");
-    document.getElementById("step2").classList.remove("hidden");
-    document.getElementById("downloadLink").href = "#"; // 实际下载已完成
+    Packer.toBlob(doc).then(blob => {
+        const fileName = `doc_${Date.now()}.docx`;
+        const url = URL.createObjectURL(blob);
+        document.getElementById('downloadLink').innerHTML =
+            `<a href="${url}" download="${fileName}">点击这里下载Word文档</a>`;
+        goToPage('downloadPage');
+    }).catch(err => {
+        console.error(err);
+        alert('生成文档失败');
+    });
 }
-
 </script>
 
 </body>
