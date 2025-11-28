@@ -2,38 +2,86 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Generate DOCX Example</title>
+    <title>Word Generator Demo</title>
     <style>
-        .param { margin-bottom: 8px; }
         .hidden { display: none; }
+        .param { margin-bottom: 8px; }
+
+        /* 顶部背景图区域 */
+        #headerArea {
+            width: 100%;
+            height: 200px;
+            background-image: url("https://picsum.photos/1200/300"); /* 你可以换成自己的图片 */
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* 顶部按钮区 */
+        #topButtons {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+        }
+
+        #topButtons button {
+            margin-right: 10px;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        /* 内容区的基本样式 */
+        #content { margin: 20px; }
+
     </style>
 </head>
-
 <body>
 
-<h2>Input 9 Parameters</h2>
-
-<div id="step1">
-    <div id="params"></div>
-    <button id="generateBtn">Generate DOCX</button>
+<!-- ============================== -->
+<!--  顶部背景图 + 按钮区域          -->
+<!-- ============================== -->
+<div id="headerArea">
+    <div id="topButtons">
+        <button id="btnToStep1">Input Parameters</button>
+        <button>Button 2 (TBD)</button>
+        <button>Button 3 (TBD)</button>
+        <button>Button 4 (TBD)</button>
+    </div>
 </div>
 
-<h2 class="hidden" id="step2Title">Download Your File</h2>
-<div id="step2" class="hidden">
-    <a id="downloadLink" href="#">Click to Download .docx</a>
-</div>
+<div id="content">
 
-<!-- ============================ -->
-<!--   REQUIRED LIBRARIES (CDN)   -->
-<!-- ============================ -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.1.4/pizzip.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.37.14/docxtemplater.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
+    <!-- Step 1: 输入 9 个参数 -->
+    <div id="step1" class="hidden">
+        <h2>Step 1: Input 9 Parameters</h2>
+
+        <div id="params"></div>
+
+        <button id="nextBtn">Next Step</button>
+    </div>
+
+    <!-- Step 2: 提供下载链接 -->
+    <h2 class="hidden" id="step2Title">Step 2: Download the Generated Word Document</h2>
+    <div id="step2" class="hidden">
+        <a id="downloadLink" href="#" download="Generated.doc">Click here to download</a>
+    </div>
+
+</div>
 
 <script>
-// -----------------------------------
-// 1. 创建 9 个输入框
-// -----------------------------------
+// -------------------------------
+// 0. 点击顶部按钮跳转到参数输入区
+// -------------------------------
+document.getElementById("btnToStep1").addEventListener("click", () => {
+    document.getElementById("step1").classList.remove("hidden");
+    window.scrollTo({ top: document.getElementById("step1").offsetTop, behavior: "smooth" });
+});
+
+// -------------------------------
+// 1. 自动生成 9 个输入框
+// -------------------------------
 for (let i = 1; i <= 9; i++) {
     let div = document.createElement("div");
     div.className = "param";
@@ -41,9 +89,9 @@ for (let i = 1; i <= 9; i++) {
     document.getElementById("params").appendChild(div);
 }
 
-// -----------------------------------
-// 2. 点击生成 DOCX
-// -----------------------------------
+// -------------------------------
+// 2. 下一步 → 生成 Word 文档
+// -------------------------------
 document.getElementById("generateBtn").addEventListener("click", async () => {
 
     // 获取参数
