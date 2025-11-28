@@ -1,42 +1,84 @@
-<div class="header">
-  <h1>菜鸟教程网页测试实例</h1>
-  <p>创建一个页面。</p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Word Generator Demo</title>
+    <style>
+        .hidden { display: none; }
+        .param { margin-bottom: 8px; }
+    </style>
+</head>
+<body>
+
+<h2>Step 1: Input 9 Parameters</h2>
+
+<div id="step1">
+    <div id="params">
+        <!-- JS 自动生成 9 个输入框 -->
+    </div>
+    <button id="nextBtn">Next Step</button>
 </div>
- 
-<div class="navbar">
-  <a href="#">链接</a>
-  <a href="#">链接</a>
-  <a href="#">链接</a>
-  <a href="#" class="right">链接</a>
+
+<h2 class="hidden" id="step2Title">Step 2: Download the Generated Word Document</h2>
+
+<div id="step2" class="hidden">
+    <a id="downloadLink" href="#" download="Generated.doc">Click here to download</a>
 </div>
- 
-<div class="row">
-  <div class="side">
-      <h2>关于我</h2>
-      <h5>我的照片:</h5>
-      <div class="fakeimg" style="height:200px;">这边插入图像</div>
-      <p>关于我的介绍..</p>
-      <h3>更多内容</h3>
-      <p>我的更多内容</p>
-      <div class="fakeimg" style="height:60px;">这边插入图像</div><br>
-      <div class="fakeimg" style="height:60px;">这边插入图像</div><br>
-      <div class="fakeimg" style="height:60px;">这边插入图像</div>
-  </div>
-  <div class="main">
-      <h2>标题</h2>
-      <h5>副标题</h5>
-      <div class="fakeimg" style="height:200px;">图像</div>
-      <p>一些文本..</p>
-      <p>菜鸟教程，学的不仅是技术，更是梦想！！！菜鸟教程，学的不仅是技术，更是梦想！！！菜鸟教程，学的不仅是技术，更是梦想！！！</p>
-      <br>
-      <h2>标题</h2>
-      <h5>副标题</h5>
-      <div class="fakeimg" style="height:200px;">图像</div>
-      <p>一些文本..</p>
-      <p>菜鸟教程，学的不仅是技术，更是梦想！！！菜鸟教程，学的不仅是技术，更是梦想！！！菜鸟教程，学的不仅是技术，更是梦想！！！</p>
-  </div>
-</div>
- 
-<div class="footer">
-  <h2>底部内容</h2>
-</div>
+
+<script>
+// -------------------------------
+// 1. 自动创建 9 个输入框
+// -------------------------------
+for (let i = 1; i <= 9; i++) {
+    let div = document.createElement("div");
+    div.className = "param";
+    div.innerHTML = `Param ${i}: <input id="param${i}" type="text">`;
+    document.getElementById("params").appendChild(div);
+}
+
+// -------------------------------
+// 2. 点击“下一步”生成 Word 文件
+// -------------------------------
+document.getElementById("nextBtn").addEventListener("click", () => {
+
+    // 获取 9 个值
+    let values = [];
+    for (let i = 1; i <= 9; i++) {
+        values.push(document.getElementById(`param${i}`).value);
+    }
+
+    // -------------------------------
+    // 生成 Word 内容：这里简单示例，你可替换成模板内容
+    // -------------------------------
+    let docContent =
+`<html xmlns:o='urn:schemas-microsoft-com:office:office'
+      xmlns:w='urn:schemas-microsoft-com:office:word'
+      xmlns='http://www.w3.org/TR/REC-html40'>
+<head><meta charset='utf-8'></head>
+<body>
+<h2>Generated Word Document</h2>
+<p><b>Your Parameters:</b></p>
+<ul>
+    ${values.map(v => `<li>${v}</li>`).join("")}
+</ul>
+</body></html>`;
+
+    // -------------------------------
+    // 生成 Blob → 创建下载链接
+    // -------------------------------
+    let blob = new Blob(['\ufeff', docContent], {
+        type: 'application/msword'
+    });
+
+    let url = URL.createObjectURL(blob);
+    let link = document.getElementById("downloadLink");
+    link.href = url;
+
+    // 显示 Step 2
+    document.getElementById("step2").classList.remove("hidden");
+    document.getElementById("step2Title").classList.remove("hidden");
+});
+</script>
+
+</body>
+</html>
