@@ -2,33 +2,38 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Word Generator Demo</title>
+    <title>Generate DOCX Example</title>
     <style>
-        .hidden { display: none; }
         .param { margin-bottom: 8px; }
+        .hidden { display: none; }
     </style>
 </head>
+
 <body>
 
-<h2>Step 1: Input 9 Parameters</h2>
+<h2>Input 9 Parameters</h2>
 
 <div id="step1">
-    <div id="params">
-        <!-- JS 自动生成 9 个输入框 -->
-    </div>
-    <button id="nextBtn">Next Step</button>
+    <div id="params"></div>
+    <button id="generateBtn">Generate DOCX</button>
 </div>
 
-<h2 class="hidden" id="step2Title">Step 2: Download the Generated Word Document</h2>
-
+<h2 class="hidden" id="step2Title">Download Your File</h2>
 <div id="step2" class="hidden">
-    <a id="downloadLink" href="#" download="Generated.doc">Click here to download</a>
+    <a id="downloadLink" href="#">Click to Download .docx</a>
 </div>
+
+<!-- ============================ -->
+<!--   REQUIRED LIBRARIES (CDN)   -->
+<!-- ============================ -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pizzip/3.1.4/pizzip.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/docxtemplater/3.37.14/docxtemplater.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
 
 <script>
-// -------------------------------
-// 1. 自动创建 9 个输入框
-// -------------------------------
+// -----------------------------------
+// 1. 创建 9 个输入框
+// -----------------------------------
 for (let i = 1; i <= 9; i++) {
     let div = document.createElement("div");
     div.className = "param";
@@ -36,47 +41,54 @@ for (let i = 1; i <= 9; i++) {
     document.getElementById("params").appendChild(div);
 }
 
-// -------------------------------
-// 2. 点击“下一步”生成 Word 文件
-// -------------------------------
-document.getElementById("nextBtn").addEventListener("click", () => {
+// -----------------------------------
+// 2. 点击生成 DOCX
+// -----------------------------------
+document.getElementById("generateBtn").addEventListener("click", async () => {
 
-    // 获取 9 个值
-    let values = [];
+    // 获取参数
+    const data = {};
     for (let i = 1; i <= 9; i++) {
-        values.push(document.getElementById(`param${i}`).value);
+        data[`p${i}`] = document.getElementById(`param${i}`).value;
     }
 
     // -------------------------------
-    // 生成 Word 内容：这里简单示例，你可替换成模板内容
+    // 加载 DOCX 模板
     // -------------------------------
-    let docContent =
-`<html xmlns:o='urn:schemas-microsoft-com:office:office'
-      xmlns:w='urn:schemas-microsoft-com:office:word'
-      xmlns='http://www.w3.org/TR/REC-html40'>
-<head><meta charset='utf-8'></head>
-<body>
-<h2>Generated Word Document</h2>
-<p><b>Your Parameters:</b></p>
-<ul>
-    ${values.map(v => `<li>${v}</li>`).join("")}
-</ul>
-</body></html>`;
+    const templateUrl = "https://cdn.jsdelivr.net/gh/OfficeDev/docxtemplater-require-example/template.docx";
 
-    // -------------------------------
-    // 生成 Blob → 创建下载链接
-    // -------------------------------
-    let blob = new Blob(['\ufeff', docContent], {
-        type: 'application/msword'
+    const response = await fetch(templateUrl);
+    const arrayBuffer = await response.arrayBuffer();
+
+    const zip = new PizZip(arrayBuffer);
+
+    const doc = new window.docxtemplater(zip, {
+        paragraphLoop: true,
+        linebreaks: true,
     });
 
-    let url = URL.createObjectURL(blob);
-    let link = document.getElementById("downloadLink");
-    link.href = url;
+    // DOCX 模板中需要使用 {{p1}}, {{p2}} ... {{p9}}
+    doc.setData(data);
 
-    // 显示 Step 2
-    document.getElementById("step2").classList.remove("hidden");
+    try {
+        doc.render();
+    } catch (error) {
+        console.error("Docxtemplater Error:", error);
+        alert("Error rendering the DOCX file.");
+        return;
+    }
+
+    const out = doc.getZip().generate({
+        type: "blob",
+        mimeType:
+            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    });
+
+    // 下载文件
+    saveAs(out, "Generated.docx");
+
     document.getElementById("step2Title").classList.remove("hidden");
+    document.getElementById("step2").classList.remove("hidden");
 });
 </script>
 
