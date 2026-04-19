@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LTSA Solution AI Platform</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@14.5.0/dist/handsontable.full.min.css">
   <style>
     :root {
       --bg: #f5f7f4;
@@ -393,6 +394,144 @@
       line-height: 1.65;
     }
 
+    .snapshot-item.capacity-item {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .snapshot-item.capacity-item strong {
+      margin-bottom: 0;
+      color: #f4fbff;
+    }
+
+    .snapshot-capacity-title {
+      font-size: 1.42rem !important;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .snapshot-capacity-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .snapshot-capacity-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: baseline;
+      padding-top: 12px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .snapshot-capacity-row:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .snapshot-capacity-label {
+      color: rgba(238, 247, 255, 0.82);
+      font-size: 0.9rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .snapshot-capacity-value {
+      color: #f4fbff;
+      font-size: 1.12rem;
+      font-weight: 800;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+
+    .snapshot-item.knowledge-item {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .snapshot-item.knowledge-item strong {
+      margin-bottom: 0;
+      color: #f4fbff;
+      font-size: 1.42rem;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .snapshot-knowledge-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .snapshot-knowledge-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      padding-top: 10px;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .snapshot-knowledge-row:first-child {
+      padding-top: 0;
+      border-top: 0;
+    }
+
+    .snapshot-knowledge-label {
+      color: rgba(238, 247, 255, 0.82);
+      font-size: 0.9rem;
+      font-weight: 600;
+      line-height: 1.5;
+    }
+
+    .snapshot-knowledge-value {
+      color: #f4fbff;
+      font-size: 0.88rem;
+      font-weight: 700;
+      line-height: 1.4;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .snapshot-item.metrics-item {
+      display: grid;
+      gap: 14px;
+      align-content: start;
+    }
+
+    .snapshot-item.metrics-item strong {
+      margin-bottom: 0;
+    }
+
+    .snapshot-metric-row {
+      display: grid;
+      gap: 8px;
+      align-content: start;
+      padding-bottom: 14px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .snapshot-metric-row:last-of-type {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+
+    .snapshot-metric-label {
+      color: rgba(238, 247, 255, 0.8);
+      font-size: 0.94rem;
+      font-weight: 600;
+      line-height: 1.65;
+    }
+
+    .snapshot-metric-value {
+      color: #eef7ff;
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+      white-space: nowrap;
+    }
+
     .snapshot-flow {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -682,6 +821,10 @@
       display: none;
     }
 
+    .hidden {
+      display: none !important;
+    }
+
     .icon-button,
     .delete-button,
     .window-button {
@@ -724,6 +867,244 @@
       grid-template-rows: auto minmax(0, 1fr);
       height: min(760px, calc(100vh - var(--header-height) - 44px));
       overflow: hidden;
+    }
+
+    .app-shell {
+      display: grid;
+      grid-template-columns: minmax(280px, 300px) minmax(0, 1fr);
+      gap: 20px;
+      min-height: calc(100vh - 140px);
+      align-items: start;
+    }
+
+    .app-sidebar-panel,
+    .app-main-panel {
+      overflow: hidden;
+    }
+
+    .app-sidebar-panel {
+      position: sticky;
+      top: calc(var(--header-height) + 18px);
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      max-height: calc(100vh - var(--header-height) - 44px);
+    }
+
+    .app-sidebar-head {
+      padding: 18px 20px 16px;
+      border-bottom: 1px solid rgba(23, 35, 31, 0.08);
+    }
+
+    .app-sidebar-head h2 {
+      margin: 0 0 6px;
+      font-size: 1.02rem;
+    }
+
+    .app-sidebar-head span {
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    .app-sidebar-body {
+      padding: 18px 20px 20px;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 14px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .app-filter-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .app-filter-tab {
+      min-height: 40px;
+      padding: 0 16px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.76);
+      border: 1px solid rgba(23, 35, 31, 0.08);
+      color: var(--muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .app-filter-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(24, 42, 37, 0.08);
+    }
+
+    .app-filter-tab.active {
+      background: linear-gradient(135deg, rgba(11, 119, 106, 0.14), rgba(11, 119, 106, 0.06));
+      border-color: rgba(11, 119, 106, 0.16);
+      color: var(--text);
+      box-shadow: 0 10px 22px rgba(24, 42, 37, 0.08);
+    }
+
+    .app-library-list {
+      display: grid;
+      gap: 12px;
+      align-content: start;
+      min-height: 0;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .app-library-card {
+      display: grid;
+      grid-template-columns: 48px minmax(0, 1fr);
+      align-items: center;
+      gap: 14px;
+      padding: 16px 16px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(23, 35, 31, 0.08);
+      text-align: left;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .app-library-card:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 22px rgba(24, 42, 37, 0.08);
+    }
+
+    .app-library-card.active {
+      background: linear-gradient(135deg, rgba(11, 119, 106, 0.12), rgba(11, 119, 106, 0.04));
+      border-color: rgba(11, 119, 106, 0.16);
+    }
+
+    .app-library-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 16px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(180deg, rgba(198, 230, 226, 0.74), rgba(224, 237, 235, 0.9));
+      color: #5f7571;
+      border: 1px solid rgba(11, 119, 106, 0.08);
+    }
+
+    .app-library-icon svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    .app-library-copy {
+      min-width: 0;
+      display: grid;
+      gap: 6px;
+    }
+
+    .app-library-copy strong {
+      margin: 0;
+      font-size: 0.96rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .app-library-copy span {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.45;
+    }
+
+    .app-main-panel {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr) auto;
+      max-height: calc(100vh - var(--header-height) - 44px);
+    }
+
+    .app-main-head {
+      padding: 24px 26px 18px;
+      border-bottom: 1px solid rgba(23, 35, 31, 0.08);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .app-main-copy h2 {
+      margin: 0 0 10px;
+      font-size: 1.12rem;
+    }
+
+    .app-main-copy p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.96rem;
+      line-height: 1.8;
+      max-width: 60ch;
+    }
+
+    .app-main-tags {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    .app-main-tag {
+      min-height: 34px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(11, 119, 106, 0.08);
+      color: var(--primary);
+      display: inline-flex;
+      align-items: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .app-main-body {
+      min-height: 0;
+      overflow: auto;
+      padding: 24px 24px 18px;
+      background:
+        radial-gradient(circle at top right, rgba(11, 119, 106, 0.08), transparent 28%),
+        linear-gradient(180deg, rgba(11, 119, 106, 0.03), rgba(11, 119, 106, 0));
+    }
+
+    .app-chat-placeholder {
+      min-height: 100%;
+      display: grid;
+      align-content: start;
+      gap: 14px;
+    }
+
+    .app-bubble {
+      max-width: 72%;
+      padding: 16px 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(23, 35, 31, 0.08);
+      color: var(--text);
+      font-size: 0.98rem;
+      line-height: 1.8;
+      box-shadow: 0 10px 20px rgba(24, 42, 37, 0.04);
+    }
+
+    .app-input-shell {
+      padding: 18px 24px 24px;
+      border-top: 1px solid rgba(23, 35, 31, 0.08);
+      background: rgba(255, 255, 255, 0.92);
+    }
+
+    .app-input-shell textarea {
+      width: 100%;
+      min-height: 116px;
+      padding: 16px 18px;
+      border-radius: 22px;
+      border: 1px solid rgba(23, 35, 31, 0.1);
+      background: rgba(255, 255, 255, 0.86);
+      color: var(--text);
+      font-size: 0.98rem;
+      line-height: 1.8;
+      resize: none;
+      outline: none;
     }
 
     .knowledge-sidebar {
@@ -869,16 +1250,181 @@
     .knowledge-main-body {
       padding: 18px;
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
-      gap: 18px;
       min-height: 0;
       overflow: hidden;
+    }
+
+    .knowledge-dashboard-tabs {
+      width: min(760px, 100%);
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .knowledge-dashboard-tab {
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+      border-radius: 14px;
+      border: 1px solid rgba(23, 35, 31, 0.08);
+      background: rgba(255, 255, 255, 0.78);
+      color: var(--muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+      text-align: center;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+
+    .knowledge-dashboard-tab:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 20px rgba(24, 42, 37, 0.08);
+    }
+
+    .knowledge-dashboard-tab.active {
+      background: linear-gradient(135deg, rgba(11, 119, 106, 0.14), rgba(11, 119, 106, 0.06));
+      border-color: rgba(11, 119, 106, 0.16);
+      color: var(--text);
+      box-shadow: 0 10px 22px rgba(24, 42, 37, 0.08);
     }
 
     .knowledge-header-actions {
       display: flex;
       align-items: center;
       justify-content: flex-end;
+      gap: 12px;
+    }
+
+    .knowledge-header-actions.hidden {
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .knowledge-dashboard-panel {
+      display: none;
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+    }
+
+    .knowledge-dashboard-panel.active {
+      display: block;
+    }
+
+    .knowledge-placeholder-card {
+      height: 100%;
+      min-height: 520px;
+      border-radius: 28px;
+      border: 1px dashed rgba(23, 35, 31, 0.14);
+      background: rgba(255, 255, 255, 0.68);
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: 0.96rem;
+      text-align: center;
+      padding: 24px;
+    }
+
+    .knowledge-upload-icon-button {
+      width: 50px;
+      height: 50px;
+      border-radius: 16px;
+      background: linear-gradient(180deg, rgba(28, 53, 48, 0.98), rgba(26, 45, 41, 0.94));
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18), 0 10px 22px rgba(15, 28, 25, 0.2);
+      color: #fff;
+      cursor: pointer;
+    }
+
+    .knowledge-upload-icon-button svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .solution-case-workspace {
+      height: 100%;
+      min-height: 0;
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      gap: 16px;
+    }
+
+    .solution-case-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 4px;
+    }
+
+    .solution-case-head h3 {
+      margin: 0;
+      font-size: 1.02rem;
+    }
+
+    .solution-case-head span {
+      color: var(--muted);
+      font-size: 0.88rem;
+      line-height: 1.6;
+    }
+
+    .solution-case-sheet-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .solution-case-sheet-tab {
+      min-height: 38px;
+      padding: 0 16px;
+      border-radius: 999px;
+      border: 1px solid rgba(23, 35, 31, 0.08);
+      background: rgba(255, 255, 255, 0.88);
+      color: var(--muted);
+      font-size: 0.84rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .solution-case-sheet-tab.active {
+      background: linear-gradient(135deg, rgba(11, 119, 106, 0.14), rgba(11, 119, 106, 0.06));
+      border-color: rgba(11, 119, 106, 0.16);
+      color: var(--primary);
+      box-shadow: 0 10px 22px rgba(24, 42, 37, 0.08);
+    }
+
+    .solution-case-grid-shell {
+      min-height: 0;
+      border-radius: 28px;
+      border: 1px solid rgba(23, 35, 31, 0.08);
+      background: rgba(255, 255, 255, 0.82);
+      overflow: hidden;
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    }
+
+    .solution-case-grid {
+      width: 100%;
+      height: min(68vh, 820px);
+    }
+
+    .solution-case-empty {
+      height: min(68vh, 820px);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      color: var(--muted);
+      line-height: 1.8;
+      padding: 24px;
+      background:
+        radial-gradient(circle at top right, rgba(11, 119, 106, 0.06), transparent 30%),
+        linear-gradient(180deg, rgba(11, 119, 106, 0.03), rgba(11, 119, 106, 0));
+    }
+
+    .solution-case-grid-shell .handsontable {
+      font-size: 0.9rem;
+      color: var(--text);
     }
 
     .knowledge-content-grid {
@@ -3397,6 +3943,10 @@
         grid-template-columns: 1fr;
       }
 
+      .knowledge-dashboard-tabs {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
       .knowledge-sidebar,
       .skill-market {
         position: static;
@@ -3551,6 +4101,7 @@
       </div>
       <nav class="main-nav">
         <button class="nav-item active" type="button" data-page="home">首页</button>
+        <button class="nav-item" type="button" data-page="apps">应用库</button>
         <button class="nav-item" type="button" data-page="skill">中部屋管理</button>
         <button class="nav-item" type="button" data-page="map">LTSA Map</button>
         <button class="nav-item" type="button" data-page="knowledge">知识库</button>
@@ -3564,57 +4115,63 @@
         <div class="hero-panel">
           <div class="hero-grid">
             <div>
-              <div class="eyebrow">AI Platform · Workflow · Knowledge · Automation</div>
               <h1 class="hero-title">LTSA Solution AI Platform</h1>
-              <p class="hero-desc">
-                面向企业团队的一体化 AI 平台，聚合智能问答、知识检索、流程自动化、内容生成、多模型协作与系统集成能力，
-                帮助业务、运营、客服、研发和管理团队更快把 AI 变成稳定的生产力。
-              </p>
               <div class="hero-actions">
                 <button class="button primary" type="button" data-jump-page="knowledge">进入知识库</button>
                 <button class="button secondary" type="button" data-jump-page="map">查看 LTSA Map</button>
               </div>
-              <div class="hero-tags">
-                <span class="hero-tag">企业知识库</span>
-                <span class="hero-tag">Copilot 助手</span>
-                <span class="hero-tag">流程编排</span>
-                <span class="hero-tag">多模型接入</span>
-                <span class="hero-tag">API / Webhook</span>
-              </div>
             </div>
 
             <div class="snapshot-card">
-              <div class="snapshot-head">
-                <div>
-                  <small>Platform Snapshot</small>
-                  <strong>从知识到行动的企业 AI 中枢</strong>
-                </div>
-                <div class="snapshot-badge">Ready for Enterprise</div>
-              </div>
-
               <div class="snapshot-grid">
-                <div class="snapshot-item">
-                  <strong>12+</strong>
-                  <span>预设能力模块，覆盖问答、生成、检索、工单、审批、自动化等核心场景。</span>
+                <div class="snapshot-item metrics-item">
+                  <div class="snapshot-metric-row">
+                    <strong id="homeOpenActionCount" class="snapshot-metric-value">0</strong>
+                    <span class="snapshot-metric-label">未闭环关键行动项</span>
+                  </div>
+                  <div class="snapshot-metric-row">
+                    <strong id="homeOverdueActionCount" class="snapshot-metric-value">0</strong>
+                    <span class="snapshot-metric-label">超期关键行动项</span>
+                  </div>
                 </div>
-                <div class="snapshot-item">
-                  <strong>24/7</strong>
-                  <span>可作为在线智能助手持续服务内部团队与外部客户，减少重复人工响应。</span>
+                <div class="snapshot-item capacity-item">
+                  <strong class="snapshot-capacity-title">在投项目总容量</strong>
+                  <div class="snapshot-capacity-list">
+                    <div class="snapshot-capacity-row">
+                      <span class="snapshot-capacity-label">WTG</span>
+                      <span id="homeTotalWtgCapacity" class="snapshot-capacity-value">0 MW</span>
+                    </div>
+                    <div class="snapshot-capacity-row">
+                      <span class="snapshot-capacity-label">BESS</span>
+                      <span id="homeTotalBessCapacity" class="snapshot-capacity-value">0 MWh</span>
+                    </div>
+                  </div>
                 </div>
-                <div class="snapshot-item">
-                  <strong>Multi-LLM</strong>
-                  <span>支持按任务类型接入不同模型，平衡成本、速度、稳定性和质量。</span>
+                <div class="snapshot-item knowledge-item">
+                  <strong>知识库</strong>
+                  <div class="snapshot-knowledge-list">
+                    <div class="snapshot-knowledge-row">
+                      <span class="snapshot-knowledge-label">文档中心</span>
+                      <span id="homeKnowledgeDocumentsCount" class="snapshot-knowledge-value">0 个</span>
+                    </div>
+                    <div class="snapshot-knowledge-row">
+                      <span class="snapshot-knowledge-label">解决方案案例库</span>
+                      <span id="homeKnowledgeCasesCount" class="snapshot-knowledge-value">0 个</span>
+                    </div>
+                    <div class="snapshot-knowledge-row">
+                      <span class="snapshot-knowledge-label">知识百科</span>
+                      <span id="homeKnowledgeEncyclopediaCount" class="snapshot-knowledge-value">0 条</span>
+                    </div>
+                    <div class="snapshot-knowledge-row">
+                      <span class="snapshot-knowledge-label">合同基线</span>
+                      <span id="homeKnowledgeContractCount" class="snapshot-knowledge-value">0 条</span>
+                    </div>
+                  </div>
                 </div>
                 <div class="snapshot-item">
                   <strong>API Ready</strong>
                   <span>适配企业现有系统、知识库、表单流、OA、CRM 与客服平台。</span>
                 </div>
-              </div>
-
-              <div class="snapshot-flow">
-                <div class="flow-item">知识接入</div>
-                <div class="flow-item">智能推理</div>
-                <div class="flow-item">自动执行</div>
               </div>
             </div>
           </div>
@@ -3628,10 +4185,13 @@
         <div class="knowledge-shell">
           <section class="shell-panel knowledge-main-panel">
             <div class="shell-panel-header">
-              <div>
-                <h2>知识库</h2>
+              <div class="knowledge-dashboard-tabs">
+                <button id="knowledgeDocumentsTab" class="knowledge-dashboard-tab active" type="button">文档中心</button>
+                <button id="knowledgeCasesTab" class="knowledge-dashboard-tab" type="button">解决方案案例库</button>
+                <button id="knowledgeEncyclopediaTab" class="knowledge-dashboard-tab" type="button">知识百科</button>
+                <button id="knowledgeContractTab" class="knowledge-dashboard-tab" type="button">合同基线</button>
               </div>
-              <div class="knowledge-header-actions">
+              <div class="knowledge-header-actions" id="knowledgeHeaderActions">
                 <div class="upload-menu" id="uploadMenu">
                   <button id="uploadToggleBtn" class="small-button primary upload-toggle knowledge-upload-toggle" type="button">上传文件/文件夹</button>
                   <div class="upload-menu-panel" id="uploadMenuPanel">
@@ -3639,12 +4199,21 @@
                     <button id="pickFolderBtn" class="upload-option" type="button">选择文件夹</button>
                   </div>
                 </div>
+                <label id="caseUploadTrigger" class="upload-icon-button knowledge-upload-icon-button hidden" for="caseFileInput" title="上传案例文件" aria-label="上传案例文件">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 16V4"></path>
+                    <path d="m7 9 5-5 5 5"></path>
+                    <path d="M5 20h14"></path>
+                  </svg>
+                </label>
               </div>
             </div>
             <input id="fileInput" class="hidden-input" type="file" multiple>
             <input id="folderInput" class="hidden-input" type="file" webkitdirectory directory multiple>
+            <input id="caseFileInput" class="hidden-input" type="file" accept=".xlsx,.xls,.csv,.tsv">
             <div class="knowledge-main-body">
-              <div class="knowledge-content-grid">
+              <section id="knowledgeDocumentsPanel" class="knowledge-dashboard-panel active">
+                <div class="knowledge-content-grid">
                   <div class="knowledge-directory-panel">
                     <div class="knowledge-directory-head">
                       <h3>文档目录</h3>
@@ -3659,6 +4228,96 @@
                     <div class="document-list" id="documentList"></div>
                   </div>
                 </div>
+              </section>
+
+              <section id="knowledgeCasesPanel" class="knowledge-dashboard-panel">
+                <div class="solution-case-workspace">
+                  <div class="solution-case-head">
+                    <div>
+                      <h3 id="solutionCaseTitle">解决方案案例库</h3>
+                      <span id="solutionCaseMeta">上传 Excel 文件后在下方以工作表方式查看和浏览内容。</span>
+                    </div>
+                  </div>
+                  <div id="solutionCaseSheetTabs" class="solution-case-sheet-tabs"></div>
+                  <div class="solution-case-grid-shell">
+                    <div id="solutionCaseGrid" class="solution-case-grid"></div>
+                    <div id="solutionCaseEmpty" class="solution-case-empty">上传 Excel 文件后，这里会以专业表格方式渲染内容。</div>
+                  </div>
+                </div>
+              </section>
+
+              <section id="knowledgeEncyclopediaPanel" class="knowledge-dashboard-panel">
+                <div class="solution-case-workspace">
+                  <div class="solution-case-head">
+                    <div>
+                      <h3 id="knowledgeEncyclopediaTitle">知识百科</h3>
+                      <span id="knowledgeEncyclopediaMeta">上传 Excel 文件后在下方以工作表方式查看和浏览内容。</span>
+                    </div>
+                  </div>
+                  <div id="knowledgeEncyclopediaSheetTabs" class="solution-case-sheet-tabs"></div>
+                  <div class="solution-case-grid-shell">
+                    <div id="knowledgeEncyclopediaGrid" class="solution-case-grid"></div>
+                    <div id="knowledgeEncyclopediaEmpty" class="solution-case-empty">上传 Excel 文件后，这里会以专业表格方式渲染内容。</div>
+                  </div>
+                </div>
+              </section>
+
+              <section id="knowledgeContractPanel" class="knowledge-dashboard-panel">
+                <div class="solution-case-workspace">
+                  <div class="solution-case-head">
+                    <div>
+                      <h3 id="knowledgeContractTitle">合同基线</h3>
+                      <span id="knowledgeContractMeta">上传 Excel 文件后在下方以工作表方式查看和浏览内容。</span>
+                    </div>
+                  </div>
+                  <div id="knowledgeContractSheetTabs" class="solution-case-sheet-tabs"></div>
+                  <div class="solution-case-grid-shell">
+                    <div id="knowledgeContractGrid" class="solution-case-grid"></div>
+                    <div id="knowledgeContractEmpty" class="solution-case-empty">上传 Excel 文件后，这里会以专业表格方式渲染内容。</div>
+                  </div>
+                </div>
+              </section>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-apps">
+      <div class="container">
+        <div class="app-shell">
+          <aside class="shell-panel app-sidebar-panel">
+            <div class="app-sidebar-head">
+              <h2>应用库</h2>
+              <span>按分类统一管理可调用应用</span>
+            </div>
+            <div class="app-sidebar-body">
+              <div class="app-filter-tabs" id="appFilterTabs">
+                <button class="app-filter-tab" type="button" data-app-filter="skill">Skill</button>
+                <button class="app-filter-tab" type="button" data-app-filter="mcp">MCP</button>
+                <button class="app-filter-tab active" type="button" data-app-filter="tool">工具</button>
+                <button class="app-filter-tab" type="button" data-app-filter="datasource">数据源</button>
+              </div>
+              <div id="appLibraryList" class="app-library-list"></div>
+            </div>
+          </aside>
+
+          <section class="shell-panel app-main-panel">
+            <div class="app-main-head">
+              <div class="app-main-copy">
+                <h2 id="appLibraryTitle">合同风险提示</h2>
+                <p id="appLibraryDescription">对合同文本进行风险点扫描、条款缺失提醒与关注事项提示。</p>
+                <div id="appLibraryTags" class="app-main-tags"></div>
+              </div>
+              <button id="appLibraryConfigBtn" class="toolbar-button" type="button">设置接口</button>
+            </div>
+            <div class="app-main-body">
+              <div class="app-chat-placeholder">
+                <div id="appLibraryBubble" class="app-bubble"></div>
+              </div>
+            </div>
+            <div class="app-input-shell">
+              <textarea id="appLibraryInput" placeholder="请输入你的需求、原始文本或待处理内容"></textarea>
             </div>
           </section>
         </div>
@@ -4056,6 +4715,7 @@
   <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.3/dist/docx-preview.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/handsontable@14.5.0/dist/handsontable.full.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     const OPENAI_CONFIG = {
@@ -4067,6 +4727,26 @@
       summaryPrompt: "请用中文输出 2 到 4 句高密度摘要，概括文件主题、关键内容和使用场景，不要编造内容。"
     };
 
+    const HOME_ACTION_API = {
+      endpoint: "",
+      method: "GET",
+      headers: {},
+      fieldMap: {
+        open: "openCriticalActions",
+        overdue: "overdueCriticalActions"
+      },
+      mockData: {
+        openCriticalActions: 0,
+        overdueCriticalActions: 0
+      }
+    };
+
+    const APP_LIBRARY_CONFIG = {
+      endpoint: "",
+      apiKey: "",
+      model: ""
+    };
+
     const SKILL_API_CONFIG = {
       endpoint: "",
       apiKey: "",
@@ -4075,10 +4755,18 @@
 
     const appState = {
       activePage: "home",
+      activeKnowledgeBoard: "documents",
+      activeAppLibraryFilter: "tool",
+      activeAppLibraryId: "contract-risk",
       objectUrls: new Set(),
       chatHistory: [],
       previewPath: "",
       editingKnowledgePath: "",
+      knowledgeSpreadsheetBoards: {
+        cases: { workbook: null, hot: null, activeSheetIndex: 0 },
+        encyclopedia: { workbook: null, hot: null, activeSheetIndex: 0 },
+        contract: { workbook: null, hot: null, activeSheetIndex: 0 }
+      },
       summaryQueue: [],
       summaryRunning: false,
       skillSelectedId: "contract",
@@ -4086,7 +4774,9 @@
       map: {
         instance: null,
         baseLayers: null,
-        routeMeasure: null
+        routeMeasure: null,
+        defaultLibraryLoaded: false,
+        defaultLibraryLoading: false
       }
     };
 
@@ -4129,10 +4819,62 @@
       }
     ];
 
+    const appLibraryCatalog = [
+      {
+        id: "contract-risk",
+        name: "合同风险提示",
+        category: "tool",
+        description: "对合同文本进行风险点扫描、条款缺失提醒与关注事项提示。",
+        tags: ["工具", "合同", "风险提示"],
+        welcome: "你好，我是合同风险提示。对合同文本进行风险点扫描、条款缺失提醒与关注事项提示。"
+      },
+      {
+        id: "meeting-minutes",
+        name: "会议纪要整理",
+        category: "tool",
+        description: "把会议记录快速整理为结构化纪要、待办和责任人清单。",
+        tags: ["工具", "会议", "纪要整理"],
+        welcome: "你好，我是会议纪要整理。你可以把原始会议记录贴给我，我会帮你整理重点结论和行动项。"
+      },
+      {
+        id: "project-clean",
+        name: "项目信息清洗",
+        category: "tool",
+        description: "对项目台账、字段和描述信息做标准化清洗与结构整理。",
+        tags: ["工具", "项目", "信息清洗"],
+        welcome: "你好，我是项目信息清洗。你可以输入项目原始信息，我会帮你做字段清洗、格式统一和结构整理。"
+      },
+      {
+        id: "knowledge-skill",
+        name: "知识问答助手",
+        category: "skill",
+        description: "面向知识检索和问答场景的通用应用封装。",
+        tags: ["Skill", "问答", "知识检索"],
+        welcome: "你好，我是知识问答助手。你可以直接提问，我会结合知识内容返回答案。"
+      },
+      {
+        id: "contract-mcp",
+        name: "合同MCP连接器",
+        category: "mcp",
+        description: "用于对接外部合同分析服务的 MCP 连接器入口。",
+        tags: ["MCP", "合同", "连接器"],
+        welcome: "你好，我是合同MCP连接器。这里可以配置对外部合同能力的接入参数。"
+      },
+      {
+        id: "project-datasource",
+        name: "项目数据源",
+        category: "datasource",
+        description: "管理项目相关结构化数据源、表单和同步策略。",
+        tags: ["数据源", "项目", "同步"],
+        welcome: "你好，我是项目数据源。这里可以管理字段映射、同步规则和源数据连接。"
+      }
+    ];
+
     const navButtons = Array.from(document.querySelectorAll(".nav-item"));
     const jumpButtons = Array.from(document.querySelectorAll("[data-jump-page]"));
     const pageSections = {
       home: document.getElementById("page-home"),
+      apps: document.getElementById("page-apps"),
       knowledge: document.getElementById("page-knowledge"),
       skill: document.getElementById("page-skill"),
       map: document.getElementById("page-map")
@@ -4144,6 +4886,8 @@
     const pickFolderBtnEl = document.getElementById("pickFolderBtn");
     const fileInputEl = document.getElementById("fileInput");
     const folderInputEl = document.getElementById("folderInput");
+    const caseFileInputEl = document.getElementById("caseFileInput");
+    const caseUploadTriggerEl = document.getElementById("caseUploadTrigger");
     const treeEl = document.getElementById("tree");
     const treeCountEl = document.getElementById("treeCount");
     const currentPathLabelEl = document.getElementById("currentPathLabel");
@@ -4152,6 +4896,30 @@
     const downloadBtnEl = document.getElementById("downloadBtn");
     const breadcrumbsEl = document.getElementById("breadcrumbs");
     const documentListEl = document.getElementById("documentList");
+    const knowledgeHeaderActionsEl = document.getElementById("knowledgeHeaderActions");
+    const knowledgeDocumentsTabEl = document.getElementById("knowledgeDocumentsTab");
+    const knowledgeCasesTabEl = document.getElementById("knowledgeCasesTab");
+    const knowledgeEncyclopediaTabEl = document.getElementById("knowledgeEncyclopediaTab");
+    const knowledgeContractTabEl = document.getElementById("knowledgeContractTab");
+    const knowledgeDocumentsPanelEl = document.getElementById("knowledgeDocumentsPanel");
+    const knowledgeCasesPanelEl = document.getElementById("knowledgeCasesPanel");
+    const knowledgeEncyclopediaPanelEl = document.getElementById("knowledgeEncyclopediaPanel");
+    const knowledgeContractPanelEl = document.getElementById("knowledgeContractPanel");
+    const solutionCaseTitleEl = document.getElementById("solutionCaseTitle");
+    const solutionCaseMetaEl = document.getElementById("solutionCaseMeta");
+    const solutionCaseSheetTabsEl = document.getElementById("solutionCaseSheetTabs");
+    const solutionCaseGridEl = document.getElementById("solutionCaseGrid");
+    const solutionCaseEmptyEl = document.getElementById("solutionCaseEmpty");
+    const knowledgeEncyclopediaTitleEl = document.getElementById("knowledgeEncyclopediaTitle");
+    const knowledgeEncyclopediaMetaEl = document.getElementById("knowledgeEncyclopediaMeta");
+    const knowledgeEncyclopediaSheetTabsEl = document.getElementById("knowledgeEncyclopediaSheetTabs");
+    const knowledgeEncyclopediaGridEl = document.getElementById("knowledgeEncyclopediaGrid");
+    const knowledgeEncyclopediaEmptyEl = document.getElementById("knowledgeEncyclopediaEmpty");
+    const knowledgeContractTitleEl = document.getElementById("knowledgeContractTitle");
+    const knowledgeContractMetaEl = document.getElementById("knowledgeContractMeta");
+    const knowledgeContractSheetTabsEl = document.getElementById("knowledgeContractSheetTabs");
+    const knowledgeContractGridEl = document.getElementById("knowledgeContractGrid");
+    const knowledgeContractEmptyEl = document.getElementById("knowledgeContractEmpty");
 
     const previewModalEl = document.getElementById("previewModal");
     const modalTitleEl = document.getElementById("modalTitle");
@@ -4159,6 +4927,14 @@
     const modalBodyEl = document.getElementById("modalBody");
     const modalCloseBtnEl = document.getElementById("modalCloseBtn");
     const modalDownloadBtnEl = document.getElementById("modalDownloadBtn");
+    const appFilterTabsEl = document.getElementById("appFilterTabs");
+    const appLibraryListEl = document.getElementById("appLibraryList");
+    const appLibraryTitleEl = document.getElementById("appLibraryTitle");
+    const appLibraryDescriptionEl = document.getElementById("appLibraryDescription");
+    const appLibraryTagsEl = document.getElementById("appLibraryTags");
+    const appLibraryBubbleEl = document.getElementById("appLibraryBubble");
+    const appLibraryInputEl = document.getElementById("appLibraryInput");
+    const appLibraryConfigBtnEl = document.getElementById("appLibraryConfigBtn");
     const documentMetaModalEl = document.getElementById("documentMetaModal");
     const documentMetaFormEl = document.getElementById("documentMetaForm");
     const documentMetaModalCloseEl = document.getElementById("documentMetaModalClose");
@@ -4180,6 +4956,14 @@
     const projectMapEl = document.getElementById("projectMap");
     const mapStatusEl = document.getElementById("mapStatus");
     const mapHomeBtnEl = document.getElementById("mapHomeBtn");
+    const homeOpenActionCountEl = document.getElementById("homeOpenActionCount");
+    const homeOverdueActionCountEl = document.getElementById("homeOverdueActionCount");
+    const homeTotalWtgCapacityEl = document.getElementById("homeTotalWtgCapacity");
+    const homeTotalBessCapacityEl = document.getElementById("homeTotalBessCapacity");
+    const homeKnowledgeDocumentsCountEl = document.getElementById("homeKnowledgeDocumentsCount");
+    const homeKnowledgeCasesCountEl = document.getElementById("homeKnowledgeCasesCount");
+    const homeKnowledgeEncyclopediaCountEl = document.getElementById("homeKnowledgeEncyclopediaCount");
+    const homeKnowledgeContractCountEl = document.getElementById("homeKnowledgeContractCount");
 
     function createFolderNode(name, path) {
       return {
@@ -4262,6 +5046,117 @@
       });
     }
 
+    function normalizeHomeActionMetrics(payload = {}) {
+      const openKey = HOME_ACTION_API.fieldMap.open || "openCriticalActions";
+      const overdueKey = HOME_ACTION_API.fieldMap.overdue || "overdueCriticalActions";
+      return {
+        openCriticalActions: Number(payload?.[openKey]) || 0,
+        overdueCriticalActions: Number(payload?.[overdueKey]) || 0
+      };
+    }
+
+    function renderHomeActionMetrics(payload = HOME_ACTION_API.mockData) {
+      const metrics = normalizeHomeActionMetrics(payload);
+      if (homeOpenActionCountEl) {
+        homeOpenActionCountEl.textContent = String(metrics.openCriticalActions);
+      }
+      if (homeOverdueActionCountEl) {
+        homeOverdueActionCountEl.textContent = String(metrics.overdueCriticalActions);
+      }
+    }
+
+    function formatHomeCapacityValue(category, value) {
+      const numeric = Number(value) || 0;
+      const isBess = String(category || "").trim().toUpperCase() === "BESS";
+      const baseUnit = isBess ? "MWh" : "MW";
+      const highUnit = isBess ? "GWh" : "GW";
+      if (numeric >= 1000) {
+        const converted = numeric / 1000;
+        const text = (converted >= 10 ? converted.toFixed(1) : converted.toFixed(2))
+          .replace(/\.00$/, "")
+          .replace(/(\.\d)0$/, "$1");
+        return `${text} ${highUnit}`;
+      }
+      const text = (numeric >= 100 ? numeric.toFixed(0) : numeric.toFixed(1)).replace(/\.0$/, "");
+      return `${text} ${baseUnit}`;
+    }
+
+    function renderHomePipelineCapacityMetrics(projects = []) {
+      const summary = (Array.isArray(projects) ? projects : []).reduce((acc, project) => {
+        const category = String(project?.category || "").trim().toUpperCase();
+        const capacity = Number(project?.capacity) || 0;
+        if (category === "WTG") {
+          acc.wtg += capacity;
+        } else if (category === "BESS") {
+          acc.bess += capacity;
+        }
+        return acc;
+      }, { wtg: 0, bess: 0 });
+
+      if (homeTotalWtgCapacityEl) {
+        homeTotalWtgCapacityEl.textContent = formatHomeCapacityValue("WTG", summary.wtg);
+      }
+      if (homeTotalBessCapacityEl) {
+        homeTotalBessCapacityEl.textContent = formatHomeCapacityValue("BESS", summary.bess);
+      }
+    }
+
+    function getWorkbookEntryCount(workbook) {
+      if (!workbook?.sheets?.length) {
+        return 0;
+      }
+      return workbook.sheets.reduce((sum, sheet) => {
+        const rows = Array.isArray(sheet?.data) ? sheet.data.length : 0;
+        return sum + Math.max(0, rows - 1);
+      }, 0);
+    }
+
+    function renderHomeKnowledgeMetrics() {
+      const spreadsheets = appState.knowledgeSpreadsheetBoards || {};
+      const documentsCount = getTotalItems(knowledgeState.root);
+      const casesCount = getWorkbookEntryCount(spreadsheets.cases?.workbook);
+      const encyclopediaCount = getWorkbookEntryCount(spreadsheets.encyclopedia?.workbook);
+      const contractCount = getWorkbookEntryCount(spreadsheets.contract?.workbook);
+
+      if (homeKnowledgeDocumentsCountEl) {
+        homeKnowledgeDocumentsCountEl.textContent = `${documentsCount} 个`;
+      }
+      if (homeKnowledgeCasesCountEl) {
+        homeKnowledgeCasesCountEl.textContent = `${casesCount} 个`;
+      }
+      if (homeKnowledgeEncyclopediaCountEl) {
+        homeKnowledgeEncyclopediaCountEl.textContent = `${encyclopediaCount} 条`;
+      }
+      if (homeKnowledgeContractCountEl) {
+        homeKnowledgeContractCountEl.textContent = `${contractCount} 条`;
+      }
+    }
+
+    async function syncHomeActionMetrics() {
+      if (!HOME_ACTION_API.endpoint) {
+        renderHomeActionMetrics(HOME_ACTION_API.mockData);
+        return;
+      }
+      try {
+        const response = await fetch(HOME_ACTION_API.endpoint, {
+          method: HOME_ACTION_API.method || "GET",
+          headers: HOME_ACTION_API.headers || {}
+        });
+        if (!response.ok) {
+          throw new Error("Failed to load home action metrics");
+        }
+        const payload = await response.json();
+        renderHomeActionMetrics(payload);
+      } catch (error) {
+        console.warn("Home action metrics sync failed:", error);
+        renderHomeActionMetrics(HOME_ACTION_API.mockData);
+      }
+    }
+
+    window.updateHomeActionMetrics = renderHomeActionMetrics;
+    window.syncHomePipelineCapacityMetrics = () => renderHomePipelineCapacityMetrics(appState.map?.projects || []);
+    window.syncHomeKnowledgeMetrics = renderHomeKnowledgeMetrics;
+
     function escapeHtml(value) {
       return String(value)
         .replace(/&/g, "&amp;")
@@ -4291,6 +5186,91 @@
           <path d="M14 11v6"></path>
         </svg>
       `;
+    }
+
+    function getAppLibraryIcon(appId) {
+      if (appId === "contract-risk") {
+        return `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3 5 6v6c0 4.2 2.5 7.2 7 9 4.5-1.8 7-4.8 7-9V6l-7-3z"></path>
+            <path d="m9.5 12 1.7 1.8 3.3-4.1"></path>
+          </svg>
+        `;
+      }
+      return `
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="4" width="14" height="16" rx="2"></rect>
+          <path d="M9 8h6"></path>
+          <path d="M9 12h6"></path>
+          <path d="M9 16h4"></path>
+        </svg>
+      `;
+    }
+
+    function getFilteredAppLibraryItems() {
+      return appLibraryCatalog.filter((item) => item.category === appState.activeAppLibraryFilter);
+    }
+
+    function ensureActiveAppLibrarySelection() {
+      const filteredItems = getFilteredAppLibraryItems();
+      if (!filteredItems.length) {
+        appState.activeAppLibraryId = "";
+        return null;
+      }
+      const current = filteredItems.find((item) => item.id === appState.activeAppLibraryId);
+      if (current) return current;
+      appState.activeAppLibraryId = filteredItems[0].id;
+      return filteredItems[0];
+    }
+
+    function renderAppLibrary() {
+      if (!appLibraryListEl || !appLibraryTitleEl || !appLibraryDescriptionEl || !appLibraryTagsEl || !appLibraryBubbleEl || !appFilterTabsEl) {
+        return;
+      }
+
+      appFilterTabsEl.querySelectorAll("[data-app-filter]").forEach((button) => {
+        button.classList.toggle("active", button.dataset.appFilter === appState.activeAppLibraryFilter);
+      });
+
+      const filteredItems = getFilteredAppLibraryItems();
+      const activeApp = ensureActiveAppLibrarySelection();
+
+      if (!filteredItems.length) {
+        appLibraryListEl.innerHTML = "<div class='empty-state'>当前分类下还没有应用。</div>";
+        appLibraryTitleEl.textContent = "应用库";
+        appLibraryDescriptionEl.textContent = "当前分类暂无可用应用。";
+        appLibraryTagsEl.innerHTML = "";
+        appLibraryBubbleEl.textContent = "当前分类暂无应用。";
+        if (appLibraryInputEl) {
+          appLibraryInputEl.placeholder = "请输入你的需求、原始文本或待处理内容";
+        }
+        return;
+      }
+
+      appLibraryListEl.innerHTML = filteredItems.map((item) => `
+        <button class="app-library-card ${item.id === appState.activeAppLibraryId ? "active" : ""}" type="button" data-app-id="${escapeHtml(item.id)}">
+          <div class="app-library-icon">${getAppLibraryIcon(item.id)}</div>
+          <div class="app-library-copy">
+            <strong>${escapeHtml(item.name)}</strong>
+            <span>${escapeHtml(item.description)}</span>
+          </div>
+        </button>
+      `).join("");
+
+      appLibraryListEl.querySelectorAll("[data-app-id]").forEach((button) => {
+        button.addEventListener("click", () => {
+          appState.activeAppLibraryId = button.dataset.appId || "";
+          renderAppLibrary();
+        });
+      });
+
+      appLibraryTitleEl.textContent = activeApp.name;
+      appLibraryDescriptionEl.textContent = activeApp.description;
+      appLibraryTagsEl.innerHTML = activeApp.tags.map((tag) => `<span class="app-main-tag">${escapeHtml(tag)}</span>`).join("");
+      appLibraryBubbleEl.textContent = activeApp.welcome;
+      if (appLibraryInputEl) {
+        appLibraryInputEl.placeholder = "请输入你的需求、原始文本或待处理内容";
+      }
     }
 
     function clearObjectUrls() {
@@ -5014,6 +5994,201 @@
       renderBreadcrumbs();
       renderDocumentList();
       updateKnowledgeActions();
+      renderHomeKnowledgeMetrics();
+    }
+
+    function renderKnowledgeBoardSwitch() {
+      const activeBoard = appState.activeKnowledgeBoard || "documents";
+      knowledgeDocumentsTabEl?.classList.toggle("active", activeBoard === "documents");
+      knowledgeCasesTabEl?.classList.toggle("active", activeBoard === "cases");
+      knowledgeEncyclopediaTabEl?.classList.toggle("active", activeBoard === "encyclopedia");
+      knowledgeContractTabEl?.classList.toggle("active", activeBoard === "contract");
+
+      knowledgeDocumentsPanelEl?.classList.toggle("active", activeBoard === "documents");
+      knowledgeCasesPanelEl?.classList.toggle("active", activeBoard === "cases");
+      knowledgeEncyclopediaPanelEl?.classList.toggle("active", activeBoard === "encyclopedia");
+      knowledgeContractPanelEl?.classList.toggle("active", activeBoard === "contract");
+
+      knowledgeHeaderActionsEl?.classList.remove("hidden");
+      uploadMenuEl?.classList.toggle("hidden", activeBoard !== "documents");
+      caseUploadTriggerEl?.classList.toggle("hidden", !["cases", "encyclopedia", "contract"].includes(activeBoard));
+
+      if (["cases", "encyclopedia", "contract"].includes(activeBoard)) {
+        requestAnimationFrame(() => {
+          const boardState = appState.knowledgeSpreadsheetBoards?.[activeBoard];
+          if (boardState?.hot && typeof boardState.hot.render === "function") {
+            boardState.hot.render();
+            return;
+          }
+          renderKnowledgeSpreadsheetBoard(activeBoard);
+        });
+      }
+    }
+
+    function getKnowledgeSpreadsheetBoardConfig(board) {
+      const configs = {
+        cases: {
+          title: "解决方案案例库",
+          emptyText: "上传 Excel 文件后，这里会以专业表格方式渲染内容。",
+          titleEl: solutionCaseTitleEl,
+          metaEl: solutionCaseMetaEl,
+          tabsEl: solutionCaseSheetTabsEl,
+          gridEl: solutionCaseGridEl,
+          emptyEl: solutionCaseEmptyEl
+        },
+        encyclopedia: {
+          title: "知识百科",
+          emptyText: "上传 Excel 文件后，这里会以专业表格方式渲染内容。",
+          titleEl: knowledgeEncyclopediaTitleEl,
+          metaEl: knowledgeEncyclopediaMetaEl,
+          tabsEl: knowledgeEncyclopediaSheetTabsEl,
+          gridEl: knowledgeEncyclopediaGridEl,
+          emptyEl: knowledgeEncyclopediaEmptyEl
+        },
+        contract: {
+          title: "合同基线",
+          emptyText: "上传 Excel 文件后，这里会以专业表格方式渲染内容。",
+          titleEl: knowledgeContractTitleEl,
+          metaEl: knowledgeContractMetaEl,
+          tabsEl: knowledgeContractSheetTabsEl,
+          gridEl: knowledgeContractGridEl,
+          emptyEl: knowledgeContractEmptyEl
+        }
+      };
+      return configs[board] || null;
+    }
+
+    function destroyKnowledgeSpreadsheetBoard(board) {
+      const boardState = appState.knowledgeSpreadsheetBoards?.[board];
+      if (boardState?.hot && typeof boardState.hot.destroy === "function") {
+        boardState.hot.destroy();
+      }
+      if (boardState) {
+        boardState.hot = null;
+      }
+    }
+
+    function getKnowledgeSpreadsheetActiveSheet(board) {
+      const boardState = appState.knowledgeSpreadsheetBoards?.[board];
+      const workbook = boardState?.workbook;
+      if (!workbook?.sheets?.length) {
+        return null;
+      }
+      const index = Math.max(0, Math.min(boardState.activeSheetIndex || 0, workbook.sheets.length - 1));
+      boardState.activeSheetIndex = index;
+      return workbook.sheets[index];
+    }
+
+    function renderKnowledgeSpreadsheetBoard(board) {
+      const config = getKnowledgeSpreadsheetBoardConfig(board);
+      const boardState = appState.knowledgeSpreadsheetBoards?.[board];
+      if (!config || !boardState || !config.gridEl || !config.emptyEl || !config.tabsEl || !config.metaEl || !config.titleEl) {
+        return;
+      }
+
+      const workbook = boardState.workbook;
+      if (!workbook?.sheets?.length) {
+        destroyKnowledgeSpreadsheetBoard(board);
+        config.titleEl.textContent = config.title;
+        config.metaEl.textContent = "上传 Excel 文件后在下方以工作表方式查看和浏览内容。";
+        config.tabsEl.innerHTML = "";
+        config.gridEl.innerHTML = "";
+        config.gridEl.classList.add("hidden");
+        config.emptyEl.classList.remove("hidden");
+        config.emptyEl.textContent = config.emptyText;
+        return;
+      }
+
+      const activeSheet = getKnowledgeSpreadsheetActiveSheet(board);
+      config.titleEl.textContent = workbook.name || config.title;
+      config.metaEl.textContent = `${workbook.sheets.length} 个工作表 · 点击页签切换查看`;
+      config.tabsEl.innerHTML = workbook.sheets.map((sheet, index) => `
+        <button class="solution-case-sheet-tab ${index === boardState.activeSheetIndex ? "active" : ""}" type="button" data-case-sheet-index="${index}">
+          ${escapeHtml(sheet.name || `Sheet ${index + 1}`)}
+        </button>
+      `).join("");
+
+      config.tabsEl.querySelectorAll("[data-case-sheet-index]").forEach((button) => {
+        button.addEventListener("click", () => {
+          boardState.activeSheetIndex = Number(button.dataset.caseSheetIndex || 0);
+          renderKnowledgeSpreadsheetBoard(board);
+        });
+      });
+
+      if (!activeSheet) {
+        destroyKnowledgeSpreadsheetBoard(board);
+        config.gridEl.innerHTML = "";
+        config.gridEl.classList.add("hidden");
+        config.emptyEl.classList.remove("hidden");
+        return;
+      }
+
+      config.emptyEl.classList.add("hidden");
+      config.gridEl.classList.remove("hidden");
+
+      if (!window.Handsontable) {
+        destroyKnowledgeSpreadsheetBoard(board);
+        config.gridEl.innerHTML = `<div class="solution-case-empty">Handsontable 插件未加载成功，暂时无法渲染 Excel 内容。</div>`;
+        return;
+      }
+
+      destroyKnowledgeSpreadsheetBoard(board);
+      config.gridEl.innerHTML = "";
+
+      const data = Array.isArray(activeSheet.data) ? activeSheet.data : [];
+      boardState.hot = new window.Handsontable(config.gridEl, {
+        data,
+        rowHeaders: true,
+        colHeaders: true,
+        width: "100%",
+        height: "100%",
+        stretchH: "all",
+        manualColumnResize: true,
+        manualRowResize: true,
+        contextMenu: true,
+        filters: true,
+        dropdownMenu: true,
+        licenseKey: "non-commercial-and-evaluation"
+      });
+    }
+
+    async function handleKnowledgeSpreadsheetUpload(file, board = "cases") {
+      if (!file) return;
+      const config = getKnowledgeSpreadsheetBoardConfig(board);
+      const boardState = appState.knowledgeSpreadsheetBoards?.[board];
+      if (!config || !boardState) return;
+      try {
+        if (!window.XLSX) {
+          throw new Error("XLSX 库未加载成功");
+        }
+        const workbook = window.XLSX.read(await file.arrayBuffer(), { type: "array" });
+        const sheets = workbook.SheetNames.map((sheetName) => ({
+          name: sheetName,
+          data: window.XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+            header: 1,
+            defval: ""
+          })
+        }));
+        boardState.workbook = {
+          name: file.name,
+          sheets
+        };
+        boardState.activeSheetIndex = 0;
+        renderKnowledgeSpreadsheetBoard(board);
+        renderHomeKnowledgeMetrics();
+        switchPage("knowledge");
+        appState.activeKnowledgeBoard = board;
+        renderKnowledgeBoardSwitch();
+      } catch (error) {
+        console.warn("Knowledge spreadsheet upload failed:", error);
+        config.titleEl.textContent = config.title;
+        config.metaEl.textContent = error.message || "文件解析失败";
+        destroyKnowledgeSpreadsheetBoard(board);
+        config.gridEl.innerHTML = "";
+        config.gridEl.classList.add("hidden");
+        config.emptyEl.classList.remove("hidden");
+        config.emptyEl.textContent = config.emptyText;
+      }
     }
 
     function updateKnowledgeActions() {
@@ -6072,6 +7247,26 @@
       });
     });
 
+    knowledgeDocumentsTabEl?.addEventListener("click", () => {
+      appState.activeKnowledgeBoard = "documents";
+      renderKnowledgeBoardSwitch();
+    });
+
+    knowledgeCasesTabEl?.addEventListener("click", () => {
+      appState.activeKnowledgeBoard = "cases";
+      renderKnowledgeBoardSwitch();
+    });
+
+    knowledgeEncyclopediaTabEl?.addEventListener("click", () => {
+      appState.activeKnowledgeBoard = "encyclopedia";
+      renderKnowledgeBoardSwitch();
+    });
+
+    knowledgeContractTabEl?.addEventListener("click", () => {
+      appState.activeKnowledgeBoard = "contract";
+      renderKnowledgeBoardSwitch();
+    });
+
     uploadToggleBtnEl.addEventListener("click", () => {
       uploadMenuEl.classList.toggle("open");
     });
@@ -6109,6 +7304,28 @@
     searchInputEl?.addEventListener("input", () => {
       knowledgeState.searchKeyword = searchInputEl.value;
       renderTree();
+    });
+
+    caseFileInputEl?.addEventListener("change", async (event) => {
+      const [file] = Array.from(event.target.files || []);
+      const board = ["cases", "encyclopedia", "contract"].includes(appState.activeKnowledgeBoard)
+        ? appState.activeKnowledgeBoard
+        : "cases";
+      await handleKnowledgeSpreadsheetUpload(file, board);
+      event.target.value = "";
+    });
+
+    appFilterTabsEl?.querySelectorAll("[data-app-filter]").forEach((button) => {
+      button.addEventListener("click", () => {
+        appState.activeAppLibraryFilter = button.dataset.appFilter || "tool";
+        renderAppLibrary();
+      });
+    });
+
+    appLibraryConfigBtnEl?.addEventListener("click", () => {
+      const activeApp = appLibraryCatalog.find((item) => item.id === appState.activeAppLibraryId);
+      const appName = activeApp ? activeApp.name : "当前应用";
+      window.alert(`${appName} 的接口配置入口已预留，可在 APP_LIBRARY_CONFIG 中接入真实接口。`);
     });
 
     backBtnEl?.addEventListener("click", () => {
@@ -6183,7 +7400,15 @@
 
     initLibraries();
     initMiddleRoomEmbed();
+    syncHomeActionMetrics();
+    renderHomePipelineCapacityMetrics(appState.map?.projects || []);
+    renderHomeKnowledgeMetrics();
+    renderAppLibrary();
+    renderKnowledgeBoardSwitch();
     renderKnowledgeBase();
+    renderKnowledgeSpreadsheetBoard("cases");
+    renderKnowledgeSpreadsheetBoard("encyclopedia");
+    renderKnowledgeSpreadsheetBoard("contract");
     renderSkillModule();
   </script>
   <script>
@@ -8102,6 +9327,7 @@
         }
         requestProjectMarkerRender();
         renderStats();
+        window.syncHomePipelineCapacityMetrics?.();
       }
 
       function showSearchMarker(lat, lng, label) {
@@ -8235,6 +9461,78 @@
         const workbook = window.XLSX.read(await file.arrayBuffer(), { type: "array" });
         const firstSheet = workbook.SheetNames[0];
         return window.XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], { defval: "" });
+      }
+
+      function readArrayBufferByXhr(url) {
+        return new Promise((resolve, reject) => {
+          try {
+            const request = new XMLHttpRequest();
+            request.open("GET", url, true);
+            request.responseType = "arraybuffer";
+            request.onload = () => {
+              if (request.status === 0 || (request.status >= 200 && request.status < 300)) {
+                resolve(request.response);
+              } else {
+                reject(new Error("项目库默认文件读取失败"));
+              }
+            };
+            request.onerror = () => reject(new Error("项目库默认文件读取失败"));
+            request.send();
+          } catch (error) {
+            reject(error);
+          }
+        });
+      }
+
+      async function loadDefaultProjectLibrary() {
+        if (mapStore.defaultLibraryLoaded || mapStore.defaultLibraryLoading || mapStore.projects.length) {
+          return;
+        }
+        mapStore.defaultLibraryLoading = true;
+        const defaultUrl = new URL("./project_list.xlsx", window.location.href).href;
+        try {
+          if (!window.XLSX) {
+            throw new Error("XLSX 库未加载成功");
+          }
+
+          let buffer;
+          try {
+            const response = await fetch(defaultUrl);
+            if (!response.ok) {
+              throw new Error("项目库默认文件读取失败");
+            }
+            buffer = await response.arrayBuffer();
+          } catch (fetchError) {
+            buffer = await readArrayBufferByXhr(defaultUrl);
+          }
+
+          const workbook = window.XLSX.read(buffer, { type: "array" });
+          const firstSheet = workbook.SheetNames[0];
+          const rows = window.XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], { defval: "" });
+          const projects = rows.map(projectFromUploadRow).filter(Boolean);
+          if (!projects.length) {
+            throw new Error("默认项目库中没有可识别项目");
+          }
+          if (mapStore.projects.length) {
+            return;
+          }
+
+          mapStore.projects = projects;
+          mapStore.defaultLibraryLoaded = true;
+          refreshProjectWorkbench({ resetCapacity: true });
+          if (mapStore.instance) {
+            const bounds = L.latLngBounds(projects.map((project) => [project.lat, project.lng]));
+            if (bounds.isValid()) {
+              mapStore.instance.fitBounds(bounds.pad(0.14), { animate: false });
+            }
+          }
+          setMapStatus(`已加载默认项目库 ${projects.length} 个项目`);
+        } catch (error) {
+          console.warn("Default project library load failed:", error);
+          setMapStatus(error.message || "默认项目库加载失败");
+        } finally {
+          mapStore.defaultLibraryLoading = false;
+        }
       }
 
       function addProjects(projects, options = {}) {
@@ -8670,6 +9968,7 @@
       renderDashboardSwitch();
       renderMapControlVisibility();
       refreshProjectWorkbench({ resetCapacity: true });
+      loadDefaultProjectLibrary();
       renderRouteSummary();
       renderLibraryCollapseState();
 
