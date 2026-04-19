@@ -460,15 +460,15 @@
 
     .snapshot-item.execution-item {
       display: grid;
-      gap: 16px;
+      gap: 14px;
       align-content: start;
     }
 
     .snapshot-item.execution-item strong {
       margin-bottom: 0;
       color: #f4fbff;
-      font-size: 1.42rem;
-      line-height: 1.2;
+      font-size: 1.34rem;
+      line-height: 1.15;
       font-weight: 800;
     }
 
@@ -478,13 +478,21 @@
       table-layout: fixed;
     }
 
+    .snapshot-execution-table col.col-label {
+      width: 54%;
+    }
+
+    .snapshot-execution-table col.col-metric {
+      width: 23%;
+    }
+
     .snapshot-execution-table th,
     .snapshot-execution-table td {
-      padding: 8px 0;
+      padding: 7px 0;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
       color: #eef7ff;
-      font-size: 0.84rem;
-      line-height: 1.45;
+      font-size: 0.8rem;
+      line-height: 1.35;
       text-align: left;
       vertical-align: middle;
       white-space: nowrap;
@@ -494,18 +502,27 @@
       border-top: 0;
       padding-top: 0;
       color: rgba(238, 247, 255, 0.74);
-      font-size: 0.76rem;
+      font-size: 0.72rem;
       font-weight: 700;
+      text-align: center;
+    }
+
+    .snapshot-execution-table thead th:first-child {
+      text-align: left;
     }
 
     .snapshot-execution-table tbody th {
       color: rgba(244, 251, 255, 0.92);
       font-weight: 700;
+      font-size: 0.8rem;
+      padding-right: 10px;
     }
 
     .snapshot-execution-table td {
-      text-align: right;
+      text-align: center;
       font-weight: 700;
+      font-size: 0.94rem;
+      font-variant-numeric: tabular-nums;
     }
 
     .snapshot-knowledge-list {
@@ -2326,12 +2343,15 @@
 
     .map-stage {
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
 
     .map-canvas {
       width: 100%;
-      height: calc(100vh - 260px);
-      min-height: 540px;
+      height: 100%;
+      min-height: 0;
+      flex: 1 1 auto;
       border-radius: 0 0 var(--radius-xl) var(--radius-xl);
       border: 0;
       display: block;
@@ -2595,6 +2615,12 @@
       height: auto;
       max-height: calc(100vh - 210px);
       transition: width 0.2s ease, min-width 0.2s ease, padding 0.2s ease;
+    }
+
+    .map-insights-panel {
+      align-self: start;
+      height: auto;
+      max-height: calc(100vh - 210px);
     }
 
     .project-library-panel.collapsed {
@@ -2875,11 +2901,15 @@
       min-height: 0;
       overflow: hidden;
       position: relative;
+      display: flex;
+      flex-direction: column;
     }
 
     .map-canvas-shell {
       position: relative;
       margin: 0 20px 20px;
+      flex: 1 1 auto;
+      min-height: 0;
       border-radius: 28px;
       overflow: hidden;
       border: 1px solid rgba(23, 35, 31, 0.08);
@@ -2991,6 +3021,7 @@
       display: grid;
       gap: 14px;
       font-size: 0.82rem;
+      flex: 1 1 auto;
     }
 
     .dashboard-tabs {
@@ -3193,6 +3224,20 @@
       gap: 10px;
     }
 
+    .business-analysis-section {
+      display: grid;
+      gap: 8px;
+    }
+
+    .business-analysis-unit {
+      padding: 0 4px;
+      color: rgba(86, 102, 95, 0.92);
+      font-size: 0.68rem;
+      font-weight: 700;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
     .business-analysis-empty {
       padding: 14px;
       border-radius: 16px;
@@ -3234,14 +3279,16 @@
 
     .business-analysis-title {
       display: inline-flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 8px;
       min-width: 0;
       max-width: 100%;
+      width: 132px;
+      flex: 0 0 132px;
       font-size: 0.74rem;
       font-weight: 700;
       color: var(--text);
-      white-space: nowrap;
+      white-space: normal;
     }
 
     .business-analysis-title::before {
@@ -3264,9 +3311,12 @@
     }
 
     .business-analysis-title-text {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      overflow: visible;
+      text-overflow: initial;
+      white-space: normal;
+      word-break: break-word;
+      line-height: 1.35;
+      font-size: 0.68rem;
     }
 
     .business-analysis-value {
@@ -3311,12 +3361,16 @@
 
     .business-analysis-leaf-label {
       min-width: 0;
+      width: 132px;
+      flex: 0 0 132px;
       color: var(--text);
-      font-size: 0.72rem;
+      font-size: 0.66rem;
       font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: initial;
+      word-break: break-word;
+      line-height: 1.35;
     }
 
     .business-analysis-leaf-value {
@@ -3508,6 +3562,14 @@
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .warehouse-network-table tbody td.warehouse-remark-cell {
+      white-space: pre-wrap;
+      overflow: visible;
+      text-overflow: initial;
+      word-break: break-word;
+      line-height: 1.6;
     }
 
     .warehouse-network-table tbody th {
@@ -4439,6 +4501,11 @@
                 <div class="snapshot-item execution-item">
                   <strong>项目执行</strong>
                   <table class="snapshot-execution-table" aria-label="项目执行统计">
+                    <colgroup>
+                      <col class="col-label">
+                      <col class="col-metric">
+                      <col class="col-metric">
+                    </colgroup>
                     <thead>
                       <tr>
                         <th></th>
@@ -4836,9 +4903,6 @@
 
                 <section id="businessAnalysisDashboardPanel" class="dashboard-panel">
                   <article class="summary-card compact-summary-card warehouse-network-card business-analysis-card">
-                    <div class="dashboard-card-head">
-                      <h4>Business Analysis</h4>
-                    </div>
                     <div id="businessAnalysisTree" class="dashboard-card-body business-analysis-tree"></div>
                   </article>
                 </section>
@@ -5314,6 +5378,35 @@
       return `${year}-${month}-${day}T${hour}:${minute}`;
     }
 
+    function formatOperatingDate(value) {
+      const raw = String(value ?? "").trim();
+      if (!raw) return "-";
+      if (/^\d{4,5}(\.\d+)?$/.test(raw)) {
+        const excelSerial = Number(raw);
+        if (Number.isFinite(excelSerial)) {
+          const utcDays = Math.floor(excelSerial - 25569);
+          const utcValue = utcDays * 86400 * 1000;
+          const date = new Date(utcValue);
+          if (!Number.isNaN(date.getTime())) {
+            return date.toLocaleDateString("zh-CN", {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit"
+            });
+          }
+        }
+      }
+      const parsed = new Date(raw);
+      if (!Number.isNaN(parsed.getTime())) {
+        return parsed.toLocaleDateString("zh-CN", {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit"
+        });
+      }
+      return raw;
+    }
+
     function formatSize(bytes) {
       if (!bytes) return "-";
       const units = ["B", "KB", "MB", "GB"];
@@ -5399,15 +5492,16 @@
           return acc;
         }
         const normalizedProgress = normalizeProjectProgress(category, project?.progress || "");
-        const isPlanned = normalizedProgress === "Planning" || normalizedProgress === "Constructing" || normalizedProgress === "Construction";
-        const isOperating = normalizedProgress === "Operating";
-        if (!isPlanned && !isOperating) {
+        const isPlanned = normalizedProgress === "Planning";
+        const isCompleted = normalizedProgress === "Constructing" || normalizedProgress === "Construction" || normalizedProgress === "Operating";
+        if (!isPlanned && !isCompleted) {
           return acc;
         }
         const bucket = category === "Warehouse" ? acc.warehouse : acc.serviceCenter;
         if (isPlanned) {
           bucket.planned += 1;
-        } else if (isOperating) {
+        }
+        if (isCompleted) {
           bucket.operating += 1;
         }
         return acc;
@@ -8357,7 +8451,7 @@
           if (getProjectBaseCategory(project.category) !== targetCategory || !project.country) {
             return;
           }
-          const progress = String(project.progress || "").trim();
+          const progress = normalizeProjectProgress(project.category, project.progress);
           let bucket = "";
           if (progress === "Construction" || progress === "O&M") {
             bucket = "delivered";
@@ -8846,11 +8940,10 @@
 
       function formatBusinessAnalysisAverage(category, value) {
         const numeric = Number(value) || 0;
-        const text = numeric.toLocaleString("en-US", {
+        return numeric.toLocaleString("en-US", {
           minimumFractionDigits: numeric >= 100 ? 0 : 2,
           maximumFractionDigits: numeric >= 100 ? 0 : 2
         }).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
-        return `${text} ${String(category || "").trim().toUpperCase() === "BESS" ? "USD/MWh/Y" : "USD/WTG/Y"}`;
       }
 
       function createBusinessAnalysisBucket() {
@@ -9865,9 +9958,15 @@
                   <span class="business-analysis-title-text">${escapeHtml(category)}</span>
                 </span>
                 <span class="business-analysis-meta">${categoryEntry.bucket.count}</span>
-                <span class="business-analysis-value">${escapeHtml(formatBusinessAnalysisAverage(category, getBusinessAnalysisAverage(categoryEntry.bucket)))}</span>
               </summary>
-              <div class="business-analysis-group-body">${continentsMarkup}</div>
+              <div class="business-analysis-group-body">
+                <div class="business-analysis-unit">单位 ${escapeHtml(String(category).toUpperCase() === "BESS" ? "USD/MWh/YR" : "USD/WTG/YR")}</div>
+                <div class="business-analysis-leaf">
+                  <span class="business-analysis-leaf-label">均价</span>
+                  <span class="business-analysis-leaf-value">${escapeHtml(formatBusinessAnalysisAverage(category, getBusinessAnalysisAverage(categoryEntry.bucket)))}</span>
+                </div>
+                ${continentsMarkup}
+              </div>
             </details>
           `;
         }).join("");
@@ -9900,12 +9999,15 @@
           .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "en"));
 
         mapWorkbenchEls.serviceCenterTableBody.innerHTML = serviceCenters.length
-          ? serviceCenters.map((project) => `
+          ? serviceCenters.map((project) => {
+              const operatingDate = formatOperatingDate(project.operatingTime);
+              return `
               <tr>
                 <th scope="row" title="${escapeHtml(project.name || "-")}">${escapeHtml(project.name || "-")}</th>
-                <td title="${escapeHtml(project.operatingTime || "-")}">${escapeHtml(project.operatingTime || "-")}</td>
+                <td title="${escapeHtml(operatingDate)}">${escapeHtml(operatingDate)}</td>
               </tr>
-            `).join("")
+            `;
+            }).join("")
           : `<tr><td class="warehouse-network-empty" colspan="2">当前筛选条件下暂无 Service Center 数据。</td></tr>`;
 
         mapWorkbenchEls.warehouseTableBody.innerHTML = warehouses.length
@@ -9913,7 +10015,7 @@
               <tr>
                 <th scope="row" title="${escapeHtml(project.name || "-")}">${escapeHtml(project.name || "-")}</th>
                 <td title="${escapeHtml(buildWarehouseAddress(project))}">${escapeHtml(buildWarehouseAddress(project))}</td>
-                <td title="${escapeHtml(project.remark || "-")}">${escapeHtml(project.remark || "-")}</td>
+                <td class="warehouse-remark-cell" title="${escapeHtml(project.remark || "-")}">${escapeHtml(project.remark || "-")}</td>
               </tr>
             `).join("")
           : `<tr><td class="warehouse-network-empty" colspan="3">当前筛选条件下暂无 Warehouse 数据。</td></tr>`;
@@ -10237,6 +10339,8 @@
           mapStore.projects = projects;
           mapStore.defaultLibraryLoaded = true;
           refreshProjectWorkbench({ resetCapacity: true });
+          renderHomeExecutionMetrics(projects);
+          renderHomePipelineCapacityMetrics(projects);
           if (mapStore.instance) {
             const bounds = L.latLngBounds(projects.map((project) => [project.lat, project.lng]));
             if (bounds.isValid()) {
@@ -10978,6 +11082,9 @@
         }
 
         closeProjectModal();
+        if (mapWorkbenchEls.modal) {
+          mapWorkbenchEls.modal.classList.remove("open");
+        }
         setMapStatus(isEditing ? "Project updated" : "Project added");
       }, true);
     })();
