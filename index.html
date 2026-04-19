@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <script src='https://lf-package-cn.feishucdn.com/obj/feishu-static/op/fe/devtools_frontend/remote-debug-0.0.1-alpha.6.js'></script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LTSA Solution AI Platform</title>
@@ -85,7 +84,8 @@
     .topbar {
       position: sticky;
       top: 0;
-      z-index: 60;
+      z-index: 5000;
+      isolation: isolate;
       height: var(--header-height);
       backdrop-filter: blur(18px);
       background: rgba(247, 248, 246, 0.84);
@@ -716,11 +716,14 @@
     }
 
     .knowledge-shell {
-      display: grid;
-      grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
-      gap: 18px;
-      align-items: start;
       min-height: calc(100vh - 140px);
+    }
+
+    .knowledge-main-panel {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      height: min(760px, calc(100vh - var(--header-height) - 44px));
+      overflow: hidden;
     }
 
     .knowledge-sidebar {
@@ -769,6 +772,14 @@
       justify-content: center;
     }
 
+    .knowledge-upload-toggle {
+      min-width: 132px;
+      min-height: 34px;
+      padding: 0 12px;
+      font-size: 0.78rem;
+      line-height: 1;
+    }
+
     .upload-option {
       width: 100%;
       text-align: center;
@@ -777,7 +788,8 @@
     .tree {
       display: grid;
       gap: 8px;
-      max-height: calc(100vh - 260px);
+      min-height: 0;
+      max-height: none;
       overflow: auto;
       padding-right: 4px;
     }
@@ -857,7 +869,68 @@
     .knowledge-main-body {
       padding: 18px;
       display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
       gap: 18px;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .knowledge-header-actions {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+    }
+
+    .knowledge-content-grid {
+      display: grid;
+      grid-template-columns: minmax(270px, 320px) minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+      min-height: 0;
+      height: 100%;
+    }
+
+    .knowledge-directory-panel,
+    .knowledge-preview-panel {
+      min-width: 0;
+      min-height: 0;
+      height: 100%;
+      border-radius: 28px;
+      border: 1px solid rgba(23, 35, 31, 0.08);
+      background: rgba(255, 255, 255, 0.74);
+    }
+
+    .knowledge-directory-panel {
+      padding: 16px;
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      gap: 14px;
+      overflow: hidden;
+    }
+
+    .knowledge-directory-head {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .knowledge-directory-head h3 {
+      margin: 0;
+      font-size: 1rem;
+      white-space: nowrap;
+    }
+
+    .knowledge-directory-search {
+      flex: 1;
+      min-height: 40px;
+      padding: 0 14px;
+    }
+
+    .knowledge-preview-panel {
+      display: grid;
+      grid-template-rows: auto minmax(0, 1fr);
+      padding: 0;
+      overflow: hidden;
     }
 
     .toolbar {
@@ -889,6 +962,10 @@
       font-size: 0.96rem;
     }
 
+    .searchbox.no-label {
+      gap: 0;
+    }
+
     .toolbar-right {
       display: flex;
       gap: 10px;
@@ -902,6 +979,8 @@
       flex-wrap: wrap;
       color: var(--muted);
       font-size: 0.9rem;
+      padding: 18px 18px 0;
+      flex: none;
     }
 
     .crumbs button {
@@ -913,14 +992,94 @@
     .document-list {
       display: grid;
       gap: 14px;
+      padding: 18px;
+      min-height: 0;
+      overflow: auto;
+    }
+
+    .middle-room-page {
+      padding-bottom: 16px;
+    }
+
+    .middle-room-shell {
+      overflow: hidden;
+      border-radius: 34px;
+      background:
+        radial-gradient(1200px 620px at 10% 0%, rgba(110, 168, 254, 0.18), transparent 55%),
+        radial-gradient(900px 520px at 90% 10%, rgba(126, 224, 195, 0.14), transparent 50%),
+        linear-gradient(180deg, #08111f, #0f1730);
+      box-shadow: 0 26px 60px rgba(13, 28, 37, 0.18);
+      border: 1px solid rgba(10, 27, 39, 0.08);
+    }
+
+    .middle-room-frame {
+      display: block;
+      width: 100%;
+      min-height: calc(100vh - var(--header-height) - 56px);
+      height: 1400px;
+      border: 0;
+      background: transparent;
+    }
+
+    .document-list.inline-preview-mode {
+      gap: 0;
+    }
+
+    .inline-preview-shell {
+      display: grid;
+      gap: 18px;
+    }
+
+    .inline-preview-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 20px 20px 0;
+    }
+
+    .inline-preview-meta {
+      min-width: 0;
+      display: grid;
+      gap: 8px;
+    }
+
+    .inline-preview-meta strong {
+      display: block;
+      min-width: 0;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.4;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .inline-preview-meta span {
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.5;
+    }
+
+    .inline-preview-stage {
+      min-height: 420px;
+      padding: 0 20px 20px;
+    }
+
+    .inline-preview-stage > .modal-content,
+    .inline-preview-stage > .text-viewer,
+    .inline-preview-stage > .sheet-viewer-shell,
+    .inline-preview-stage > .docx-viewer-shell,
+    .inline-preview-stage > .pdf-viewer-shell {
+      min-height: 420px;
+      border-radius: 24px;
     }
 
     .document-row {
       display: grid;
-      grid-template-columns: 260px minmax(0, 1fr) 128px;
-      gap: 16px;
-      align-items: stretch;
-      padding: 18px;
+      grid-template-columns: minmax(0, 1fr) 140px;
+      gap: 14px;
+      align-items: center;
+      padding: 14px 16px;
       border-radius: 26px;
       background: rgba(255, 255, 255, 0.9);
       border: 1px solid rgba(23, 35, 31, 0.08);
@@ -939,16 +1098,21 @@
         rgba(255, 255, 255, 0.92);
     }
 
+    .document-main {
+      display: grid;
+      gap: 10px;
+      min-width: 0;
+    }
+
     .document-meta {
       display: grid;
-      align-content: space-between;
-      gap: 18px;
+      gap: 10px;
       min-width: 0;
     }
 
     .document-title {
       display: grid;
-      gap: 10px;
+      gap: 8px;
       min-width: 0;
     }
 
@@ -963,21 +1127,33 @@
       min-width: 0;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      white-space: normal;
+      line-height: 1.35;
       font-size: 1rem;
       font-weight: 700;
+    }
+
+    .document-meta-line {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
     }
 
     .document-type {
       display: inline-flex;
       align-items: center;
-      min-height: 30px;
+      min-height: 26px;
       width: fit-content;
-      padding: 0 12px;
+      padding: 0 10px;
       border-radius: 999px;
       background: rgba(11, 119, 106, 0.08);
       color: var(--primary);
-      font-size: 0.8rem;
+      font-size: 0.76rem;
       font-weight: 700;
     }
 
@@ -985,13 +1161,13 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      min-height: 28px;
+      min-height: 26px;
       width: fit-content;
       padding: 0 10px;
       border-radius: 999px;
       background: rgba(23, 35, 31, 0.05);
       color: var(--muted);
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       white-space: nowrap;
     }
 
@@ -1001,6 +1177,19 @@
       flex: none;
     }
 
+    .document-size-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      width: fit-content;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(23, 35, 31, 0.05);
+      color: var(--muted);
+      font-size: 0.74rem;
+      white-space: nowrap;
+    }
+
     .document-size {
       color: var(--muted);
       font-size: 0.9rem;
@@ -1008,33 +1197,66 @@
 
     .document-summary {
       display: grid;
-      gap: 12px;
+      gap: 8px;
       align-content: start;
-      padding: 2px 0;
+      padding: 0;
       min-width: 0;
     }
 
-    .document-summary-head {
+    .document-status-strip {
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
-    .document-summary-head strong {
-      font-size: 0.96rem;
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      min-height: 28px;
+      padding: 0 12px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      white-space: nowrap;
+      border: 1px solid transparent;
     }
 
-    .summary-state {
+    .status-chip.approved,
+    .status-chip.published {
+      background: rgba(20, 148, 77, 0.12);
+      color: #1f8d50;
+      border-color: rgba(20, 148, 77, 0.18);
+    }
+
+    .status-chip.pending,
+    .status-chip.unpublished {
+      background: rgba(201, 55, 55, 0.1);
+      color: #c93737;
+      border-color: rgba(201, 55, 55, 0.16);
+    }
+
+    .status-chip.publish-date {
+      background: rgba(23, 35, 31, 0.05);
       color: var(--muted);
-      font-size: 0.82rem;
+      border-color: rgba(23, 35, 31, 0.08);
+      font-weight: 600;
+    }
+
+    .document-info-line {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px 16px;
+      color: var(--muted);
+      font-size: 0.84rem;
+      line-height: 1.5;
     }
 
     .summary-text {
       margin: 0;
       color: var(--muted);
-      font-size: 0.94rem;
-      line-height: 1.9;
+      font-size: 0.84rem;
+      line-height: 1.5;
       white-space: pre-wrap;
       word-break: break-word;
     }
@@ -1042,19 +1264,39 @@
     .document-actions {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: center;
       align-items: flex-end;
-      gap: 12px;
+      gap: 10px;
     }
 
     .document-actions .delete-button {
       align-self: flex-end;
     }
 
+    .document-action-stack {
+      width: 100%;
+      display: grid;
+      gap: 8px;
+    }
+
     .document-actions .toolbar-button,
     .document-actions .small-button {
       width: 100%;
       justify-content: center;
+      min-height: 34px;
+      font-size: 0.78rem;
+    }
+
+    .document-meta-modal .form-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .document-meta-modal .form-field.full {
+      grid-column: 1 / -1;
+    }
+
+    .document-meta-modal .form-actions {
+      justify-content: flex-end;
     }
 
     .empty-state {
@@ -2154,21 +2396,32 @@
     .dashboard-tabs {
       width: 100%;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 8px;
     }
 
     .dashboard-tab {
       min-height: 38px;
-      padding: 0 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
       border-radius: 14px;
       border: 1px solid rgba(23, 35, 31, 0.08);
       background: rgba(255, 255, 255, 0.78);
       color: var(--muted);
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       font-weight: 700;
       text-align: center;
+      line-height: 1;
+      white-space: nowrap;
       transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, color 0.16s ease, background 0.16s ease;
+    }
+
+    .dashboard-tab.business-analysis-tab {
+      font-size: 0.62rem;
+      letter-spacing: -0.01em;
+      padding: 0 8px;
     }
 
     .dashboard-tab:hover {
@@ -3138,7 +3391,7 @@
     @media (max-width: 1280px) {
       .hero-grid,
       .scenario-grid,
-      .knowledge-shell,
+      .knowledge-content-grid,
       .map-layout,
       .map-workbench-grid {
         grid-template-columns: 1fr;
@@ -3298,9 +3551,9 @@
       </div>
       <nav class="main-nav">
         <button class="nav-item active" type="button" data-page="home">首页</button>
-        <button class="nav-item" type="button" data-page="knowledge">知识库</button>
+        <button class="nav-item" type="button" data-page="skill">中部屋管理</button>
         <button class="nav-item" type="button" data-page="map">LTSA Map</button>
-        <button class="nav-item" type="button" data-page="skill"></button>
+        <button class="nav-item" type="button" data-page="knowledge">知识库</button>
       </nav>
     </div>
   </header>
@@ -3373,49 +3626,39 @@
     <section class="page" id="page-knowledge">
       <div class="container">
         <div class="knowledge-shell">
-          <aside class="shell-panel knowledge-sidebar">
+          <section class="shell-panel knowledge-main-panel">
             <div class="shell-panel-header">
               <div>
-                <h2>文档库</h2>
-                <span id="treeCount">0 项</span>
+                <h2>知识库</h2>
               </div>
-            </div>
-            <div class="knowledge-sidebar-body">
-              <div class="upload-entry">
+              <div class="knowledge-header-actions">
                 <div class="upload-menu" id="uploadMenu">
-                  <button id="uploadToggleBtn" class="small-button primary upload-toggle" type="button">上传文件/文件夹</button>
+                  <button id="uploadToggleBtn" class="small-button primary upload-toggle knowledge-upload-toggle" type="button">上传文件/文件夹</button>
                   <div class="upload-menu-panel" id="uploadMenuPanel">
                     <button id="pickFileBtn" class="upload-option" type="button">选择文件</button>
                     <button id="pickFolderBtn" class="upload-option" type="button">选择文件夹</button>
                   </div>
                 </div>
               </div>
-              <input id="fileInput" class="hidden-input" type="file" multiple>
-              <input id="folderInput" class="hidden-input" type="file" webkitdirectory directory multiple>
-              <div class="tree" id="tree"></div>
             </div>
-          </aside>
-
-          <section class="shell-panel">
-            <div class="shell-panel-header">
-              <div>
-                <h2>知识库</h2>
-                <span id="currentPathLabel">根目录</span>
-              </div>
-            </div>
+            <input id="fileInput" class="hidden-input" type="file" multiple>
+            <input id="folderInput" class="hidden-input" type="file" webkitdirectory directory multiple>
             <div class="knowledge-main-body">
-              <div class="toolbar">
-                <label class="searchbox">
-                  <span>搜索</span>
-                  <input id="searchInput" type="text" placeholder="搜索当前目录中的文件和文件夹">
-                </label>
-                <div class="toolbar-right">
-                  <button id="backBtn" class="toolbar-button" type="button">返回上级</button>
-                  <button id="downloadBtn" class="toolbar-button" type="button">下载文件</button>
+              <div class="knowledge-content-grid">
+                  <div class="knowledge-directory-panel">
+                    <div class="knowledge-directory-head">
+                      <h3>文档目录</h3>
+                      <label class="searchbox no-label knowledge-directory-search">
+                        <input id="searchInput" type="text" placeholder="搜索">
+                      </label>
+                    </div>
+                    <div class="tree" id="tree"></div>
+                  </div>
+                  <div class="knowledge-preview-panel">
+                    <div class="crumbs" id="breadcrumbs"></div>
+                    <div class="document-list" id="documentList"></div>
+                  </div>
                 </div>
-              </div>
-              <div class="crumbs" id="breadcrumbs"></div>
-              <div class="document-list" id="documentList"></div>
             </div>
           </section>
         </div>
@@ -3423,7 +3666,17 @@
     </section>
 
     <section class="page" id="page-skill">
-      <div class="container"></div>
+      <div class="container middle-room-page">
+        <div class="middle-room-shell">
+          <iframe
+            id="middleRoomFrame"
+            class="middle-room-frame"
+            title="中部屋管理"
+            src="./isd-meeting-dashboard-v2.html"
+            loading="lazy">
+          </iframe>
+        </div>
+      </div>
     </section>
 
     <section class="page" id="page-map">
@@ -3524,8 +3777,9 @@
             <aside class="shell-panel map-side-panel map-insights-panel">
               <div class="shell-panel-header map-side-header">
                 <div class="dashboard-tabs">
-                  <button id="ltsaDashboardTab" class="dashboard-tab active" type="button">LTSA项目看板</button>
-                  <button id="warehouseDashboardTab" class="dashboard-tab" type="button">全球仓储网络看板</button>
+                  <button id="ltsaDashboardTab" class="dashboard-tab active" type="button">商机管理</button>
+                  <button id="warehouseDashboardTab" class="dashboard-tab" type="button">全球仓储网络</button>
+                  <button id="businessAnalysisDashboardTab" class="dashboard-tab business-analysis-tab" type="button">Business Analysis</button>
                 </div>
               </div>
               <div class="map-insights-body">
@@ -3627,7 +3881,16 @@
                 <section id="warehouseDashboardPanel" class="dashboard-panel">
                   <article class="summary-card compact-summary-card warehouse-network-card">
                     <div class="dashboard-card-head">
-                      <h4>全球仓储网络看板</h4>
+                      <h4>全球仓储网络</h4>
+                    </div>
+                    <div class="dashboard-card-body empty"></div>
+                  </article>
+                </section>
+
+                <section id="businessAnalysisDashboardPanel" class="dashboard-panel">
+                  <article class="summary-card compact-summary-card warehouse-network-card">
+                    <div class="dashboard-card-head">
+                      <h4>Business Analysis</h4>
                     </div>
                     <div class="dashboard-card-body empty"></div>
                   </article>
@@ -3737,6 +4000,57 @@
     </div>
   </div>
 
+  <div class="form-modal document-meta-modal" id="documentMetaModal">
+    <div class="form-modal-card">
+      <div class="form-modal-head">
+        <div>
+          <h3 id="documentMetaModalTitle">编辑文档信息</h3>
+          <span id="documentMetaModalMeta">维护审批、发布、日期和上传者信息</span>
+        </div>
+        <button id="documentMetaModalClose" class="window-button" type="button" aria-label="关闭">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="m18 6-12 12"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
+        </button>
+      </div>
+      <form id="documentMetaForm" class="form-modal-body">
+        <div class="form-grid">
+          <label class="form-field full">
+            <span>文件名</span>
+            <input id="documentMetaName" type="text" readonly>
+          </label>
+          <label class="form-field">
+            <span>审批状态</span>
+            <select id="documentMetaApproved">
+              <option value="approved">已审批</option>
+              <option value="pending">未审批</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span>发布状态</span>
+            <select id="documentMetaPublished">
+              <option value="published">已发布</option>
+              <option value="unpublished">未发布</option>
+            </select>
+          </label>
+          <label class="form-field">
+            <span>发布日期</span>
+            <input id="documentMetaPublishDate" type="datetime-local">
+          </label>
+          <label class="form-field">
+            <span>上传者</span>
+            <input id="documentMetaUploader" type="text" placeholder="Lingjie Zeng">
+          </label>
+        </div>
+        <div class="form-actions">
+          <button id="documentMetaCancelBtn" class="toolbar-button" type="button">取消</button>
+          <button id="documentMetaSaveBtn" class="toolbar-button primary-button" type="submit">保存</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.3/dist/docx-preview.min.js"></script>
@@ -3764,6 +4078,7 @@
       objectUrls: new Set(),
       chatHistory: [],
       previewPath: "",
+      editingKnowledgePath: "",
       summaryQueue: [],
       summaryRunning: false,
       skillSelectedId: "contract",
@@ -3844,6 +4159,15 @@
     const modalBodyEl = document.getElementById("modalBody");
     const modalCloseBtnEl = document.getElementById("modalCloseBtn");
     const modalDownloadBtnEl = document.getElementById("modalDownloadBtn");
+    const documentMetaModalEl = document.getElementById("documentMetaModal");
+    const documentMetaFormEl = document.getElementById("documentMetaForm");
+    const documentMetaModalCloseEl = document.getElementById("documentMetaModalClose");
+    const documentMetaCancelBtnEl = document.getElementById("documentMetaCancelBtn");
+    const documentMetaNameEl = document.getElementById("documentMetaName");
+    const documentMetaApprovedEl = document.getElementById("documentMetaApproved");
+    const documentMetaPublishedEl = document.getElementById("documentMetaPublished");
+    const documentMetaPublishDateEl = document.getElementById("documentMetaPublishDate");
+    const documentMetaUploaderEl = document.getElementById("documentMetaUploader");
 
     const skillMarketListEl = document.getElementById("skillMarketList");
     const skillTitleEl = document.getElementById("skillTitle");
@@ -3852,6 +4176,7 @@
     const skillMessagesEl = document.getElementById("skillMessages");
     const skillInputEl = document.getElementById("skillInput");
     const skillSendBtnEl = document.getElementById("skillSendBtn");
+    const middleRoomFrameEl = document.getElementById("middleRoomFrame");
     const projectMapEl = document.getElementById("projectMap");
     const mapStatusEl = document.getElementById("mapStatus");
     const mapHomeBtnEl = document.getElementById("mapHomeBtn");
@@ -3877,6 +4202,10 @@
         mime: file.type || "",
         uploadedAt: Date.now(),
         lastModified: file.lastModified || Date.now(),
+        uploader: "Lingjie Zeng",
+        approved: true,
+        published: true,
+        publishDate: Date.now(),
         summary: "",
         summaryStatus: "idle",
         extractedText: ""
@@ -3900,6 +4229,18 @@
         hour: "2-digit",
         minute: "2-digit"
       });
+    }
+
+    function formatDateTimeLocalValue(value) {
+      if (!value) return "";
+      const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, "0");
+      const day = String(date.getDate()).padStart(2, "0");
+      const hour = String(date.getHours()).padStart(2, "0");
+      const minute = String(date.getMinutes()).padStart(2, "0");
+      return `${year}-${month}-${day}T${hour}:${minute}`;
     }
 
     function formatSize(bytes) {
@@ -3971,6 +4312,12 @@
       Object.entries(pageSections).forEach(([key, section]) => {
         section.classList.toggle("active", key === pageName);
       });
+      if (pageName === "skill") {
+        setTimeout(() => {
+          initMiddleRoomEmbed();
+          resizeMiddleRoomFrame();
+        }, 40);
+      }
       if (pageName === "map") {
         setTimeout(() => {
           ensureInteractiveMap();
@@ -3978,6 +4325,116 @@
             appState.map.instance.invalidateSize();
           }
         }, 60);
+      }
+    }
+
+    function resizeMiddleRoomFrame() {
+      if (!middleRoomFrameEl) return;
+      try {
+        const frameDoc = middleRoomFrameEl.contentDocument;
+        if (!frameDoc) return;
+        const nextHeight = Math.max(
+          1120,
+          frameDoc.documentElement ? frameDoc.documentElement.scrollHeight : 0,
+          frameDoc.body ? frameDoc.body.scrollHeight : 0
+        );
+        middleRoomFrameEl.style.height = nextHeight + "px";
+      } catch (error) {
+        middleRoomFrameEl.style.height = "1400px";
+      }
+    }
+
+    function applyMiddleRoomEmbedSkin() {
+      if (!middleRoomFrameEl) return;
+      try {
+        const frameDoc = middleRoomFrameEl.contentDocument;
+        const frameWin = middleRoomFrameEl.contentWindow;
+        if (!frameDoc || !frameWin) return;
+
+        let skinStyle = frameDoc.getElementById("middleRoomEmbedSkin");
+        if (!skinStyle) {
+          skinStyle = frameDoc.createElement("style");
+          skinStyle.id = "middleRoomEmbedSkin";
+          skinStyle.textContent = `
+            :root{
+              --bg:#08111f !important;
+              --panel:#102032 !important;
+              --panel2:#0f1730 !important;
+              --accent:#168a7b !important;
+              --accent2:#9bd7ca !important;
+            }
+            html, body{
+              background: transparent !important;
+            }
+            body{
+              min-height: auto !important;
+            }
+            header{
+              position: static !important;
+              padding: 0 0 12px !important;
+              background: transparent !important;
+              border-bottom: 0 !important;
+              backdrop-filter: none !important;
+            }
+            header > .topbar{
+              max-width: none !important;
+              margin: 0 !important;
+            }
+            header > .topbar:first-child{
+              justify-content: flex-end !important;
+              padding: 0 0 10px !important;
+            }
+            header > .topbar:first-child .brand{
+              display: none !important;
+            }
+            main{
+              max-width: none !important;
+              margin: 0 !important;
+              padding: 0 !important;
+            }
+            .card{
+              border-color: rgba(255,255,255,.08) !important;
+              box-shadow: 0 20px 48px rgba(0,0,0,.28) !important;
+            }
+          `;
+          frameDoc.head.appendChild(skinStyle);
+        }
+
+        if (!middleRoomFrameEl.dataset.boundResize) {
+          middleRoomFrameEl.dataset.boundResize = "true";
+          if (frameWin.ResizeObserver && frameDoc.body) {
+            const ro = new frameWin.ResizeObserver(() => resizeMiddleRoomFrame());
+            ro.observe(frameDoc.body);
+            if (frameDoc.documentElement) {
+              ro.observe(frameDoc.documentElement);
+            }
+          }
+          frameWin.addEventListener("resize", resizeMiddleRoomFrame);
+          frameDoc.addEventListener("click", () => setTimeout(resizeMiddleRoomFrame, 30), true);
+          frameDoc.addEventListener("input", () => setTimeout(resizeMiddleRoomFrame, 30), true);
+        }
+
+        resizeMiddleRoomFrame();
+      } catch (error) {
+        console.warn("Middle room embed skin failed:", error);
+      }
+    }
+
+    function initMiddleRoomEmbed() {
+      if (!middleRoomFrameEl || middleRoomFrameEl.dataset.initialized === "true") return;
+      middleRoomFrameEl.dataset.initialized = "true";
+      const handleMiddleRoomReady = () => {
+        applyMiddleRoomEmbedSkin();
+        resizeMiddleRoomFrame();
+      };
+      middleRoomFrameEl.addEventListener("load", handleMiddleRoomReady);
+      try {
+        const frameDoc = middleRoomFrameEl.contentDocument;
+        if (frameDoc && frameDoc.readyState === "complete") {
+          setTimeout(handleMiddleRoomReady, 0);
+        }
+      } catch (error) {
+        console.warn("Middle room initial ready check failed:", error);
       }
     }
 
@@ -4056,10 +4513,26 @@
     }
 
     function getFolderChildren(folder) {
-      const items = [...folder.children].sort(compareNodes);
-      const keyword = knowledgeState.searchKeyword.trim().toLowerCase();
-      if (!keyword) return items;
-      return items.filter((item) => item.name.toLowerCase().includes(keyword));
+      return [...folder.children].sort(compareNodes);
+    }
+
+    function getTreeSearchKeyword() {
+      return knowledgeState.searchKeyword.trim().toLowerCase();
+    }
+
+    function shouldShowTreeNode(node, keyword = getTreeSearchKeyword()) {
+      if (!keyword) return true;
+      if (node.name.toLowerCase().includes(keyword)) return true;
+      if (node.type === "folder") {
+        return node.children.some((child) => shouldShowTreeNode(child, keyword));
+      }
+      return false;
+    }
+
+    function getVisibleTreeChildren(node, keyword = getTreeSearchKeyword()) {
+      return [...node.children]
+        .sort(compareNodes)
+        .filter((child) => shouldShowTreeNode(child, keyword));
     }
 
     function setNodeSummary(node, summary, status) {
@@ -4192,24 +4665,30 @@
     }
 
     function renderTree() {
-      const items = [...knowledgeState.root.children].sort(compareNodes);
-      treeCountEl.textContent = getTotalItems() + " 项";
+      const keyword = getTreeSearchKeyword();
+      const items = getVisibleTreeChildren(knowledgeState.root, keyword);
+      if (treeCountEl) {
+        treeCountEl.textContent = getTotalItems() + " 项";
+      }
       if (!items.length) {
-        treeEl.innerHTML = "<div class='empty-state'>当前文档库为空</div>";
+        treeEl.innerHTML = keyword
+          ? "<div class='empty-state'>没有匹配当前搜索词的文件或文件夹</div>"
+          : "<div class='empty-state'>当前文档库为空</div>";
         return;
       }
-      treeEl.innerHTML = items.map(renderTreeNode).join("");
+      treeEl.innerHTML = items.map((node) => renderTreeNode(node, keyword)).join("");
       bindTreeEvents();
     }
 
-    function renderTreeNode(node) {
+    function renderTreeNode(node, keyword = getTreeSearchKeyword()) {
       const active = knowledgeState.selectedPath === node.path || (node.type === "folder" && knowledgeState.currentFolderPath === node.path);
-      const expanded = knowledgeState.expandedFolders.has(node.path);
+      const expanded = keyword ? true : knowledgeState.expandedFolders.has(node.path);
       const meta = node.type === "folder"
         ? node.children.length + " 项"
         : ((node.extension || "FILE").toUpperCase() + " · " + formatSize(node.size));
-      const childrenMarkup = node.type === "folder" && expanded
-        ? "<div class='tree-children'>" + [...node.children].sort(compareNodes).map(renderTreeNode).join("") + "</div>"
+      const visibleChildren = node.type === "folder" ? getVisibleTreeChildren(node, keyword) : [];
+      const childrenMarkup = node.type === "folder" && expanded && visibleChildren.length
+        ? "<div class='tree-children'>" + visibleChildren.map((child) => renderTreeNode(child, keyword)).join("") + "</div>"
         : "";
       return `
         <div class="tree-node ${active ? "active" : ""}">
@@ -4243,6 +4722,7 @@
             knowledgeState.currentFolderPath = path;
             renderKnowledgeBase();
           } else {
+            knowledgeState.currentFolderPath = getParentPath(path);
             renderKnowledgeBase();
           }
         });
@@ -4284,8 +4764,136 @@
       return "等待摘要";
     }
 
+    function getNodeUploader(node) {
+      return node.uploader || "Lingjie Zeng";
+    }
+
+    function isNodeApproved(node) {
+      if (!node) return false;
+      return typeof node.approved === "boolean" ? node.approved : true;
+    }
+
+    function isNodePublished(node) {
+      if (!node) return false;
+      return typeof node.published === "boolean" ? node.published : true;
+    }
+
+    function getApprovalLabel(node) {
+      return isNodeApproved(node) ? "已审批" : "未审批";
+    }
+
+    function getPublishLabel(node) {
+      return isNodePublished(node) ? "已发布" : "未发布";
+    }
+
+    function getPublishDateLabel(node) {
+      if (!node) return "发布日期：未设置";
+      const sourceDate = node.publishDate || node.uploadedAt || node.createdAt;
+      if (!sourceDate) return "发布日期：未设置";
+      return "发布日期：" + formatDate(sourceDate);
+    }
+
+    function parseMetadataDate(value) {
+      const trimmed = String(value || "").trim();
+      if (!trimmed) return "";
+      const parsed = new Date(trimmed.replace(/\./g, "/"));
+      if (Number.isNaN(parsed.getTime())) return null;
+      return parsed.getTime();
+    }
+
+    function syncDocumentMetaPublishDateState() {
+      if (!documentMetaPublishedEl || !documentMetaPublishDateEl) return;
+      const isPublished = documentMetaPublishedEl.value === "published";
+      documentMetaPublishDateEl.disabled = !isPublished;
+      if (!isPublished) {
+        documentMetaPublishDateEl.value = "";
+      }
+    }
+
+    function closeDocumentMetaModal() {
+      if (!documentMetaModalEl) return;
+      documentMetaModalEl.classList.remove("open");
+      appState.editingKnowledgePath = "";
+    }
+
+    function openDocumentMetaModal(path) {
+      const node = findNode(path);
+      if (!node || node.type !== "file" || !documentMetaModalEl) return;
+      appState.editingKnowledgePath = path;
+      documentMetaNameEl.value = node.name || "";
+      documentMetaApprovedEl.value = isNodeApproved(node) ? "approved" : "pending";
+      documentMetaPublishedEl.value = isNodePublished(node) ? "published" : "unpublished";
+      documentMetaPublishDateEl.value = isNodePublished(node) ? formatDateTimeLocalValue(node.publishDate || node.uploadedAt) : "";
+      documentMetaUploaderEl.value = getNodeUploader(node);
+      syncDocumentMetaPublishDateState();
+      documentMetaModalEl.classList.add("open");
+    }
+
+    function editKnowledgeMetadata(path) {
+      openDocumentMetaModal(path);
+    }
+
+    function handleDocumentMetaSubmit(event) {
+      event.preventDefault();
+      const node = findNode(appState.editingKnowledgePath);
+      if (!node || node.type !== "file") {
+        closeDocumentMetaModal();
+        return;
+      }
+
+      const isApproved = documentMetaApprovedEl.value === "approved";
+      const isPublished = documentMetaPublishedEl.value === "published";
+      const parsedPublishDate = isPublished ? parseMetadataDate(documentMetaPublishDateEl.value) : "";
+      if (isPublished && parsedPublishDate === null) {
+        window.alert("发布日期格式无法识别，请重新输入。");
+        return;
+      }
+
+      node.approved = isApproved;
+      node.published = isPublished;
+      node.publishDate = isPublished ? (parsedPublishDate || node.uploadedAt) : "";
+      node.uploader = (documentMetaUploaderEl.value || "").trim() || "Lingjie Zeng";
+
+      closeDocumentMetaModal();
+      renderKnowledgeBase();
+    }
+
     function renderDocumentList() {
-      currentPathLabelEl.textContent = knowledgeState.currentFolderPath || "根目录";
+      if (currentPathLabelEl) {
+        currentPathLabelEl.textContent = knowledgeState.currentFolderPath || "根目录";
+      }
+      const selectedNode = findNode(knowledgeState.selectedPath);
+      if (selectedNode && selectedNode.type === "file") {
+        documentListEl.classList.add("inline-preview-mode");
+        documentListEl.innerHTML = `
+          <section class="inline-preview-shell">
+            <div class="inline-preview-head">
+              <div class="inline-preview-meta">
+                <strong>${escapeHtml(selectedNode.name)}</strong>
+                <span>${escapeHtml([
+                  (selectedNode.extension || "FILE").toUpperCase(),
+                  formatSize(selectedNode.size),
+                  "上传日期 " + formatDate(selectedNode.uploadedAt),
+                  "上传者 " + getNodeUploader(selectedNode)
+                ].join(" · "))}</span>
+              </div>
+              <div class="document-actions">
+                <button class="delete-button" type="button" data-delete-path="${escapeHtml(selectedNode.path)}" aria-label="删除">${createTrashIcon()}</button>
+                <button class="toolbar-button primary" type="button" data-open-preview="${escapeHtml(selectedNode.path)}">查看原文</button>
+              </div>
+            </div>
+            <div class="inline-preview-stage" data-inline-preview-stage>
+              <div class="modal-content">正在加载文件预览...</div>
+            </div>
+          </section>
+        `;
+        bindDocumentEvents();
+        const inlinePreviewStage = documentListEl.querySelector("[data-inline-preview-stage]");
+        void renderNodePreviewInto(selectedNode, inlinePreviewStage);
+        return;
+      }
+
+      documentListEl.classList.remove("inline-preview-mode");
       const folder = getCurrentFolder();
       const items = getFolderChildren(folder);
       if (!items.length) {
@@ -4294,47 +4902,66 @@
       }
 
       documentListEl.innerHTML = items.map((node) => `
-        <article class="document-row ${node.type === "folder" ? "folder-row" : ""}">
-          <div class="document-meta">
-            <div class="document-title">
-              <div class="document-title-line">
-                <strong>${escapeHtml(node.name)}</strong>
+        <article class="document-row ${node.type === "folder" ? "folder-row" : "file-row"}">
+          <div class="document-main">
+            <div class="document-meta">
+              <div class="document-title">
+                <div class="document-title-line">
+                  <strong>${escapeHtml(node.name)}</strong>
+                </div>
+                <div class="document-meta-line">
+                  <span class="document-type">${escapeHtml(node.type === "folder" ? "文件夹" : ((node.extension || "FILE").toUpperCase()))}</span>
+                  <span class="document-size-chip">${escapeHtml(node.type === "folder" ? node.children.length + " 项内容" : formatSize(node.size))}</span>
+                  <div class="upload-time">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <circle cx="12" cy="12" r="9"></circle>
+                      <path d="M12 7v6l4 2"></path>
+                    </svg>
+                    ${escapeHtml(formatDate(node.type === "folder" ? node.createdAt : node.uploadedAt))}
+                  </div>
+                </div>
               </div>
-              <div class="upload-time">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <circle cx="12" cy="12" r="9"></circle>
-                  <path d="M12 7v6l4 2"></path>
-                </svg>
-                ${escapeHtml(formatDate(node.type === "folder" ? node.createdAt : node.uploadedAt))}
-              </div>
-              <span class="document-type">${escapeHtml(node.type === "folder" ? "文件夹" : ((node.extension || "FILE").toUpperCase()))}</span>
             </div>
-            <div class="document-size">${escapeHtml(node.type === "folder" ? node.children.length + " 项内容" : formatSize(node.size))}</div>
-          </div>
 
-          <div class="document-summary">
-            <div class="document-summary-head">
-              <strong>${node.type === "folder" ? "目录概览" : "文件摘要"}</strong>
-              <span class="summary-state">${escapeHtml(getSummaryStateText(node))}</span>
+            <div class="document-summary">
+              ${node.type === "folder"
+                ? `
+                  <div class="document-status-strip">
+                    <span class="status-chip publish-date">创建日期：${escapeHtml(formatDate(node.createdAt))}</span>
+                  </div>
+                  <div class="document-info-line">
+                    <span>上传者：${escapeHtml(getNodeUploader(node))}</span>
+                  </div>
+                `
+                : `
+                  <div class="document-status-strip">
+                    <span class="status-chip ${isNodeApproved(node) ? "approved" : "pending"}">${escapeHtml(getApprovalLabel(node))}</span>
+                    <span class="status-chip ${isNodePublished(node) ? "published" : "unpublished"}">${escapeHtml(getPublishLabel(node))}</span>
+                    <span class="status-chip publish-date">${escapeHtml(getPublishDateLabel(node))}</span>
+                  </div>
+                  <div class="document-info-line">
+                    <span>上传日期：${escapeHtml(formatDate(node.uploadedAt))}</span>
+                    <span>上传者：${escapeHtml(getNodeUploader(node))}</span>
+                  </div>
+                `}
             </div>
-            <p class="summary-text">${escapeHtml(getDocumentSummary(node))}</p>
           </div>
 
           <div class="document-actions">
             <button class="delete-button" type="button" data-delete-path="${escapeHtml(node.path)}" aria-label="删除">${createTrashIcon()}</button>
-            ${node.type === "folder"
-              ? `<button class="toolbar-button" type="button" data-open-folder="${escapeHtml(node.path)}">打开目录</button>`
-              : `<button class="toolbar-button primary" type="button" data-open-preview="${escapeHtml(node.path)}">查看原文</button>`}
+            <div class="document-action-stack">
+              ${node.type === "folder"
+                ? `<button class="toolbar-button" type="button" data-open-folder="${escapeHtml(node.path)}">打开目录</button>`
+                : `
+                  <button class="toolbar-button" type="button" data-edit-path="${escapeHtml(node.path)}">编辑</button>
+                  <button class="toolbar-button primary" type="button" data-open-preview="${escapeHtml(node.path)}">查看原文</button>
+                `}
+            </div>
           </div>
         </article>
       `).join("");
 
       bindDocumentEvents();
-      items.forEach((node) => {
-        if (node.type === "file") {
-          queueSummary(node);
-        }
-      });
     }
 
     function getDocumentSummary(node) {
@@ -4369,6 +4996,12 @@
         });
       });
 
+      documentListEl.querySelectorAll("[data-edit-path]").forEach((button) => {
+        button.addEventListener("click", () => {
+          editKnowledgeMetadata(button.dataset.editPath || "");
+        });
+      });
+
       documentListEl.querySelectorAll("[data-delete-path]").forEach((button) => {
         button.addEventListener("click", () => {
           deleteKnowledgePath(button.dataset.deletePath || "");
@@ -4385,8 +5018,12 @@
 
     function updateKnowledgeActions() {
       const node = findNode(knowledgeState.selectedPath);
-      backBtnEl.disabled = !knowledgeState.currentFolderPath;
-      downloadBtnEl.disabled = !(node && node.type === "file");
+      if (backBtnEl) {
+        backBtnEl.disabled = !(knowledgeState.currentFolderPath || (node && node.type === "file"));
+      }
+      if (downloadBtnEl) {
+        downloadBtnEl.disabled = !(node && node.type === "file");
+      }
     }
 
     function deleteKnowledgePath(path) {
@@ -4421,9 +5058,9 @@
       clearObjectUrls();
     }
 
-    async function renderPdfPreview(file) {
+    async function renderPdfPreview(file, targetEl = modalBodyEl) {
       if (!window.pdfjsLib) {
-        modalBodyEl.innerHTML = "<div class='modal-content'>PDF 预览组件未成功加载。</div>";
+        targetEl.innerHTML = "<div class='modal-content'>PDF 预览组件未成功加载。</div>";
         return;
       }
       const arrayBuffer = await file.arrayBuffer();
@@ -4437,8 +5074,8 @@
         </div>
         <div class="pdf-stack" id="pdfStack"></div>
       `;
-      modalBodyEl.innerHTML = "";
-      modalBodyEl.appendChild(shell);
+      targetEl.innerHTML = "";
+      targetEl.appendChild(shell);
       const stack = shell.querySelector("#pdfStack");
       for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber += 1) {
         const page = await pdf.getPage(pageNumber);
@@ -4459,7 +5096,7 @@
       }
     }
 
-    async function renderDocxPreview(file) {
+    async function renderDocxPreview(file, targetEl = modalBodyEl) {
       const shell = document.createElement("div");
       shell.className = "docx-viewer-shell";
       shell.innerHTML = `
@@ -4469,8 +5106,8 @@
         </div>
         <div class="docx-stage" id="docxStage"></div>
       `;
-      modalBodyEl.innerHTML = "";
-      modalBodyEl.appendChild(shell);
+      targetEl.innerHTML = "";
+      targetEl.appendChild(shell);
       const stage = shell.querySelector("#docxStage");
       if (window.docx && window.docx.renderAsync) {
         await window.docx.renderAsync(await file.arrayBuffer(), stage, null, {
@@ -4486,12 +5123,12 @@
         stage.innerHTML = result.value || "<p>文档没有可展示内容。</p>";
         return;
       }
-      modalBodyEl.innerHTML = "<div class='modal-content'>Word 预览组件未成功加载。</div>";
+      targetEl.innerHTML = "<div class='modal-content'>Word 预览组件未成功加载。</div>";
     }
 
-    async function renderSheetPreview(file) {
+    async function renderSheetPreview(file, targetEl = modalBodyEl) {
       if (!window.XLSX) {
-        modalBodyEl.innerHTML = "<div class='modal-content'>Excel 预览组件未成功加载。</div>";
+        targetEl.innerHTML = "<div class='modal-content'>Excel 预览组件未成功加载。</div>";
         return;
       }
       const workbook = window.XLSX.read(await file.arrayBuffer(), { type: "array" });
@@ -4504,8 +5141,8 @@
         </div>
         <div id="sheetStage"></div>
       `;
-      modalBodyEl.innerHTML = "";
-      modalBodyEl.appendChild(shell);
+      targetEl.innerHTML = "";
+      targetEl.appendChild(shell);
       const tabs = shell.querySelector("#sheetTabs");
       const stage = shell.querySelector("#sheetStage");
 
@@ -4542,6 +5179,47 @@
       renderSheet(workbook.SheetNames[0]);
     }
 
+    async function renderNodePreviewInto(node, targetEl = modalBodyEl) {
+      if (!node || node.type !== "file" || !targetEl) return;
+      targetEl.innerHTML = "<div class='modal-content'>正在加载文件预览...</div>";
+      clearObjectUrls();
+
+      try {
+        const ext = node.extension;
+        const mime = node.mime || "";
+        if ((mime || "").startsWith("image/")) {
+          const url = createObjectUrl(node.file);
+          targetEl.innerHTML = `<img class="preview-image-large" src="${url}" alt="${escapeHtml(node.name)}">`;
+          return;
+        }
+        if (ext === "pdf") {
+          await renderPdfPreview(node.file, targetEl);
+          return;
+        }
+        if (ext === "docx") {
+          await renderDocxPreview(node.file, targetEl);
+          return;
+        }
+        if (ext === "xlsx" || ext === "xls") {
+          await renderSheetPreview(node.file, targetEl);
+          return;
+        }
+        if (["txt", "md", "json", "js", "ts", "css", "xml", "csv", "log"].includes(ext)) {
+          const text = await node.file.text();
+          targetEl.innerHTML = `<div class="text-viewer"><pre>${escapeHtml(text)}</pre></div>`;
+          return;
+        }
+        if (ext === "html") {
+          const text = await node.file.text();
+          targetEl.innerHTML = `<iframe class="preview-frame" sandbox="allow-same-origin" srcdoc="${escapeHtml(text)}"></iframe>`;
+          return;
+        }
+        targetEl.innerHTML = "<div class='modal-content'>当前文件类型暂不支持在线全文预览，请使用下载功能查看原文件。</div>";
+      } catch (error) {
+        targetEl.innerHTML = "<div class='modal-content'>预览失败：" + escapeHtml(error.message) + "</div>";
+      }
+    }
+
     async function openPreview(node) {
       if (!node || node.type !== "file") return;
       appState.previewPath = node.path;
@@ -4552,43 +5230,7 @@
         formatDate(node.uploadedAt)
       ].join(" · ");
       previewModalEl.classList.add("open");
-      modalBodyEl.innerHTML = "<div class='modal-content'>正在加载文件预览...</div>";
-      clearObjectUrls();
-
-      try {
-        const ext = node.extension;
-        const mime = node.mime || "";
-        if ((mime || "").startsWith("image/")) {
-          const url = createObjectUrl(node.file);
-          modalBodyEl.innerHTML = `<img class="preview-image-large" src="${url}" alt="${escapeHtml(node.name)}">`;
-          return;
-        }
-        if (ext === "pdf") {
-          await renderPdfPreview(node.file);
-          return;
-        }
-        if (ext === "docx") {
-          await renderDocxPreview(node.file);
-          return;
-        }
-        if (ext === "xlsx" || ext === "xls") {
-          await renderSheetPreview(node.file);
-          return;
-        }
-        if (["txt", "md", "json", "js", "ts", "css", "xml", "csv", "log"].includes(ext)) {
-          const text = await node.file.text();
-          modalBodyEl.innerHTML = `<div class="text-viewer"><pre>${escapeHtml(text)}</pre></div>`;
-          return;
-        }
-        if (ext === "html") {
-          const text = await node.file.text();
-          modalBodyEl.innerHTML = `<iframe class="preview-frame" sandbox="allow-same-origin" srcdoc="${escapeHtml(text)}"></iframe>`;
-          return;
-        }
-        modalBodyEl.innerHTML = "<div class='modal-content'>当前文件类型暂不支持在线全文预览，请使用下载功能查看原文件。</div>";
-      } catch (error) {
-        modalBodyEl.innerHTML = "<div class='modal-content'>预览失败：" + escapeHtml(error.message) + "</div>";
-      }
+      await renderNodePreviewInto(node, modalBodyEl);
     }
 
     function appendChatMessage(targetEl, role, content, extraClass) {
@@ -5464,20 +6106,25 @@
       event.target.value = "";
     });
 
-    searchInputEl.addEventListener("input", () => {
+    searchInputEl?.addEventListener("input", () => {
       knowledgeState.searchKeyword = searchInputEl.value;
-      renderDocumentList();
-      updateKnowledgeActions();
+      renderTree();
     });
 
-    backBtnEl.addEventListener("click", () => {
+    backBtnEl?.addEventListener("click", () => {
+      const selectedNode = findNode(knowledgeState.selectedPath);
+      if (selectedNode && selectedNode.type === "file") {
+        knowledgeState.selectedPath = knowledgeState.currentFolderPath;
+        renderKnowledgeBase();
+        return;
+      }
       if (!knowledgeState.currentFolderPath) return;
       knowledgeState.currentFolderPath = getParentPath(knowledgeState.currentFolderPath);
       knowledgeState.selectedPath = knowledgeState.currentFolderPath;
       renderKnowledgeBase();
     });
 
-    downloadBtnEl.addEventListener("click", () => {
+    downloadBtnEl?.addEventListener("click", () => {
       const node = findNode(knowledgeState.selectedPath);
       if (node && node.type === "file") {
         downloadNode(node);
@@ -5496,6 +6143,16 @@
     previewModalEl.addEventListener("click", (event) => {
       if (event.target === previewModalEl) {
         closePreview();
+      }
+    });
+
+    documentMetaModalCloseEl?.addEventListener("click", closeDocumentMetaModal);
+    documentMetaCancelBtnEl?.addEventListener("click", closeDocumentMetaModal);
+    documentMetaPublishedEl?.addEventListener("change", syncDocumentMetaPublishDateState);
+    documentMetaFormEl?.addEventListener("submit", handleDocumentMetaSubmit);
+    documentMetaModalEl?.addEventListener("click", (event) => {
+      if (event.target === documentMetaModalEl) {
+        closeDocumentMetaModal();
       }
     });
 
@@ -5525,6 +6182,7 @@
     });
 
     initLibraries();
+    initMiddleRoomEmbed();
     renderKnowledgeBase();
     renderSkillModule();
   </script>
@@ -5549,8 +6207,10 @@
         countryFilterWrap: document.getElementById("mapCountryFilterWrap"),
         ltsaDashboardTab: document.getElementById("ltsaDashboardTab"),
         warehouseDashboardTab: document.getElementById("warehouseDashboardTab"),
+        businessAnalysisDashboardTab: document.getElementById("businessAnalysisDashboardTab"),
         ltsaDashboardPanel: document.getElementById("ltsaDashboardPanel"),
         warehouseDashboardPanel: document.getElementById("warehouseDashboardPanel"),
+        businessAnalysisDashboardPanel: document.getElementById("businessAnalysisDashboardPanel"),
         countryFilter: document.getElementById("mapCountryFilter"),
         countryFilterLabel: document.getElementById("mapCountryFilterLabel"),
         countryFilterMenu: document.getElementById("mapCountryFilterMenu"),
@@ -5811,11 +6471,13 @@
       }
 
       function renderDashboardSwitch() {
-        const isLtsaActive = mapStore.activeDashboard !== "warehouse";
-        mapWorkbenchEls.ltsaDashboardTab?.classList.toggle("active", isLtsaActive);
-        mapWorkbenchEls.warehouseDashboardTab?.classList.toggle("active", !isLtsaActive);
-        mapWorkbenchEls.ltsaDashboardPanel?.classList.toggle("active", isLtsaActive);
-        mapWorkbenchEls.warehouseDashboardPanel?.classList.toggle("active", !isLtsaActive);
+        const activeDashboard = mapStore.activeDashboard || "ltsa";
+        mapWorkbenchEls.ltsaDashboardTab?.classList.toggle("active", activeDashboard === "ltsa");
+        mapWorkbenchEls.warehouseDashboardTab?.classList.toggle("active", activeDashboard === "warehouse");
+        mapWorkbenchEls.businessAnalysisDashboardTab?.classList.toggle("active", activeDashboard === "business-analysis");
+        mapWorkbenchEls.ltsaDashboardPanel?.classList.toggle("active", activeDashboard === "ltsa");
+        mapWorkbenchEls.warehouseDashboardPanel?.classList.toggle("active", activeDashboard === "warehouse");
+        mapWorkbenchEls.businessAnalysisDashboardPanel?.classList.toggle("active", activeDashboard === "business-analysis");
       }
 
       function normalizeFilterSelection(value) {
@@ -8028,6 +8690,11 @@
 
       mapWorkbenchEls.warehouseDashboardTab?.addEventListener("click", () => {
         mapStore.activeDashboard = "warehouse";
+        renderDashboardSwitch();
+      });
+
+      mapWorkbenchEls.businessAnalysisDashboardTab?.addEventListener("click", () => {
+        mapStore.activeDashboard = "business-analysis";
         renderDashboardSwitch();
       });
 
