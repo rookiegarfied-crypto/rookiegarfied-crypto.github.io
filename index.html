@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LTSA Solution AI Platform</title>
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/handsontable@14.5.0/dist/handsontable.full.min.css">
   <style>
     :root {
       --bg: #f5f7f4;
@@ -459,6 +458,56 @@
       font-weight: 800;
     }
 
+    .snapshot-item.execution-item {
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .snapshot-item.execution-item strong {
+      margin-bottom: 0;
+      color: #f4fbff;
+      font-size: 1.42rem;
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .snapshot-execution-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .snapshot-execution-table th,
+    .snapshot-execution-table td {
+      padding: 8px 0;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      color: #eef7ff;
+      font-size: 0.84rem;
+      line-height: 1.45;
+      text-align: left;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .snapshot-execution-table thead th {
+      border-top: 0;
+      padding-top: 0;
+      color: rgba(238, 247, 255, 0.74);
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .snapshot-execution-table tbody th {
+      color: rgba(244, 251, 255, 0.92);
+      font-weight: 700;
+    }
+
+    .snapshot-execution-table td {
+      text-align: right;
+      font-weight: 700;
+    }
+
     .snapshot-knowledge-list {
       display: grid;
       gap: 10px;
@@ -873,7 +922,7 @@
       display: grid;
       grid-template-columns: minmax(280px, 300px) minmax(0, 1fr);
       gap: 20px;
-      min-height: calc(100vh - 140px);
+      min-height: calc(100vh - 118px);
       align-items: start;
     }
 
@@ -1006,16 +1055,11 @@
       text-overflow: ellipsis;
     }
 
-    .app-library-copy span {
-      color: var(--muted);
-      font-size: 0.84rem;
-      line-height: 1.45;
-    }
-
     .app-main-panel {
       display: grid;
       grid-template-rows: auto minmax(0, 1fr) auto;
-      max-height: calc(100vh - var(--header-height) - 44px);
+      min-height: calc(100vh - var(--header-height) - 44px);
+      max-height: calc(100vh - var(--header-height) - 32px);
     }
 
     .app-main-head {
@@ -1087,15 +1131,28 @@
       box-shadow: 0 10px 20px rgba(24, 42, 37, 0.04);
     }
 
+    .app-bubble.user {
+      margin-left: auto;
+      background: linear-gradient(135deg, rgba(11, 119, 106, 0.14), rgba(11, 119, 106, 0.08));
+      border-color: rgba(11, 119, 106, 0.14);
+    }
+
     .app-input-shell {
       padding: 18px 24px 24px;
       border-top: 1px solid rgba(23, 35, 31, 0.08);
       background: rgba(255, 255, 255, 0.92);
     }
 
+    .app-input-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: end;
+    }
+
     .app-input-shell textarea {
       width: 100%;
-      min-height: 116px;
+      min-height: 132px;
       padding: 16px 18px;
       border-radius: 22px;
       border: 1px solid rgba(23, 35, 31, 0.1);
@@ -1105,6 +1162,12 @@
       line-height: 1.8;
       resize: none;
       outline: none;
+    }
+
+    .app-send-button {
+      min-width: 88px;
+      min-height: 48px;
+      margin-bottom: 6px;
     }
 
     .knowledge-sidebar {
@@ -1422,9 +1485,12 @@
         linear-gradient(180deg, rgba(11, 119, 106, 0.03), rgba(11, 119, 106, 0));
     }
 
-    .solution-case-grid-shell .handsontable {
-      font-size: 0.9rem;
-      color: var(--text);
+    .solution-case-grid-frame {
+      width: 100%;
+      height: 100%;
+      border: 0;
+      display: block;
+      background: #fff;
     }
 
     .knowledge-content-grid {
@@ -2811,18 +2877,6 @@
       position: relative;
     }
 
-    .workbench-map-stage .shell-panel-header {
-      padding: 18px 20px 16px;
-    }
-
-    .workbench-map-stage .shell-panel-header h2 {
-      font-size: 1.1rem;
-    }
-
-    .workbench-map-stage .shell-panel-header span {
-      font-size: 0.84rem;
-    }
-
     .map-canvas-shell {
       position: relative;
       margin: 0 20px 20px;
@@ -3130,6 +3184,150 @@
       font-size: 0.84rem;
     }
 
+    .business-analysis-card {
+      min-height: 0;
+    }
+
+    .business-analysis-tree {
+      display: grid;
+      gap: 10px;
+    }
+
+    .business-analysis-empty {
+      padding: 14px;
+      border-radius: 16px;
+      border: 1px dashed rgba(23, 35, 31, 0.12);
+      background: rgba(255, 255, 255, 0.72);
+      color: var(--muted);
+      font-size: 0.76rem;
+      line-height: 1.6;
+    }
+
+    .business-analysis-group,
+    .business-analysis-subgroup,
+    .business-analysis-country {
+      display: grid;
+      gap: 8px;
+    }
+
+    .business-analysis-group summary,
+    .business-analysis-subgroup summary,
+    .business-analysis-country summary {
+      list-style: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(23, 35, 31, 0.08);
+      user-select: none;
+    }
+
+    .business-analysis-group summary::-webkit-details-marker,
+    .business-analysis-subgroup summary::-webkit-details-marker,
+    .business-analysis-country summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .business-analysis-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      min-width: 0;
+      max-width: 100%;
+      font-size: 0.74rem;
+      font-weight: 700;
+      color: var(--text);
+      white-space: nowrap;
+    }
+
+    .business-analysis-title::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      border-right: 1.5px solid currentColor;
+      border-bottom: 1.5px solid currentColor;
+      transform: rotate(45deg);
+      transition: transform 0.18s ease;
+      flex: 0 0 auto;
+      margin-top: -2px;
+    }
+
+    .business-analysis-group[open] > summary .business-analysis-title::before,
+    .business-analysis-subgroup[open] > summary .business-analysis-title::before,
+    .business-analysis-country[open] > summary .business-analysis-title::before {
+      transform: rotate(225deg);
+      margin-top: 2px;
+    }
+
+    .business-analysis-title-text {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .business-analysis-value {
+      flex: 0 0 auto;
+      margin-left: auto;
+      color: var(--text);
+      font-size: 0.7rem;
+      font-weight: 800;
+      white-space: nowrap;
+      text-align: right;
+    }
+
+    .business-analysis-meta {
+      flex: 0 0 auto;
+      padding: 2px 7px;
+      border-radius: 999px;
+      background: rgba(11, 119, 106, 0.08);
+      color: var(--muted);
+      font-size: 0.64rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .business-analysis-group-body,
+    .business-analysis-subgroup-body,
+    .business-analysis-country-body {
+      display: grid;
+      gap: 8px;
+      padding-left: 10px;
+    }
+
+    .business-analysis-leaf {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 9px 12px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(23, 35, 31, 0.06);
+    }
+
+    .business-analysis-leaf-label {
+      min-width: 0;
+      color: var(--text);
+      font-size: 0.72rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .business-analysis-leaf-value {
+      flex: 0 0 auto;
+      color: var(--text);
+      font-size: 0.68rem;
+      font-weight: 800;
+      white-space: nowrap;
+      text-align: right;
+    }
+
     .dashboard-card-body.empty {
       min-height: 120px;
       border-radius: 18px;
@@ -3255,6 +3453,76 @@
     .progress-capacity-empty {
       padding: 10px 4px;
       font-size: 0.74rem;
+      line-height: 1.5;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .warehouse-dashboard-grid {
+      display: grid;
+      gap: 12px;
+    }
+
+    .warehouse-table-card {
+      display: grid;
+      gap: 10px;
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.82);
+      border: 1px solid rgba(23, 35, 31, 0.08);
+    }
+
+    .warehouse-table-card h5 {
+      margin: 0;
+      font-size: 0.78rem;
+      color: var(--text);
+    }
+
+    .warehouse-network-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+
+    .warehouse-network-table th,
+    .warehouse-network-table td {
+      border: 0;
+      padding: 6px 4px;
+      vertical-align: middle;
+    }
+
+    .warehouse-network-table thead th {
+      font-size: 0.66rem;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      color: var(--muted);
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .warehouse-network-table tbody th,
+    .warehouse-network-table tbody td {
+      font-size: 0.7rem;
+      color: var(--text);
+      line-height: 1.4;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .warehouse-network-table tbody th {
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .warehouse-network-table tbody td {
+      font-weight: 600;
+      text-align: left;
+    }
+
+    .warehouse-network-empty {
+      padding: 10px 4px;
+      font-size: 0.72rem;
       line-height: 1.5;
       color: var(--muted);
       text-align: center;
@@ -4101,10 +4369,10 @@
       </div>
       <nav class="main-nav">
         <button class="nav-item active" type="button" data-page="home">首页</button>
-        <button class="nav-item" type="button" data-page="apps">应用库</button>
         <button class="nav-item" type="button" data-page="skill">中部屋管理</button>
         <button class="nav-item" type="button" data-page="map">LTSA Map</button>
         <button class="nav-item" type="button" data-page="knowledge">知识库</button>
+        <button class="nav-item" type="button" data-page="apps">应用库</button>
       </nav>
     </div>
   </header>
@@ -4117,7 +4385,7 @@
             <div>
               <h1 class="hero-title">LTSA Solution AI Platform</h1>
               <div class="hero-actions">
-                <button class="button primary" type="button" data-jump-page="knowledge">进入知识库</button>
+                <button class="button primary" type="button" data-jump-page="skill">中部屋管理</button>
                 <button class="button secondary" type="button" data-jump-page="map">查看 LTSA Map</button>
               </div>
             </div>
@@ -4168,9 +4436,29 @@
                     </div>
                   </div>
                 </div>
-                <div class="snapshot-item">
-                  <strong>API Ready</strong>
-                  <span>适配企业现有系统、知识库、表单流、OA、CRM 与客服平台。</span>
+                <div class="snapshot-item execution-item">
+                  <strong>项目执行</strong>
+                  <table class="snapshot-execution-table" aria-label="项目执行统计">
+                    <thead>
+                      <tr>
+                        <th></th>
+                        <th>计划</th>
+                        <th>已建成</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th>Service Center</th>
+                        <td id="homeServiceCenterPlannedCount">0</td>
+                        <td id="homeServiceCenterOperatingCount">0</td>
+                      </tr>
+                      <tr>
+                        <th>Warehouse</th>
+                        <td id="homeWarehousePlannedCount">0</td>
+                        <td id="homeWarehouseOperatingCount">0</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>
@@ -4232,48 +4520,30 @@
 
               <section id="knowledgeCasesPanel" class="knowledge-dashboard-panel">
                 <div class="solution-case-workspace">
-                  <div class="solution-case-head">
-                    <div>
-                      <h3 id="solutionCaseTitle">解决方案案例库</h3>
-                      <span id="solutionCaseMeta">上传 Excel 文件后在下方以工作表方式查看和浏览内容。</span>
-                    </div>
-                  </div>
                   <div id="solutionCaseSheetTabs" class="solution-case-sheet-tabs"></div>
                   <div class="solution-case-grid-shell">
                     <div id="solutionCaseGrid" class="solution-case-grid"></div>
-                    <div id="solutionCaseEmpty" class="solution-case-empty">上传 Excel 文件后，这里会以专业表格方式渲染内容。</div>
+                    <div id="solutionCaseEmpty" class="solution-case-empty"></div>
                   </div>
                 </div>
               </section>
 
               <section id="knowledgeEncyclopediaPanel" class="knowledge-dashboard-panel">
                 <div class="solution-case-workspace">
-                  <div class="solution-case-head">
-                    <div>
-                      <h3 id="knowledgeEncyclopediaTitle">知识百科</h3>
-                      <span id="knowledgeEncyclopediaMeta">上传 Excel 文件后在下方以工作表方式查看和浏览内容。</span>
-                    </div>
-                  </div>
                   <div id="knowledgeEncyclopediaSheetTabs" class="solution-case-sheet-tabs"></div>
                   <div class="solution-case-grid-shell">
                     <div id="knowledgeEncyclopediaGrid" class="solution-case-grid"></div>
-                    <div id="knowledgeEncyclopediaEmpty" class="solution-case-empty">上传 Excel 文件后，这里会以专业表格方式渲染内容。</div>
+                    <div id="knowledgeEncyclopediaEmpty" class="solution-case-empty"></div>
                   </div>
                 </div>
               </section>
 
               <section id="knowledgeContractPanel" class="knowledge-dashboard-panel">
                 <div class="solution-case-workspace">
-                  <div class="solution-case-head">
-                    <div>
-                      <h3 id="knowledgeContractTitle">合同基线</h3>
-                      <span id="knowledgeContractMeta">上传 Excel 文件后在下方以工作表方式查看和浏览内容。</span>
-                    </div>
-                  </div>
                   <div id="knowledgeContractSheetTabs" class="solution-case-sheet-tabs"></div>
                   <div class="solution-case-grid-shell">
                     <div id="knowledgeContractGrid" class="solution-case-grid"></div>
-                    <div id="knowledgeContractEmpty" class="solution-case-empty">上传 Excel 文件后，这里会以专业表格方式渲染内容。</div>
+                    <div id="knowledgeContractEmpty" class="solution-case-empty"></div>
                   </div>
                 </div>
               </section>
@@ -4312,12 +4582,15 @@
               <button id="appLibraryConfigBtn" class="toolbar-button" type="button">设置接口</button>
             </div>
             <div class="app-main-body">
-              <div class="app-chat-placeholder">
-                <div id="appLibraryBubble" class="app-bubble"></div>
+              <div id="appLibraryConversation" class="app-chat-placeholder">
+                <div class="app-bubble"></div>
               </div>
             </div>
             <div class="app-input-shell">
-              <textarea id="appLibraryInput" placeholder="请输入你的需求、原始文本或待处理内容"></textarea>
+              <div class="app-input-row">
+                <textarea id="appLibraryInput" placeholder="请输入你的需求、原始文本或待处理内容"></textarea>
+                <button id="appLibrarySendBtn" class="chat-send app-send-button" type="button">发送</button>
+              </div>
             </div>
           </section>
         </div>
@@ -4388,12 +4661,6 @@
             </aside>
 
             <section class="shell-panel map-stage workbench-map-stage">
-              <div class="shell-panel-header">
-                <div>
-                  <h2>LTSA Map</h2>
-                  <span id="mapStatus">地图已就绪</span>
-                </div>
-              </div>
               <div class="map-canvas-shell">
                 <div class="map-overlay-layer">
                   <button id="mapControlsToggle" class="map-controls-toggle" type="button" aria-label="隐藏地图组件" title="隐藏地图组件">
@@ -4538,20 +4805,41 @@
                 </section>
 
                 <section id="warehouseDashboardPanel" class="dashboard-panel">
-                  <article class="summary-card compact-summary-card warehouse-network-card">
-                    <div class="dashboard-card-head">
-                      <h4>全球仓储网络</h4>
-                    </div>
-                    <div class="dashboard-card-body empty"></div>
-                  </article>
+                  <div id="warehouseDashboardContent" class="warehouse-dashboard-grid">
+                    <article class="summary-card compact-summary-card warehouse-table-card">
+                      <h5>运维中心</h5>
+                      <table class="warehouse-network-table">
+                        <thead>
+                          <tr>
+                            <th>Service Center</th>
+                            <th>运营时间(含预计)</th>
+                          </tr>
+                        </thead>
+                        <tbody id="serviceCenterTableBody"></tbody>
+                      </table>
+                    </article>
+                    <article class="summary-card compact-summary-card warehouse-table-card">
+                      <h5>仓储网络</h5>
+                      <table class="warehouse-network-table">
+                        <thead>
+                          <tr>
+                            <th>Warehouse</th>
+                            <th>仓库地址</th>
+                            <th>大部件存放情况</th>
+                          </tr>
+                        </thead>
+                        <tbody id="warehouseTableBody"></tbody>
+                      </table>
+                    </article>
+                  </div>
                 </section>
 
                 <section id="businessAnalysisDashboardPanel" class="dashboard-panel">
-                  <article class="summary-card compact-summary-card warehouse-network-card">
+                  <article class="summary-card compact-summary-card warehouse-network-card business-analysis-card">
                     <div class="dashboard-card-head">
                       <h4>Business Analysis</h4>
                     </div>
-                    <div class="dashboard-card-body empty"></div>
+                    <div id="businessAnalysisTree" class="dashboard-card-body business-analysis-tree"></div>
                   </article>
                 </section>
               </div>
@@ -4628,7 +4916,7 @@
               <option value="WTG">WTG</option>
               <option value="BESS">BESS</option>
               <option value="Warehouse">Warehouse</option>
-              <option value="Training Center">Training Center</option>
+              <option value="Service Center">Service Center</option>
               <option value="CUSTOM">自行输入</option>
             </select>
           </label>
@@ -4715,7 +5003,6 @@
   <script src="https://cdn.jsdelivr.net/npm/docx-preview@0.3.3/dist/docx-preview.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mammoth@1.8.0/mammoth.browser.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/handsontable@14.5.0/dist/handsontable.full.min.js"></script>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
     const OPENAI_CONFIG = {
@@ -4758,14 +5045,15 @@
       activeKnowledgeBoard: "documents",
       activeAppLibraryFilter: "tool",
       activeAppLibraryId: "contract-risk",
+      appLibraryConversations: {},
       objectUrls: new Set(),
       chatHistory: [],
       previewPath: "",
       editingKnowledgePath: "",
       knowledgeSpreadsheetBoards: {
-        cases: { workbook: null, hot: null, activeSheetIndex: 0 },
-        encyclopedia: { workbook: null, hot: null, activeSheetIndex: 0 },
-        contract: { workbook: null, hot: null, activeSheetIndex: 0 }
+        cases: { workbook: null },
+        encyclopedia: { workbook: null },
+        contract: { workbook: null }
       },
       summaryQueue: [],
       summaryRunning: false,
@@ -4905,18 +5193,12 @@
     const knowledgeCasesPanelEl = document.getElementById("knowledgeCasesPanel");
     const knowledgeEncyclopediaPanelEl = document.getElementById("knowledgeEncyclopediaPanel");
     const knowledgeContractPanelEl = document.getElementById("knowledgeContractPanel");
-    const solutionCaseTitleEl = document.getElementById("solutionCaseTitle");
-    const solutionCaseMetaEl = document.getElementById("solutionCaseMeta");
     const solutionCaseSheetTabsEl = document.getElementById("solutionCaseSheetTabs");
     const solutionCaseGridEl = document.getElementById("solutionCaseGrid");
     const solutionCaseEmptyEl = document.getElementById("solutionCaseEmpty");
-    const knowledgeEncyclopediaTitleEl = document.getElementById("knowledgeEncyclopediaTitle");
-    const knowledgeEncyclopediaMetaEl = document.getElementById("knowledgeEncyclopediaMeta");
     const knowledgeEncyclopediaSheetTabsEl = document.getElementById("knowledgeEncyclopediaSheetTabs");
     const knowledgeEncyclopediaGridEl = document.getElementById("knowledgeEncyclopediaGrid");
     const knowledgeEncyclopediaEmptyEl = document.getElementById("knowledgeEncyclopediaEmpty");
-    const knowledgeContractTitleEl = document.getElementById("knowledgeContractTitle");
-    const knowledgeContractMetaEl = document.getElementById("knowledgeContractMeta");
     const knowledgeContractSheetTabsEl = document.getElementById("knowledgeContractSheetTabs");
     const knowledgeContractGridEl = document.getElementById("knowledgeContractGrid");
     const knowledgeContractEmptyEl = document.getElementById("knowledgeContractEmpty");
@@ -4932,8 +5214,9 @@
     const appLibraryTitleEl = document.getElementById("appLibraryTitle");
     const appLibraryDescriptionEl = document.getElementById("appLibraryDescription");
     const appLibraryTagsEl = document.getElementById("appLibraryTags");
-    const appLibraryBubbleEl = document.getElementById("appLibraryBubble");
+    const appLibraryConversationEl = document.getElementById("appLibraryConversation");
     const appLibraryInputEl = document.getElementById("appLibraryInput");
+    const appLibrarySendBtnEl = document.getElementById("appLibrarySendBtn");
     const appLibraryConfigBtnEl = document.getElementById("appLibraryConfigBtn");
     const documentMetaModalEl = document.getElementById("documentMetaModal");
     const documentMetaFormEl = document.getElementById("documentMetaForm");
@@ -4960,6 +5243,10 @@
     const homeOverdueActionCountEl = document.getElementById("homeOverdueActionCount");
     const homeTotalWtgCapacityEl = document.getElementById("homeTotalWtgCapacity");
     const homeTotalBessCapacityEl = document.getElementById("homeTotalBessCapacity");
+    const homeServiceCenterPlannedCountEl = document.getElementById("homeServiceCenterPlannedCount");
+    const homeServiceCenterOperatingCountEl = document.getElementById("homeServiceCenterOperatingCount");
+    const homeWarehousePlannedCountEl = document.getElementById("homeWarehousePlannedCount");
+    const homeWarehouseOperatingCountEl = document.getElementById("homeWarehouseOperatingCount");
     const homeKnowledgeDocumentsCountEl = document.getElementById("homeKnowledgeDocumentsCount");
     const homeKnowledgeCasesCountEl = document.getElementById("homeKnowledgeCasesCount");
     const homeKnowledgeEncyclopediaCountEl = document.getElementById("homeKnowledgeEncyclopediaCount");
@@ -5084,6 +5371,10 @@
     function renderHomePipelineCapacityMetrics(projects = []) {
       const summary = (Array.isArray(projects) ? projects : []).reduce((acc, project) => {
         const category = String(project?.category || "").trim().toUpperCase();
+        const progress = String(project?.progress || "").trim().toLowerCase();
+        if (progress !== "bidding" && progress !== "shortlisted") {
+          return acc;
+        }
         const capacity = Number(project?.capacity) || 0;
         if (category === "WTG") {
           acc.wtg += capacity;
@@ -5098,6 +5389,44 @@
       }
       if (homeTotalBessCapacityEl) {
         homeTotalBessCapacityEl.textContent = formatHomeCapacityValue("BESS", summary.bess);
+      }
+    }
+
+    function renderHomeExecutionMetrics(projects = []) {
+      const summary = (Array.isArray(projects) ? projects : []).reduce((acc, project) => {
+        const category = getProjectBaseCategory(project?.category || "");
+        if (category !== "Warehouse" && category !== "Service Center") {
+          return acc;
+        }
+        const normalizedProgress = normalizeProjectProgress(category, project?.progress || "");
+        const isPlanned = normalizedProgress === "Planning" || normalizedProgress === "Constructing" || normalizedProgress === "Construction";
+        const isOperating = normalizedProgress === "Operating";
+        if (!isPlanned && !isOperating) {
+          return acc;
+        }
+        const bucket = category === "Warehouse" ? acc.warehouse : acc.serviceCenter;
+        if (isPlanned) {
+          bucket.planned += 1;
+        } else if (isOperating) {
+          bucket.operating += 1;
+        }
+        return acc;
+      }, {
+        serviceCenter: { planned: 0, operating: 0 },
+        warehouse: { planned: 0, operating: 0 }
+      });
+
+      if (homeServiceCenterPlannedCountEl) {
+        homeServiceCenterPlannedCountEl.textContent = String(summary.serviceCenter.planned);
+      }
+      if (homeServiceCenterOperatingCountEl) {
+        homeServiceCenterOperatingCountEl.textContent = String(summary.serviceCenter.operating);
+      }
+      if (homeWarehousePlannedCountEl) {
+        homeWarehousePlannedCountEl.textContent = String(summary.warehouse.planned);
+      }
+      if (homeWarehouseOperatingCountEl) {
+        homeWarehouseOperatingCountEl.textContent = String(summary.warehouse.operating);
       }
     }
 
@@ -5154,7 +5483,11 @@
     }
 
     window.updateHomeActionMetrics = renderHomeActionMetrics;
-    window.syncHomePipelineCapacityMetrics = () => renderHomePipelineCapacityMetrics(appState.map?.projects || []);
+    window.syncHomePipelineCapacityMetrics = () => {
+      const projects = appState.map?.projects || [];
+      renderHomePipelineCapacityMetrics(projects);
+      renderHomeExecutionMetrics(projects);
+    };
     window.syncHomeKnowledgeMetrics = renderHomeKnowledgeMetrics;
 
     function escapeHtml(value) {
@@ -5223,8 +5556,39 @@
       return filteredItems[0];
     }
 
+    function getActiveAppConversation() {
+      const appId = appState.activeAppLibraryId || "";
+      if (!appId) return [];
+      const activeApp = appLibraryCatalog.find((item) => item.id === appId);
+      if (!appState.appLibraryConversations[appId]) {
+        appState.appLibraryConversations[appId] = activeApp
+          ? [{ role: "assistant", content: activeApp.welcome }]
+          : [];
+      }
+      return appState.appLibraryConversations[appId];
+    }
+
+    function sendAppLibraryMessage() {
+      const activeApp = appLibraryCatalog.find((item) => item.id === appState.activeAppLibraryId);
+      const text = String(appLibraryInputEl?.value || "").trim();
+      if (!activeApp || !text) return;
+      const conversation = getActiveAppConversation();
+      conversation.push({ role: "user", content: text });
+      conversation.push({
+        role: "assistant",
+        content: `已收到你的内容，我会按“${activeApp.name}”的处理逻辑继续分析。这里已预留接口，后续可直接接入真实能力。`
+      });
+      if (appLibraryInputEl) {
+        appLibraryInputEl.value = "";
+      }
+      renderAppLibrary();
+      requestAnimationFrame(() => {
+        appLibraryConversationEl?.scrollTo({ top: appLibraryConversationEl.scrollHeight, behavior: "smooth" });
+      });
+    }
+
     function renderAppLibrary() {
-      if (!appLibraryListEl || !appLibraryTitleEl || !appLibraryDescriptionEl || !appLibraryTagsEl || !appLibraryBubbleEl || !appFilterTabsEl) {
+      if (!appLibraryListEl || !appLibraryTitleEl || !appLibraryDescriptionEl || !appLibraryTagsEl || !appLibraryConversationEl || !appFilterTabsEl) {
         return;
       }
 
@@ -5240,7 +5604,7 @@
         appLibraryTitleEl.textContent = "应用库";
         appLibraryDescriptionEl.textContent = "当前分类暂无可用应用。";
         appLibraryTagsEl.innerHTML = "";
-        appLibraryBubbleEl.textContent = "当前分类暂无应用。";
+        appLibraryConversationEl.innerHTML = `<div class="app-bubble">当前分类暂无应用。</div>`;
         if (appLibraryInputEl) {
           appLibraryInputEl.placeholder = "请输入你的需求、原始文本或待处理内容";
         }
@@ -5252,7 +5616,6 @@
           <div class="app-library-icon">${getAppLibraryIcon(item.id)}</div>
           <div class="app-library-copy">
             <strong>${escapeHtml(item.name)}</strong>
-            <span>${escapeHtml(item.description)}</span>
           </div>
         </button>
       `).join("");
@@ -5267,7 +5630,12 @@
       appLibraryTitleEl.textContent = activeApp.name;
       appLibraryDescriptionEl.textContent = activeApp.description;
       appLibraryTagsEl.innerHTML = activeApp.tags.map((tag) => `<span class="app-main-tag">${escapeHtml(tag)}</span>`).join("");
-      appLibraryBubbleEl.textContent = activeApp.welcome;
+      const conversation = getActiveAppConversation();
+      appLibraryConversationEl.innerHTML = conversation.map((message, index) => `
+        <div class="app-bubble ${message.role === "user" ? "user" : ""}" data-app-message="${index}">
+          ${escapeHtml(message.content)}
+        </div>
+      `).join("");
       if (appLibraryInputEl) {
         appLibraryInputEl.placeholder = "请输入你的需求、原始文本或待处理内容";
       }
@@ -6015,11 +6383,6 @@
 
       if (["cases", "encyclopedia", "contract"].includes(activeBoard)) {
         requestAnimationFrame(() => {
-          const boardState = appState.knowledgeSpreadsheetBoards?.[activeBoard];
-          if (boardState?.hot && typeof boardState.hot.render === "function") {
-            boardState.hot.render();
-            return;
-          }
           renderKnowledgeSpreadsheetBoard(activeBoard);
         });
       }
@@ -6029,27 +6392,21 @@
       const configs = {
         cases: {
           title: "解决方案案例库",
-          emptyText: "上传 Excel 文件后，这里会以专业表格方式渲染内容。",
-          titleEl: solutionCaseTitleEl,
-          metaEl: solutionCaseMetaEl,
+          emptyText: "",
           tabsEl: solutionCaseSheetTabsEl,
           gridEl: solutionCaseGridEl,
           emptyEl: solutionCaseEmptyEl
         },
         encyclopedia: {
           title: "知识百科",
-          emptyText: "上传 Excel 文件后，这里会以专业表格方式渲染内容。",
-          titleEl: knowledgeEncyclopediaTitleEl,
-          metaEl: knowledgeEncyclopediaMetaEl,
+          emptyText: "",
           tabsEl: knowledgeEncyclopediaSheetTabsEl,
           gridEl: knowledgeEncyclopediaGridEl,
           emptyEl: knowledgeEncyclopediaEmptyEl
         },
         contract: {
           title: "合同基线",
-          emptyText: "上传 Excel 文件后，这里会以专业表格方式渲染内容。",
-          titleEl: knowledgeContractTitleEl,
-          metaEl: knowledgeContractMetaEl,
+          emptyText: "",
           tabsEl: knowledgeContractSheetTabsEl,
           gridEl: knowledgeContractGridEl,
           emptyEl: knowledgeContractEmptyEl
@@ -6059,39 +6416,126 @@
     }
 
     function destroyKnowledgeSpreadsheetBoard(board) {
-      const boardState = appState.knowledgeSpreadsheetBoards?.[board];
-      if (boardState?.hot && typeof boardState.hot.destroy === "function") {
-        boardState.hot.destroy();
-      }
-      if (boardState) {
-        boardState.hot = null;
-      }
+      const config = getKnowledgeSpreadsheetBoardConfig(board);
+      if (!config?.gridEl) return;
+      config.gridEl.innerHTML = "";
     }
 
-    function getKnowledgeSpreadsheetActiveSheet(board) {
-      const boardState = appState.knowledgeSpreadsheetBoards?.[board];
-      const workbook = boardState?.workbook;
-      if (!workbook?.sheets?.length) {
-        return null;
-      }
-      const index = Math.max(0, Math.min(boardState.activeSheetIndex || 0, workbook.sheets.length - 1));
-      boardState.activeSheetIndex = index;
-      return workbook.sheets[index];
+    function buildUniverWorkbookSnapshot(workbook, fallbackTitle = "Workbook") {
+      const sheets = Array.isArray(workbook?.sheets) ? workbook.sheets : [];
+      const snapshot = {
+        id: "univer-workbook-" + Math.random().toString(36).slice(2, 10),
+        name: workbook?.name || fallbackTitle,
+        sheetOrder: [],
+        sheets: {},
+        styles: {}
+      };
+
+      sheets.forEach((sheet, index) => {
+        const sheetId = "sheet-" + (index + 1);
+        const rows = Array.isArray(sheet?.data) ? sheet.data : [];
+        const rowCount = Math.max(rows.length || 0, 40);
+        const columnCount = Math.max(
+          rows.reduce((max, row) => Math.max(max, Array.isArray(row) ? row.length : 0), 0),
+          12
+        );
+        const cellData = {};
+
+        rows.forEach((row, rowIndex) => {
+          if (!Array.isArray(row)) return;
+          const rowCells = {};
+          row.forEach((cell, columnIndex) => {
+            if (cell === "" || cell === null || cell === undefined) return;
+            rowCells[columnIndex] = { v: cell };
+          });
+          if (Object.keys(rowCells).length) {
+            cellData[rowIndex] = rowCells;
+          }
+        });
+
+        snapshot.sheetOrder.push(sheetId);
+        snapshot.sheets[sheetId] = {
+          id: sheetId,
+          name: sheet?.name || `Sheet ${index + 1}`,
+          rowCount,
+          columnCount,
+          cellData
+        };
+      });
+
+      return snapshot;
+    }
+
+    function escapeHtmlForAttribute(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/"/g, "&quot;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    function buildUniverIframeDocument(snapshot) {
+      const snapshotJson = JSON.stringify(snapshot).replace(/</g, "\\u003c");
+      return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="https://unpkg.com/@univerjs/preset-sheets-core/lib/index.css" />
+  <style>
+    html, body, #app {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #ffffff;
+    }
+  </style>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="https://unpkg.com/react@18.3.1/umd/react.production.min.js"><\/script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"><\/script>
+  <script src="https://unpkg.com/rxjs/dist/bundles/rxjs.umd.min.js"><\/script>
+  <script src="https://unpkg.com/echarts@5.6.0/dist/echarts.min.js"><\/script>
+  <script src="https://unpkg.com/@univerjs/presets/lib/umd/index.js"><\/script>
+  <script src="https://unpkg.com/@univerjs/preset-sheets-core/lib/umd/index.js"><\/script>
+  <script src="https://unpkg.com/@univerjs/preset-sheets-core/lib/umd/locales/en-US.js"><\/script>
+  <script>
+    (function () {
+      const snapshot = ${snapshotJson};
+      const { createUniver } = UniverPresets;
+      const { LocaleType, mergeLocales } = UniverCore;
+      const { UniverSheetsCorePreset } = UniverPresetSheetsCore;
+      const mount = document.getElementById('app');
+      if (!mount) return;
+      const { univerAPI } = createUniver({
+        locale: LocaleType.EN_US,
+        locales: {
+          [LocaleType.EN_US]: mergeLocales(UniverPresetSheetsCoreEnUS),
+        },
+        presets: [UniverSheetsCorePreset()],
+      });
+      univerAPI.createWorkbook(snapshot);
+    })();
+  <\/script>
+</body>
+</html>`;
     }
 
     function renderKnowledgeSpreadsheetBoard(board) {
       const config = getKnowledgeSpreadsheetBoardConfig(board);
       const boardState = appState.knowledgeSpreadsheetBoards?.[board];
-      if (!config || !boardState || !config.gridEl || !config.emptyEl || !config.tabsEl || !config.metaEl || !config.titleEl) {
+      if (!config || !boardState || !config.gridEl || !config.emptyEl || !config.tabsEl) {
         return;
       }
 
       const workbook = boardState.workbook;
       if (!workbook?.sheets?.length) {
         destroyKnowledgeSpreadsheetBoard(board);
-        config.titleEl.textContent = config.title;
-        config.metaEl.textContent = "上传 Excel 文件后在下方以工作表方式查看和浏览内容。";
         config.tabsEl.innerHTML = "";
+        config.tabsEl.classList.add("hidden");
         config.gridEl.innerHTML = "";
         config.gridEl.classList.add("hidden");
         config.emptyEl.classList.remove("hidden");
@@ -6099,57 +6543,19 @@
         return;
       }
 
-      const activeSheet = getKnowledgeSpreadsheetActiveSheet(board);
-      config.titleEl.textContent = workbook.name || config.title;
-      config.metaEl.textContent = `${workbook.sheets.length} 个工作表 · 点击页签切换查看`;
-      config.tabsEl.innerHTML = workbook.sheets.map((sheet, index) => `
-        <button class="solution-case-sheet-tab ${index === boardState.activeSheetIndex ? "active" : ""}" type="button" data-case-sheet-index="${index}">
-          ${escapeHtml(sheet.name || `Sheet ${index + 1}`)}
-        </button>
-      `).join("");
-
-      config.tabsEl.querySelectorAll("[data-case-sheet-index]").forEach((button) => {
-        button.addEventListener("click", () => {
-          boardState.activeSheetIndex = Number(button.dataset.caseSheetIndex || 0);
-          renderKnowledgeSpreadsheetBoard(board);
-        });
-      });
-
-      if (!activeSheet) {
-        destroyKnowledgeSpreadsheetBoard(board);
-        config.gridEl.innerHTML = "";
-        config.gridEl.classList.add("hidden");
-        config.emptyEl.classList.remove("hidden");
-        return;
-      }
+      config.tabsEl.innerHTML = "";
+      config.tabsEl.classList.add("hidden");
 
       config.emptyEl.classList.add("hidden");
       config.gridEl.classList.remove("hidden");
-
-      if (!window.Handsontable) {
-        destroyKnowledgeSpreadsheetBoard(board);
-        config.gridEl.innerHTML = `<div class="solution-case-empty">Handsontable 插件未加载成功，暂时无法渲染 Excel 内容。</div>`;
-        return;
-      }
-
       destroyKnowledgeSpreadsheetBoard(board);
-      config.gridEl.innerHTML = "";
-
-      const data = Array.isArray(activeSheet.data) ? activeSheet.data : [];
-      boardState.hot = new window.Handsontable(config.gridEl, {
-        data,
-        rowHeaders: true,
-        colHeaders: true,
-        width: "100%",
-        height: "100%",
-        stretchH: "all",
-        manualColumnResize: true,
-        manualRowResize: true,
-        contextMenu: true,
-        filters: true,
-        dropdownMenu: true,
-        licenseKey: "non-commercial-and-evaluation"
-      });
+      const snapshot = buildUniverWorkbookSnapshot(workbook, config.title);
+      const iframe = document.createElement("iframe");
+      iframe.className = "solution-case-grid-frame";
+      iframe.setAttribute("title", config.title);
+      iframe.setAttribute("loading", "lazy");
+      iframe.srcdoc = buildUniverIframeDocument(snapshot);
+      config.gridEl.appendChild(iframe);
     }
 
     async function handleKnowledgeSpreadsheetUpload(file, board = "cases") {
@@ -6173,7 +6579,6 @@
           name: file.name,
           sheets
         };
-        boardState.activeSheetIndex = 0;
         renderKnowledgeSpreadsheetBoard(board);
         renderHomeKnowledgeMetrics();
         switchPage("knowledge");
@@ -6181,8 +6586,6 @@
         renderKnowledgeBoardSwitch();
       } catch (error) {
         console.warn("Knowledge spreadsheet upload failed:", error);
-        config.titleEl.textContent = config.title;
-        config.metaEl.textContent = error.message || "文件解析失败";
         destroyKnowledgeSpreadsheetBoard(board);
         config.gridEl.innerHTML = "";
         config.gridEl.classList.add("hidden");
@@ -7328,6 +7731,15 @@
       window.alert(`${appName} 的接口配置入口已预留，可在 APP_LIBRARY_CONFIG 中接入真实接口。`);
     });
 
+    appLibrarySendBtnEl?.addEventListener("click", sendAppLibraryMessage);
+
+    appLibraryInputEl?.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        sendAppLibraryMessage();
+      }
+    });
+
     backBtnEl?.addEventListener("click", () => {
       const selectedNode = findNode(knowledgeState.selectedPath);
       if (selectedNode && selectedNode.type === "file") {
@@ -7401,7 +7813,7 @@
     initLibraries();
     initMiddleRoomEmbed();
     syncHomeActionMetrics();
-    renderHomePipelineCapacityMetrics(appState.map?.projects || []);
+    window.syncHomePipelineCapacityMetrics();
     renderHomeKnowledgeMetrics();
     renderAppLibrary();
     renderKnowledgeBoardSwitch();
@@ -7436,6 +7848,10 @@
         ltsaDashboardPanel: document.getElementById("ltsaDashboardPanel"),
         warehouseDashboardPanel: document.getElementById("warehouseDashboardPanel"),
         businessAnalysisDashboardPanel: document.getElementById("businessAnalysisDashboardPanel"),
+        warehouseDashboardContent: document.getElementById("warehouseDashboardContent"),
+        serviceCenterTableBody: document.getElementById("serviceCenterTableBody"),
+        warehouseTableBody: document.getElementById("warehouseTableBody"),
+        businessAnalysisTree: document.getElementById("businessAnalysisTree"),
         countryFilter: document.getElementById("mapCountryFilter"),
         countryFilterLabel: document.getElementById("mapCountryFilterLabel"),
         countryFilterMenu: document.getElementById("mapCountryFilterMenu"),
@@ -7532,6 +7948,54 @@
         }
       };
 
+      const BUSINESS_ANALYSIS_CONTINENT_ORDER = ["Asia", "Europe", "Africa", "North America", "South America", "Oceania"];
+      const BUSINESS_ANALYSIS_COUNTRY_CONTINENT_MAP = {
+        argentina: "South America",
+        australia: "Oceania",
+        azerbaijan: "Asia",
+        bangladesh: "Asia",
+        brazil: "South America",
+        cambodia: "Asia",
+        canada: "North America",
+        chile: "South America",
+        china: "Asia",
+        columbia: "South America",
+        colombia: "South America",
+        egypt: "Africa",
+        france: "Europe",
+        georgia: "Asia",
+        germany: "Europe",
+        india: "Asia",
+        indonesia: "Asia",
+        italy: "Europe",
+        japan: "Asia",
+        kazakhstan: "Asia",
+        laos: "Asia",
+        malaysia: "Asia",
+        mexico: "North America",
+        mongolia: "Asia",
+        montenegro: "Europe",
+        morocco: "Africa",
+        mozambique: "Africa",
+        northmacedonia: "Europe",
+        philippines: "Asia",
+        poland: "Europe",
+        saudiarabia: "Asia",
+        senegal: "Africa",
+        spain: "Europe",
+        srilanka: "Asia",
+        thailand: "Asia",
+        turkey: "Asia",
+        uae: "Asia",
+        unitedarabemirates: "Asia",
+        unitedkingdom: "Europe",
+        usa: "North America",
+        us: "North America",
+        unitedstates: "North America",
+        uzbekistan: "Asia",
+        vietnam: "Asia"
+      };
+
       const PROJECT_ICON_LIBRARY = {
         A: {
           label: "风机",
@@ -7608,7 +8072,7 @@
           <path d="M9.5 19v-4.8h5V19"></path>
         </svg>
       `;
-      PROJECT_ICON_LIBRARY.D.label = "Office";
+      PROJECT_ICON_LIBRARY.D.label = "Service Center";
       PROJECT_ICON_LIBRARY.D.svg = `
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M5 20V6l7-2v16"></path>
@@ -7744,7 +8208,7 @@
 
       function isFacilityProjectCategory(category) {
         const baseCategory = getProjectBaseCategory(category);
-        return baseCategory === "Warehouse" || baseCategory === "Training Center";
+        return baseCategory === "Warehouse" || baseCategory === "Service Center";
       }
 
       function getProgressOptionsForCategory(category) {
@@ -7833,7 +8297,7 @@
         if (normalized === "wtg") return "WTG";
         if (normalized === "bess") return "BESS";
         if (normalized === "warehouse") return "Warehouse";
-        if (normalized === "training center") return "Training Center";
+        if (normalized === "training center" || normalized === "service center") return "Service Center";
         return String(category || "").trim();
       }
 
@@ -8020,7 +8484,7 @@
           const palette = ["#ffc5bc", "#ff8f86", "#cf4338"];
           return palette[findProgressIndex(FACILITY_PROGRESS_OPTIONS, normalizedProgress)] || palette[0];
         }
-        if (baseCategory === "Training Center") {
+        if (baseCategory === "Service Center") {
           const palette = ["#fff1ab", "#ffe07a", "#d4a016"];
           return palette[findProgressIndex(FACILITY_PROGRESS_OPTIONS, normalizedProgress)] || palette[0];
         }
@@ -8091,7 +8555,7 @@
         if (baseCategory === "WTG") return "A";
         if (baseCategory === "BESS") return "B";
         if (baseCategory === "Warehouse") return "C";
-        if (baseCategory === "Training Center") return "D";
+        if (baseCategory === "Service Center") return "D";
         const lowered = String(category || "").trim().toLowerCase();
         if (lowered.includes("wind") || lowered.includes("turbine")) return "A";
         if (lowered.includes("battery") || lowered.includes("storage")) return "B";
@@ -8116,6 +8580,7 @@
         const lat = Number(projectLike.lat);
         const lng = Number(projectLike.lng);
         const capacity = Number(projectLike.capacity);
+        const priceText = String(projectLike.price ?? "").trim();
         const category = String(projectLike.category || "").trim();
         const progress = normalizeProjectProgress(category, projectLike.progress);
         if (!name || !Number.isFinite(lat) || !Number.isFinite(lng) || !Number.isFinite(capacity) || !progress || !category) {
@@ -8128,6 +8593,9 @@
           lng,
           country: String(projectLike.country || "").trim(),
           capacity,
+          price: priceText,
+          operatingTime: String(projectLike.operatingTime || "").trim(),
+          remark: String(projectLike.remark || "").trim(),
           machineType: String(projectLike.machineType || "").trim(),
           progress,
           category,
@@ -8147,6 +8615,9 @@
           lat: coordinates?.lat,
           country: getNormalizedRowValue(row, ["\u56fd\u5bb6\u4fe1\u606f", "\u56fd\u5bb6", "country", "countryinfo"]),
           capacity: getNormalizedRowValue(row, ["\u5bb9\u91cf", "capacity", "mw", "mwh"]),
+          price: getNormalizedRowValue(row, ["价格", "price", "unitprice", "projectprice"]),
+          operatingTime: getNormalizedRowValue(row, ["运营时间(含预计)", "运营时间", "operatingtime", "operationtime", "commercialoperationdate", "cod"]),
+          remark: getNormalizedRowValue(row, ["remark", "remarks", "备注"]),
           machineType: getNormalizedRowValue(row, ["\u673a\u578b", "machinetype", "model", "turbinemodel"]),
           progress,
           category,
@@ -8339,6 +8810,66 @@
           return `${formatCapacity(converted)} ${higherUnit}`;
         }
         return `${formatCapacity(numeric)} ${baseUnit}`;
+      }
+
+      function parseProjectPriceValue(value) {
+        const raw = String(value ?? "").trim();
+        if (!raw) {
+          return null;
+        }
+        const normalized = raw.replace(/,/g, "").replace(/[^0-9.\-]/g, "");
+        if (!normalized || normalized === "-" || normalized === "." || normalized === "-.") {
+          return null;
+        }
+        const numeric = Number(normalized);
+        return Number.isFinite(numeric) ? numeric : null;
+      }
+
+      function getBusinessAnalysisContinent(project) {
+        const countryKey = normalizeCountryLookupKey(project?.country || "");
+        if (BUSINESS_ANALYSIS_COUNTRY_CONTINENT_MAP[countryKey]) {
+          return BUSINESS_ANALYSIS_COUNTRY_CONTINENT_MAP[countryKey];
+        }
+        const lat = Number(project?.lat);
+        const lng = Number(project?.lng);
+        if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+          return "Other";
+        }
+        if (lng >= 110 && lng <= 180 && lat <= 0) return "Oceania";
+        if (lng >= -25 && lng <= 60 && lat >= 35) return "Europe";
+        if (lng >= -20 && lng <= 55 && lat < 35) return "Africa";
+        if (lng >= -170 && lng <= -30 && lat >= 12) return "North America";
+        if (lng >= -90 && lng <= -30 && lat < 12) return "South America";
+        if (lng >= 25 && lng <= 180) return "Asia";
+        return "Other";
+      }
+
+      function formatBusinessAnalysisAverage(category, value) {
+        const numeric = Number(value) || 0;
+        const text = numeric.toLocaleString("en-US", {
+          minimumFractionDigits: numeric >= 100 ? 0 : 2,
+          maximumFractionDigits: numeric >= 100 ? 0 : 2
+        }).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
+        return `${text} ${String(category || "").trim().toUpperCase() === "BESS" ? "USD/MWh/Y" : "USD/WTG/Y"}`;
+      }
+
+      function createBusinessAnalysisBucket() {
+        return {
+          sum: 0,
+          count: 0
+        };
+      }
+
+      function updateBusinessAnalysisBucket(bucket, value) {
+        bucket.sum += value;
+        bucket.count += 1;
+      }
+
+      function getBusinessAnalysisAverage(bucket) {
+        if (!bucket?.count) {
+          return 0;
+        }
+        return bucket.sum / bucket.count;
       }
 
       function routeSummaryText() {
@@ -9204,6 +9735,190 @@
         `).join("");
       }
 
+      function buildBusinessAnalysisSummary(projects) {
+        const categories = ["WTG", "BESS"];
+        const summary = categories.reduce((acc, category) => {
+          acc[category] = {
+            bucket: createBusinessAnalysisBucket(),
+            continents: new Map()
+          };
+          return acc;
+        }, {});
+
+        (Array.isArray(projects) ? projects : []).forEach((project) => {
+          const category = getProjectBaseCategory(project?.category || "");
+          if (!summary[category]) {
+            return;
+          }
+          const priceValue = parseProjectPriceValue(project?.price);
+          if (priceValue === null) {
+            return;
+          }
+          const continent = getBusinessAnalysisContinent(project);
+          const country = String(project?.country || "").trim() || "Unknown Country";
+          const machineType = String(project?.machineType || "").trim() || "Unspecified";
+
+          updateBusinessAnalysisBucket(summary[category].bucket, priceValue);
+
+          if (!summary[category].continents.has(continent)) {
+            summary[category].continents.set(continent, {
+              bucket: createBusinessAnalysisBucket(),
+              countries: new Map()
+            });
+          }
+          const continentEntry = summary[category].continents.get(continent);
+          updateBusinessAnalysisBucket(continentEntry.bucket, priceValue);
+
+          if (!continentEntry.countries.has(country)) {
+            continentEntry.countries.set(country, {
+              bucket: createBusinessAnalysisBucket(),
+              machines: new Map()
+            });
+          }
+          const countryEntry = continentEntry.countries.get(country);
+          updateBusinessAnalysisBucket(countryEntry.bucket, priceValue);
+
+          if (!countryEntry.machines.has(machineType)) {
+            countryEntry.machines.set(machineType, createBusinessAnalysisBucket());
+          }
+          updateBusinessAnalysisBucket(countryEntry.machines.get(machineType), priceValue);
+        });
+
+        return summary;
+      }
+
+      function sortBusinessAnalysisContinents(entries) {
+        return entries.sort((a, b) => {
+          const orderA = BUSINESS_ANALYSIS_CONTINENT_ORDER.indexOf(a[0]);
+          const orderB = BUSINESS_ANALYSIS_CONTINENT_ORDER.indexOf(b[0]);
+          const safeA = orderA === -1 ? BUSINESS_ANALYSIS_CONTINENT_ORDER.length : orderA;
+          const safeB = orderB === -1 ? BUSINESS_ANALYSIS_CONTINENT_ORDER.length : orderB;
+          return safeA - safeB || a[0].localeCompare(b[0], "en");
+        });
+      }
+
+      function renderBusinessAnalysisTree(projects) {
+        if (!mapWorkbenchEls.businessAnalysisTree) return;
+        const summary = buildBusinessAnalysisSummary(projects);
+        const categories = ["WTG", "BESS"];
+        const hasData = categories.some((category) => summary[category].bucket.count > 0);
+
+        if (!hasData) {
+          mapWorkbenchEls.businessAnalysisTree.innerHTML = `
+            <div class="business-analysis-empty">
+              当前筛选条件下暂无可统计的价格数据。请上传包含价格字段的 WTG 或 BESS 项目后查看。
+            </div>
+          `;
+          return;
+        }
+
+        mapWorkbenchEls.businessAnalysisTree.innerHTML = categories.map((category) => {
+          const categoryEntry = summary[category];
+          if (!categoryEntry.bucket.count) {
+            return "";
+          }
+          const continentsMarkup = sortBusinessAnalysisContinents([...categoryEntry.continents.entries()]).map(([continent, continentEntry]) => {
+            const countriesMarkup = [...continentEntry.countries.entries()]
+              .sort((a, b) => a[0].localeCompare(b[0], "en"))
+              .map(([country, countryEntry]) => {
+                const machinesMarkup = [...countryEntry.machines.entries()]
+                  .sort((a, b) => a[0].localeCompare(b[0], "en"))
+                  .map(([machineType, machineBucket]) => `
+                    <div class="business-analysis-leaf">
+                      <span class="business-analysis-leaf-label">${escapeHtml(machineType)}</span>
+                      <span class="business-analysis-leaf-value">${escapeHtml(formatBusinessAnalysisAverage(category, getBusinessAnalysisAverage(machineBucket)))}</span>
+                    </div>
+                  `).join("");
+
+                return `
+                  <details class="business-analysis-country" open>
+                    <summary>
+                      <span class="business-analysis-title">
+                        <span class="business-analysis-title-text">${escapeHtml(country)}</span>
+                      </span>
+                      <span class="business-analysis-meta">${countryEntry.bucket.count}</span>
+                      <span class="business-analysis-value">${escapeHtml(formatBusinessAnalysisAverage(category, getBusinessAnalysisAverage(countryEntry.bucket)))}</span>
+                    </summary>
+                    <div class="business-analysis-country-body">${machinesMarkup}</div>
+                  </details>
+                `;
+              }).join("");
+
+            return `
+              <details class="business-analysis-subgroup" open>
+                <summary>
+                  <span class="business-analysis-title">
+                    <span class="business-analysis-title-text">${escapeHtml(continent)}</span>
+                  </span>
+                  <span class="business-analysis-meta">${continentEntry.bucket.count}</span>
+                  <span class="business-analysis-value">${escapeHtml(formatBusinessAnalysisAverage(category, getBusinessAnalysisAverage(continentEntry.bucket)))}</span>
+                </summary>
+                <div class="business-analysis-subgroup-body">${countriesMarkup}</div>
+              </details>
+            `;
+          }).join("");
+
+          return `
+            <details class="business-analysis-group" open>
+              <summary>
+                <span class="business-analysis-title">
+                  <span class="business-analysis-title-text">${escapeHtml(category)}</span>
+                </span>
+                <span class="business-analysis-meta">${categoryEntry.bucket.count}</span>
+                <span class="business-analysis-value">${escapeHtml(formatBusinessAnalysisAverage(category, getBusinessAnalysisAverage(categoryEntry.bucket)))}</span>
+              </summary>
+              <div class="business-analysis-group-body">${continentsMarkup}</div>
+            </details>
+          `;
+        }).join("");
+      }
+
+      function buildWarehouseAddress(project) {
+        const country = String(project?.country || "").trim();
+        if (country) {
+          return country;
+        }
+        const lat = Number(project?.lat);
+        const lng = Number(project?.lng);
+        if (Number.isFinite(lat) && Number.isFinite(lng)) {
+          return `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+        }
+        return "-";
+      }
+
+      function renderWarehouseNetworkDashboard(projects) {
+        if (!mapWorkbenchEls.serviceCenterTableBody || !mapWorkbenchEls.warehouseTableBody) {
+          return;
+        }
+
+        const source = Array.isArray(projects) ? projects : [];
+        const serviceCenters = source
+          .filter((project) => getProjectBaseCategory(project.category) === "Service Center")
+          .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "en"));
+        const warehouses = source
+          .filter((project) => getProjectBaseCategory(project.category) === "Warehouse")
+          .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "en"));
+
+        mapWorkbenchEls.serviceCenterTableBody.innerHTML = serviceCenters.length
+          ? serviceCenters.map((project) => `
+              <tr>
+                <th scope="row" title="${escapeHtml(project.name || "-")}">${escapeHtml(project.name || "-")}</th>
+                <td title="${escapeHtml(project.operatingTime || "-")}">${escapeHtml(project.operatingTime || "-")}</td>
+              </tr>
+            `).join("")
+          : `<tr><td class="warehouse-network-empty" colspan="2">当前筛选条件下暂无 Service Center 数据。</td></tr>`;
+
+        mapWorkbenchEls.warehouseTableBody.innerHTML = warehouses.length
+          ? warehouses.map((project) => `
+              <tr>
+                <th scope="row" title="${escapeHtml(project.name || "-")}">${escapeHtml(project.name || "-")}</th>
+                <td title="${escapeHtml(buildWarehouseAddress(project))}">${escapeHtml(buildWarehouseAddress(project))}</td>
+                <td title="${escapeHtml(project.remark || "-")}">${escapeHtml(project.remark || "-")}</td>
+              </tr>
+            `).join("")
+          : `<tr><td class="warehouse-network-empty" colspan="3">当前筛选条件下暂无 Warehouse 数据。</td></tr>`;
+      }
+
       function renderStats() {
         const filteredProjects = getFilteredProjects();
         const summary = filteredProjects.reduce((acc, project) => {
@@ -9245,6 +9960,8 @@
           mapWorkbenchEls.totalBessCapacity.textContent = formatCategoryCapacitySummary("BESS", summary.bess.capacity);
         }
         renderProgressCapacitySummary(summary.progress);
+        renderWarehouseNetworkDashboard(filteredProjects);
+        renderBusinessAnalysisTree(filteredProjects);
       }
 
       function zoomToProject(projectId) {
@@ -9262,7 +9979,7 @@
 
       function getProjectCategorySortOrder(category) {
         const baseCategory = getProjectBaseCategory(category);
-        const order = ["WTG", "BESS", "Warehouse", "Training Center"];
+        const order = ["WTG", "BESS", "Warehouse", "Service Center"];
         const index = order.indexOf(baseCategory);
         return index === -1 ? order.length : index;
       }
@@ -9397,7 +10114,7 @@
         mapWorkbenchEls.progressInput.value = project?.progress || "";
         mapWorkbenchEls.countryInput.value = project?.country || "";
         const category = getProjectBaseCategory(project?.category || "");
-        if (["WTG", "BESS", "Warehouse", "Training Center"].includes(category)) {
+        if (["WTG", "BESS", "Warehouse", "Service Center"].includes(category)) {
           mapWorkbenchEls.categoryInput.value = category;
         } else if (project?.category) {
           mapWorkbenchEls.categoryInput.value = "CUSTOM";
@@ -9582,21 +10299,24 @@
 
       function buildProjectTemplateCsv() {
         const rows = [
-          ["项目名称", "坐标(纬度,经度)", "国家信息", "容量", "机型", "项目进度", "项目类别"],
-          ["Demo WTG Project", "31.2304,121.4737", "China", "500", "EN-182", "Construction", "WTG"],
-          ["Demo BESS Project", "25.0330,121.5654", "Japan", "320", "", "Awarded", "BESS"]
+          ["项目名称", "坐标(纬度,经度)", "国家信息", "容量", "价格", "运营时间(含预计)", "remark", "机型", "项目进度", "项目类别"],
+          ["Demo WTG Project", "31.2304,121.4737", "China", "500", "", "2027 Q4", "Sample WTG remark", "EN-182", "Construction", "WTG"],
+          ["Demo BESS Project", "25.0330,121.5654", "Japan", "320", "", "2026 Q3", "Sample BESS remark", "", "Awarded", "BESS"]
         ];
         return "\uFEFF" + rows.map((row) => row.map(escapeCsvCell).join(",")).join("\r\n");
       }
 
       function buildProjectExportCsv() {
         const rows = [
-          ["项目名称", "坐标(纬度,经度)", "国家信息", "容量", "机型", "项目进度", "项目类别", "颜色"]
+          ["项目名称", "坐标(纬度,经度)", "国家信息", "容量", "价格", "运营时间(含预计)", "remark", "机型", "项目进度", "项目类别", "颜色"]
         ].concat(mapStore.projects.map((project) => ([
           project.name,
           `${project.lat.toFixed(6)},${project.lng.toFixed(6)}`,
           project.country || "",
           project.capacity,
+          project.price ?? "",
+          project.operatingTime ?? "",
+          project.remark ?? "",
           project.machineType || "",
           project.progress,
           project.category,
@@ -9759,7 +10479,7 @@
         mapWorkbenchEls.countryInput.value = project?.country || "";
         mapWorkbenchEls.machineTypeInput.value = project?.machineType || "";
         const category = getProjectBaseCategory(project?.category || "");
-        if (["WTG", "BESS", "Warehouse", "Training Center"].includes(category)) {
+        if (["WTG", "BESS", "Warehouse", "Service Center"].includes(category)) {
           mapWorkbenchEls.categoryInput.value = category;
         } else if (project?.category) {
           mapWorkbenchEls.categoryInput.value = "CUSTOM";
