@@ -1,0 +1,2296 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>国际ISD服务履约中部屋议题&行动项管理仪表盘（离线单页 v2）</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --panel:#111a33;
+      --panel2:#0f1730;
+      --text:#e7ecff;
+      --muted:#a8b3da;
+      --border:rgba(255,255,255,.12);
+      --accent:#6ea8fe;
+      --accent2:#7ee0c3;
+      --danger:#ff6b6b;
+      --warn:#ffcc66;
+      --ok:#3ddc97;
+      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --radius: 14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --sans: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      --gap: 14px;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:var(--sans);
+      color:var(--text);
+      background: radial-gradient(1200px 600px at 10% 0%, rgba(110,168,254,.22), transparent 55%),
+                  radial-gradient(900px 520px at 90% 10%, rgba(126,224,195,.18), transparent 50%),
+                  linear-gradient(180deg, #070b18, var(--bg));
+      min-height:100vh;
+    }
+    header{
+      padding:16px 18px 10px;
+      position:sticky; top:0; z-index:10;
+      background: linear-gradient(180deg, rgba(7,11,24,.92), rgba(7,11,24,.65));
+      backdrop-filter: blur(10px);
+      border-bottom:1px solid rgba(255,255,255,.08);
+    }
+    .topbar{
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      max-width:1280px; margin:0 auto;
+    }
+    .brand{display:flex; align-items:center; gap:12px; min-width: 340px;}
+    .logo{
+      width:38px; height:38px; border-radius:12px;
+      background: linear-gradient(135deg, rgba(110,168,254,.95), rgba(126,224,195,.9));
+      box-shadow: 0 16px 40px rgba(110,168,254,.22);
+    }
+    .titleblock h1{font-size:15px; margin:0; letter-spacing:.2px}
+    .titleblock div{font-size:12px; color:var(--muted); margin-top:2px}
+
+    .actions{display:flex; align-items:center; gap:10px; flex-wrap:wrap; justify-content:flex-end}
+    button, .btn{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.06);
+      color:var(--text);
+      padding:9px 11px;
+      border-radius:12px;
+      cursor:pointer;
+      font-size:12px;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      transition: transform .05s ease, background .2s ease, border .2s ease;
+      user-select:none;
+      text-decoration:none;
+      white-space: nowrap;
+    }
+    button:hover, .btn:hover{ background: rgba(255,255,255,.09); }
+    button:active{ transform: translateY(1px); }
+    button.primary{
+      background: linear-gradient(135deg, rgba(110,168,254,.95), rgba(126,224,195,.85));
+      border:0;
+      color:#071022;
+      font-weight:800;
+    }
+    button.danger{border-color: rgba(255,107,107,.45); color:#ffd7d7;}
+    button.ghost{background: transparent;}
+    button[disabled]{ opacity:.55; cursor:not-allowed; }
+
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:7px 10px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      color:var(--muted); font-size:12px;
+      background: rgba(0,0,0,.12);
+    }
+    .pill b{ color: var(--text); font-weight:700; }
+
+    main{max-width:1280px; margin: 14px auto 42px; padding: 0 18px;}
+
+    .card{
+      background: linear-gradient(180deg, rgba(17,26,51,.88), rgba(11,16,32,.78));
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      display:flex; align-items:flex-start; justify-content:space-between; gap:10px;
+      padding: 14px 14px 12px;
+      border-bottom:1px solid rgba(255,255,255,.08);
+      background: linear-gradient(180deg, rgba(255,255,255,.05), transparent);
+    }
+    .card .hd h2{ font-size:13px; margin:0; letter-spacing:.2px }
+    .card .hd p{ margin:4px 0 0; color:var(--muted); font-size:12px; line-height:1.35 }
+    .card .bd{ padding:14px; }
+
+    /* top nav tabs */
+    .navTabs{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+    .navTab{
+      padding:9px 10px; border-radius:12px;
+      font-size:12px;
+      border:1px solid rgba(255,255,255,.12);
+      background: rgba(255,255,255,.04);
+      color:var(--muted);
+      cursor:pointer;
+    }
+    .navTab.active{
+      background: rgba(110,168,254,.18);
+      border-color: rgba(110,168,254,.40);
+      color: var(--text);
+      font-weight:700;
+    }
+
+    .row{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+    .split{ display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    @media (max-width: 980px){ .split{ grid-template-columns:1fr; } }
+
+    label{ display:block; font-size:11px; color: var(--muted); margin-bottom:6px; }
+    input[type="text"], input[type="datetime-local"], input[type="password"], input[type="url"], select, textarea{
+      width:100%;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      border-radius: 12px;
+      padding: 9px 10px;
+      outline:none;
+      font-size:12px;
+    }
+    textarea{ min-height: 110px; resize: vertical; line-height:1.45; }
+    .field{ flex: 1 1 220px; }
+    .field.sm{ flex: 1 1 140px; }
+
+    .hint{ color: var(--muted); font-size:12px; line-height:1.45; }
+    .mono{ font-family: var(--mono); }
+
+    table{ width:100%; border-collapse: collapse; overflow:hidden; border-radius: 12px; }
+    th, td{ padding:10px 10px; border-bottom: 1px solid rgba(255,255,255,.08); vertical-align: top; }
+    th{ text-align:left; font-size:11px; color: var(--muted); font-weight:700; background: rgba(255,255,255,.04); }
+    td{ font-size:12px; }
+
+    .chip{
+      display:inline-flex; align-items:center; gap:6px;
+      padding:3px 8px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background: rgba(0,0,0,.14);
+      font-size:11px;
+      color: var(--muted);
+      margin-right:6px;
+    }
+
+    /* topic library layout */
+    .topicLayout{ display:grid; grid-template-columns: 360px 1fr; gap: 12px; }
+    @media (max-width: 980px){ .topicLayout{ grid-template-columns:1fr; } }
+
+    .tree{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      background: rgba(0,0,0,.12);
+      overflow:hidden;
+    }
+    .treeHd{ padding:10px; border-bottom:1px solid rgba(255,255,255,.08); display:flex; gap:8px; align-items:center; justify-content:space-between; }
+    .treeBd{ padding:10px; max-height: 560px; overflow:auto; }
+    .treeItem{
+      padding:8px 10px;
+      border:1px solid rgba(255,255,255,.10);
+      background: rgba(255,255,255,.03);
+      border-radius: 12px;
+      cursor:pointer;
+      margin-bottom:8px;
+    }
+    .treeItem:hover{ background: rgba(255,255,255,.06); }
+    .treeItem.active{ border-color: rgba(110,168,254,.55); background: rgba(110,168,254,.13); }
+    .treePath{ font-size:11px; color: var(--muted); margin-top:4px; }
+
+    .detailGrid{ display:grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 980px){ .detailGrid{ grid-template-columns:1fr; } }
+
+    .box{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius: 14px;
+      background: rgba(0,0,0,.12);
+      padding: 10px;
+    }
+
+    /* kanban */
+    .kanban{ display:grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    @media (max-width: 1040px){ .kanban{ grid-template-columns: 1fr 1fr; } }
+    @media (max-width: 640px){ .kanban{ grid-template-columns: 1fr; } }
+    .col{ border:1px solid rgba(255,255,255,.10); border-radius: 14px; background: rgba(0,0,0,.12); overflow:hidden; min-height: 260px; }
+    .col .colhd{ padding: 10px; display:flex; align-items:center; justify-content:space-between; background: rgba(255,255,255,.04); border-bottom:1px solid rgba(255,255,255,.08); }
+    .col .colhd b{ font-size:12px; }
+    .col .colhd span{ font-size:11px; color: var(--muted); }
+    .cards{ padding: 10px; display:flex; flex-direction:column; gap:10px; }
+    .task{ border:1px solid rgba(255,255,255,.12); background: linear-gradient(180deg, rgba(15,23,48,.7), rgba(0,0,0,.16)); border-radius: 12px; padding: 10px; }
+    .task .t{ font-size:12px; line-height:1.35; margin:0 0 8px; }
+    .meta{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; }
+    .meta .pill2{ font-size:11px; color: var(--muted); border:1px solid rgba(255,255,255,.12); padding:3px 8px; border-radius: 999px; background: rgba(0,0,0,.14); }
+    .meta .pill2.urgent{ border-color: rgba(255,204,102,.45); color:#ffe7b8; }
+    .meta .pill2.overdue{ border-color: rgba(255,107,107,.6); color:#ffd1d1; }
+
+    /* modal */
+    .toast{
+      position: fixed; left: 50%; bottom: 18px; transform: translateX(-50%);
+      background: rgba(0,0,0,.65);
+      border:1px solid rgba(255,255,255,.14);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 14px;
+      box-shadow: 0 18px 60px rgba(0,0,0,.45);
+      font-size: 12px;
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+      z-index: 999;
+    }
+    .toast.show{ opacity: 1; transform: translateX(-50%) translateY(-2px); }
+
+    .modalBackdrop{ position:fixed; inset:0; background: rgba(0,0,0,.58); display:none; align-items:center; justify-content:center; padding: 16px; z-index: 1000; }
+    .modal{
+      width: min(900px, 100%);
+      background: linear-gradient(180deg, rgba(17,26,51,.96), rgba(11,16,32,.94));
+      border:1px solid rgba(255,255,255,.12);
+      border-radius: 16px;
+      box-shadow: 0 30px 100px rgba(0,0,0,.55);
+      overflow:hidden;
+    }
+    .modal .mh{ padding: 12px 14px; display:flex; align-items:flex-start; justify-content:space-between; gap:10px; border-bottom:1px solid rgba(255,255,255,.08); }
+    .modal .mh b{ font-size:13px; }
+    .modal .mb{ padding: 14px; }
+
+    .footerNote{ color: rgba(168,179,218,.85); font-size:11px; margin-top:10px; }
+
+    .k{ color:#d7e3ff }
+  </style>
+</head>
+<body>
+<header>
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div class="titleblock">
+        <h1>国际ISD服务履约中部屋议题&行动项管理仪表盘（v2）</h1>
+        <div>议题库 · 会议中心 · 行动项 · 跟催&闭环（离线 + 内部接口预留）</div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <span class="pill"><b id="statOpen">0</b> 未完成</span>
+      <span class="pill"><b id="statOverdue">0</b> 逾期</span>
+      <span class="pill"><b id="statDueSoon">0</b> 48h内到期</span>
+      <button class="ghost" id="btnExportJSON">导出JSON</button>
+      <button class="ghost" id="btnImportJSON">导入JSON</button>
+      <button class="ghost" id="btnExportCSV">导出CSV</button>
+      <button class="danger" id="btnReset">清空本地数据</button>
+      <input type="file" id="fileInput" accept="application/json" style="display:none" />
+    </div>
+  </div>
+
+  <div class="topbar" style="margin-top:10px">
+    <div class="navTabs" id="navTabs" role="tablist" aria-label="主导航">
+      <div class="navTab active" data-view="topics" role="tab">议题库</div>
+      <div class="navTab" data-view="meetings" role="tab">会议中心</div>
+      <div class="navTab" data-view="actions" role="tab">行动项看板</div>
+      <div class="navTab" data-view="insights" role="tab">统计&跟催</div>
+      <div class="navTab" data-view="settings" role="tab">配置</div>
+    </div>
+    <div class="hint" style="max-width:560px; text-align:right">
+      Owner：<span class="mono">部门-姓名</span> ｜ DDL：具体日期时间 ｜ WeCom 发送与 ASR/大模型：接口预留
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- view: topics -->
+  <section class="card" id="view_topics" aria-label="议题库">
+    <div class="hd">
+      <div>
+        <h2>议题库（内嵌自 Excel「议题分类&规划」）</h2>
+        <p>树状浏览所有议题；你可以维护每个议题的：今年目标、当前状态、进展日志、2-3周小目标（可勾选完成）。</p>
+      </div>
+      <div class="row" style="gap:8px">
+        <button id="btnTopicQuickAdd">新增自定义议题</button>
+        <button id="btnTopicExport" class="ghost">导出议题JSON</button>
+      </div>
+    </div>
+    <div class="bd">
+      <div class="topicLayout">
+        <div class="tree">
+          <div class="treeHd">
+            <div style="flex:1">
+              <input id="topicSearch" type="text" placeholder="搜索：一级/二级/三级/关键词" />
+            </div>
+            <button id="btnTopicResetFilter" class="ghost">清除</button>
+          </div>
+          <div class="treeBd" id="topicTree"></div>
+        </div>
+
+        <div>
+          <div class="box" id="topicEmpty" style="display:none">
+            <div class="hint">请选择左侧一个议题查看详情。</div>
+          </div>
+
+          <div id="topicDetail">
+            <div class="box">
+              <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start">
+                <div>
+                  <div class="chip" id="topicPathChip">—</div>
+                  <div style="font-size:14px; font-weight:800; margin-top:6px" id="topicTitle">—</div>
+                </div>
+                <div class="row" style="gap:8px">
+                  <button id="btnBindMeeting">关联会议</button>
+                  <button id="btnBindAction">关联行动项</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="height:10px"></div>
+
+            <div class="detailGrid">
+              <div class="box">
+                <label>今年目标（可编辑）</label>
+                <textarea id="tGoal" spellcheck="false"></textarea>
+              </div>
+              <div class="box">
+                <label>当前状态（可编辑）</label>
+                <textarea id="tStatus" spellcheck="false"></textarea>
+              </div>
+              <div class="box">
+                <label>业务价值（来自规划表，可编辑补充）</label>
+                <textarea id="tValue" spellcheck="false"></textarea>
+              </div>
+              <div class="box">
+                <label>优先级/会议频次（可编辑）</label>
+                <input id="tFreq" type="text" placeholder="例如：重要不紧急 / 月度会议 / 双周" />
+              </div>
+            </div>
+
+            <div style="height:10px"></div>
+
+            <div class="detailGrid">
+              <div class="box">
+                <label>2-3周内近期工作计划（可勾选完成）</label>
+                <div class="hint" style="margin-bottom:8px">每行一条；前缀用 <span class="mono">[ ]</span> / <span class="mono">[x]</span> 表示未完成/已完成。</div>
+                <textarea id="tPlan" class="mono" spellcheck="false" placeholder="[ ] 3/20 完成xx模板初稿\n[ ] 3/27 与片区对齐xx方案\n[x] 已完成... "></textarea>
+              </div>
+              <div class="box">
+                <label>进展日志（追加式）</label>
+                <textarea id="tLog" class="mono" spellcheck="false" placeholder="建议格式：\n2026-04-08  进展...\n2026-04-15  结论/风险...\n"></textarea>
+                <div class="row" style="justify-content:flex-end; margin-top:8px">
+                  <button id="btnAppendLog" class="primary">追加一条时间戳日志</button>
+                </div>
+              </div>
+            </div>
+
+            <div style="height:10px"></div>
+
+            <div class="box">
+              <div class="detailGrid">
+                <div>
+                  <label>输入（规划表）</label>
+                  <textarea id="tInput" spellcheck="false"></textarea>
+                </div>
+                <div>
+                  <label>中部屋交付物（规划表）</label>
+                  <textarea id="tDeliver" spellcheck="false"></textarea>
+                </div>
+                <div>
+                  <label>运作议题（规划表）</label>
+                  <textarea id="tOps" spellcheck="false"></textarea>
+                </div>
+                <div>
+                  <label>2026年作战地图（规划表）</label>
+                  <textarea id="tMap" spellcheck="false"></textarea>
+                </div>
+              </div>
+              <div class="footerNote">说明：规划表字段默认内嵌；你在此编辑的内容会存入本地，不会覆盖原始内嵌模板。</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- view: meetings -->
+  <section class="card" id="view_meetings" style="display:none" aria-label="会议中心">
+    <div class="hd">
+      <div>
+        <h2>会议中心（转写/录音 → 纪要 → 行动项）</h2>
+        <p>支持粘贴文字版转写；也支持上传音频后调用内部接口（默认不请求，仅预留配置与 Mock）。纪要模板对齐你们 Excel 纪要风格。</p>
+      </div>
+      <div class="row" style="gap:8px">
+        <button id="btnGenMinutes" class="primary">生成纪要（模板/摘要）</button>
+        <button id="btnExtractActions">从纪要抽取行动项</button>
+        <button id="btnSaveMeeting" class="ghost">保存本次会议</button>
+      </div>
+    </div>
+    <div class="bd">
+      <div class="row">
+        <div class="field">
+          <label>会议标题</label>
+          <input id="mTitle" type="text" placeholder="例如：服务履约中部屋周度议题规划对齐会" />
+        </div>
+        <div class="field sm">
+          <label>会议等级（可选）</label>
+          <select id="mLevel">
+            <option value="/">/</option>
+            <option value="L1">L1</option>
+            <option value="L2" selected>L2</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>议题（可选：一级/二级/三级）</label>
+          <select id="mTopicBind"></select>
+        </div>
+        <div class="field sm">
+          <label>会议时间（可选）</label>
+          <input id="mWhen" type="datetime-local" />
+        </div>
+      </div>
+
+      <div style="height:10px"></div>
+
+      <div class="split">
+        <div>
+          <label>输入：文字版转写/记录（粘贴）</label>
+          <textarea id="mTranscript" spellcheck="false" placeholder="粘贴会议记录/转写文本。\n也可以粘贴你们既有纪要的‘会议纪要’单元格长文本内容。"></textarea>
+          <div class="row" style="margin-top:8px; justify-content:space-between; align-items:center">
+            <div class="hint">音频转写：需要内部 ASR 接口（在「配置」中填写）。</div>
+            <div class="row" style="gap:8px">
+              <input type="file" id="audioInput" accept="audio/*" />
+              <button id="btnTranscribeAudio">上传音频→转写（预留）</button>
+            </div>
+          </div>
+        </div>
+        <div>
+          <label>输出：纪要（可手动校准）</label>
+          <textarea id="mMinutes" class="mono" spellcheck="false" placeholder="点击‘生成纪要’后输出：\n一、会议背景/目的\n二、主要讨论内容与结论\n三、行动项\n（可选）决议项"></textarea>
+          <div class="footerNote">说明：默认按模板+规则摘要生成（离线）。接入内部大模型后可替换为“模型总结版”。</div>
+        </div>
+      </div>
+
+      <div style="height:10px"></div>
+
+      <div class="box">
+        <div class="row" style="justify-content:space-between; align-items:flex-end">
+          <div>
+            <label>抽取的行动项（可编辑后入库）</label>
+          </div>
+          <div class="row" style="gap:8px">
+            <button id="btnAddAllExtracted" class="primary">全部入库到看板</button>
+          </div>
+        </div>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:20%">Owner（部门-姓名）</th>
+              <th style="width:20%">DDL</th>
+              <th>事项</th>
+              <th style="width:22%">绑定议题</th>
+              <th style="width:12%">操作</th>
+            </tr>
+          </thead>
+          <tbody id="extractedTbody"></tbody>
+        </table>
+        <div class="hint">抽取规则：识别类似 <span class="mono">行动项：... – 部门-姓名；行动项ddl：2025/12/15</span> 或行内日期时间；你可手动修正。</div>
+      </div>
+
+      <div style="height:10px"></div>
+
+      <div class="box">
+        <label>历史会议（本地保存）</label>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:18%">时间</th>
+              <th style="width:18%">等级</th>
+              <th>标题</th>
+              <th style="width:26%">关联议题</th>
+              <th style="width:18%">操作</th>
+            </tr>
+          </thead>
+          <tbody id="meetingsTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- view: actions -->
+  <section class="card" id="view_actions" style="display:none" aria-label="行动项看板">
+    <div class="hd">
+      <div>
+        <h2>行动项看板（会后跟催闭环）</h2>
+        <p>支持拖拽/移动状态；可绑定议题；每条行动项可生成话术并复制；企业微信发送预留接口。</p>
+      </div>
+      <div class="row" style="gap:8px">
+        <button id="btnNewTask">新增行动项</button>
+        <button id="btnSortByDDL">按DDL排序</button>
+      </div>
+    </div>
+    <div class="bd">
+      <div class="kanban" id="kanban"></div>
+    </div>
+  </section>
+
+  <!-- view: insights -->
+  <section class="card" id="view_insights" style="display:none" aria-label="统计与跟催">
+    <div class="hd">
+      <div>
+        <h2>统计 & 跟催</h2>
+        <p>状态分布、近14天趋势；一键生成跟催话术；可复制或预留企业微信发送。</p>
+      </div>
+      <div class="row" style="gap:8px">
+        <button id="btnGenRemind" class="primary">生成话术</button>
+        <button id="btnCopyRemind">复制话术</button>
+        <button id="btnWeComSend" disabled>企业微信发送（待接入）</button>
+      </div>
+    </div>
+    <div class="bd">
+      <div class="split">
+        <div>
+          <div class="box" style="margin-bottom:10px">
+            <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">状态分布</div>
+            <div id="chartStatus" style="height:260px;"></div>
+          </div>
+          <div class="box">
+            <div style="font-size:12px; color:var(--muted); margin-bottom:6px;">近14天：新增 vs 完成</div>
+            <div id="chartTrend" style="height:260px;"></div>
+          </div>
+        </div>
+        <div>
+          <label>选择待跟催行动项</label>
+          <div class="row">
+            <div class="field">
+              <select id="remindTaskSelect"></select>
+            </div>
+            <div class="field sm">
+              <select id="remindTone">
+                <option value="neutral" selected>中性</option>
+                <option value="firm">更强推进</option>
+                <option value="gentle">更柔和</option>
+              </select>
+            </div>
+            <div class="field sm">
+              <select id="remindLang">
+                <option value="zh" selected>中文</option>
+                <option value="en">English</option>
+              </select>
+            </div>
+          </div>
+          <label style="margin-top:8px">输出话术（可手动改）</label>
+          <textarea id="remindText" class="mono" spellcheck="false" placeholder="生成后可复制发送"></textarea>
+          <div class="hint">企业微信发送：已留接口函数 <span class="mono">sendViaWeCom(payload)</span>，需要你们 IT 提供可调用的内网服务后再启用。</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- view: settings -->
+  <section class="card" id="view_settings" style="display:none" aria-label="配置">
+    <div class="hd">
+      <div>
+        <h2>配置（内部接口预留）</h2>
+        <p>这里不会自动调用任何外部服务；只有你点击按钮时才会发起请求（默认 Mock）。</p>
+      </div>
+      <div class="row" style="gap:8px">
+        <button id="btnSaveSettings" class="primary">保存配置</button>
+        <button id="btnTestMock" class="ghost">测试Mock</button>
+      </div>
+    </div>
+    <div class="bd">
+      <div class="detailGrid">
+        <div class="box">
+          <label>ASR 转写接口 URL（可选）</label>
+          <input id="cfgAsrUrl" type="url" placeholder="例如：https://intra-api.xxx.com/asr" />
+          <div class="hint">期望：上传音频文件后返回转写文本（纯文本）。</div>
+        </div>
+        <div class="box">
+          <label>大模型总结接口 URL（可选）</label>
+          <input id="cfgLlmUrl" type="url" placeholder="例如：https://intra-api.xxx.com/llm/summarize" />
+          <div class="hint">期望：输入转写文本，返回结构化纪要（背景/结论/行动项/决议）。</div>
+        </div>
+        <div class="box">
+          <label>API Key（可选，本地保存）</label>
+          <input id="cfgApiKey" type="password" placeholder="仅保存在浏览器 localStorage" />
+          <div class="hint">若你们用的是 Cookie/SSO，可不填。</div>
+        </div>
+        <div class="box">
+          <label>企业微信发送接口 URL（预留）</label>
+          <input id="cfgWeComUrl" type="url" placeholder="例如：https://intra-api.xxx.com/wecom/send" />
+          <div class="hint">期望：输入 {toUser, content, mentionedList?}，由服务侧完成发送。</div>
+        </div>
+      </div>
+
+      <div style="height:10px"></div>
+
+      <div class="box">
+        <div style="font-weight:800; font-size:12px; margin-bottom:8px">接口约定（建议）</div>
+        <div class="hint mono" style="white-space:pre-wrap">
+ASR（转写）建议：
+POST {cfgAsrUrl}
+Headers: Authorization: Bearer {apiKey}
+Body: multipart/form-data: file=<audio>
+Resp: { text: "..." }
+
+LLM（纪要总结）建议：
+POST {cfgLlmUrl}
+Body: { transcript: "...", style: "ISD_minutes_v1" }
+Resp: { minutesMarkdown: "...", actions: [{owner, ddl, text}] }
+
+WeCom（发送）建议：
+POST {cfgWeComUrl}
+Body: { toUser: "交付-张三", content: "..." }
+Resp: { ok: true }
+
+说明：本页面内置 sendViaWeCom(payload) / callAsr(file) / callLlm(text) 三个函数占位。
+        </div>
+      </div>
+
+      <div class="footerNote">提示：如果要支持“导入新 Excel 的议题分类&规划”，离线单页需要解析 xlsx，这通常要引入较大的解析库；这里先预留“导入JSON结构”的方式，后续可在内网版本实现Excel直读。</div>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<!-- modal: task editor -->
+<div class="modalBackdrop" id="modalBackdrop" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="mh">
+      <div>
+        <b id="modalTitle">新增行动项</b>
+        <div class="hint" id="modalHint" style="margin-top:4px">字段：Owner / DDL / 事项 / 绑定议题</div>
+      </div>
+      <button id="btnCloseModal">关闭</button>
+    </div>
+    <div class="mb">
+      <div class="row">
+        <div class="field">
+          <label>Owner（部门-姓名）</label>
+          <input id="mOwner" type="text" placeholder="例如：交付-张三" />
+        </div>
+        <div class="field">
+          <label>DDL（具体日期时间）</label>
+          <input id="mDDL" type="datetime-local" />
+        </div>
+      </div>
+      <div style="height:10px"></div>
+      <label>事项</label>
+      <textarea id="mText" placeholder="写清楚交付物：例如 提供RCA文档并抄送..." spellcheck="false"></textarea>
+      <div style="height:10px"></div>
+      <div class="row">
+        <div class="field">
+          <label>绑定议题（可选）</label>
+          <select id="mTaskTopic"></select>
+        </div>
+        <div class="field sm">
+          <label>状态</label>
+          <select id="mStatus">
+            <option value="Todo" selected>Todo</option>
+            <option value="Doing">Doing</option>
+            <option value="Blocked">Blocked</option>
+            <option value="Done">Done</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="height:10px"></div>
+      <div class="row" style="justify-content:space-between; align-items:center">
+        <div class="hint">可在保存后生成跟催话术；或到「统计&跟催」页一键生成。</div>
+        <div class="row" style="gap:8px">
+          <button id="btnWeComSendFromModal" disabled>企业微信发送（待接入）</button>
+          <button class="primary" id="btnSaveTask">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- modal: quick add topic -->
+<div class="modalBackdrop" id="topicModal" role="dialog" aria-modal="true">
+  <div class="modal">
+    <div class="mh">
+      <div>
+        <b>新增自定义议题</b>
+        <div class="hint" style="margin-top:4px">用于补充不在规划表内的议题（仍可绑定会议与行动项）</div>
+      </div>
+      <button id="btnCloseTopicModal">关闭</button>
+    </div>
+    <div class="mb">
+      <div class="row">
+        <div class="field">
+          <label>一级议题</label>
+          <input id="qtL1" type="text" placeholder="例如：服务交付资源规划" />
+        </div>
+        <div class="field">
+          <label>二级议题</label>
+          <input id="qtL2" type="text" placeholder="例如：服务网络规划" />
+        </div>
+      </div>
+      <div style="height:10px"></div>
+      <label>三级议题（名称）</label>
+      <input id="qtL3" type="text" placeholder="例如：XX专题推进" />
+      <div style="height:10px"></div>
+      <div class="row" style="justify-content:flex-end">
+        <button id="btnCreateTopic" class="primary">创建</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js"></script>
+<script>
+(function(){
+  const STORAGE_KEY = 'isd_cockpit_v2';
+
+  const $ = (id)=>document.getElementById(id);
+  const uid = ()=> Math.random().toString(16).slice(2) + '-' + Date.now().toString(16);
+  const pad2 = (n)=> String(n).padStart(2,'0');
+
+  function toast(msg){
+    const el = $('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(()=> el.classList.remove('show'), 1800);
+  }
+
+  function escapeHTML(s){
+    return String(s??'').replace(/[&<>"']/g, (c)=>({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    }[c]));
+  }
+
+  function safeParseInt(v, def){
+    const n = parseInt(String(v||'').trim(), 10);
+    return Number.isFinite(n) ? n : def;
+  }
+
+  function toISOFromLocalInput(local){
+    if(!local) return '';
+    const d = new Date(local);
+    if(Number.isNaN(d.getTime())) return '';
+    return d.toISOString();
+  }
+
+  function toLocalInputFromISO(iso){
+    if(!iso) return '';
+    const d = new Date(iso);
+    if(Number.isNaN(d.getTime())) return '';
+    const yyyy = d.getFullYear();
+    const mm = pad2(d.getMonth()+1);
+    const dd = pad2(d.getDate());
+    const hh = pad2(d.getHours());
+    const mi = pad2(d.getMinutes());
+    return `${yyyy}-${mm}-${dd}T${hh}:${mi}`;
+  }
+
+  function fmtLocal(iso){
+    // Preferred display format in your minutes: YYYY/MM/DD (optionally with time)
+    if(!iso) return '';
+    const d = new Date(iso);
+    if(Number.isNaN(d.getTime())) return '';
+    const yyyy = d.getFullYear();
+    const mm = pad2(d.getMonth()+1);
+    const dd = pad2(d.getDate());
+    const hh = pad2(d.getHours());
+    const mi = pad2(d.getMinutes());
+    return `${yyyy}/${mm}/${dd} ${hh}:${mi}`;
+  }
+
+  function isOwnerFormat(s){
+    if(!s) return false;
+    const t = String(s).trim();
+    const idx = t.indexOf('-');
+    return idx>0 && idx < t.length-1;
+  }
+
+  function severityTag(task){
+    if(task.status==='Done') return '';
+    const now = Date.now();
+    const ddl = task.ddlISO ? new Date(task.ddlISO).getTime() : NaN;
+    if(Number.isNaN(ddl)) return '';
+    if(ddl < now) return 'overdue';
+    if(ddl - now <= 48*3600*1000) return 'urgent';
+    return '';
+  }
+
+  function download(filename, text){
+    const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
+  /** ---------------- embedded topic seed ---------------- */
+  // Extracted from the workbook (sheet: 议题分类&规划) - full seed (25 rows)
+  // NOTE: you can still add custom topics; exports/imports will preserve your edits.
+  const TOPIC_SEED = [
+    {
+      "l1": "服务交付资源规划",
+      "l2": "备件网络规划",
+      "l3": "大部件资源规划流程（战略大部件备件策略）",
+      "input": "全球大部件储备策略&储备现状（田涌）",
+      "deliver": "1. 1-2年项目COD计划\n2. 特殊大部件储备需求",
+      "ops": "月度-大部件规划（备件保证CBB）",
+      "value": "1. 拉通前端市场机会与后道交付，确保大部件的提前战略规划存储\n2. 结合当前战略存储规划，反向校验前段解决方案成本模型的准确性，支持一线投标",
+      "status": "1. 大部件储备整体趋势：\n由于机型多样化增加、通用性下降，导致整体储备量上升\n2. 中亚\n2.1 乌兹\n1）现状：\na. 叶片储备情况：此前已做强化储备，共 16 支叶片：其中10 支已在当地，6 支在国内\nb. 叶片发运情况：目前叶片有1套计划尽快发运，第2套是否发运取决于现场最终方案（当地有返修完成的叶片，是否可以更换有待确认）\nc. 叶片停产：中亚部分叶片机型已停产，已保留模具，具备复产条件，复产需提前约8–12 个月提出需求\n2）风险：\n若质保期延长（如 3-25 年），现有一次性储备可能不足，需持续跟踪实际失效率变化与合同（质保期限）调整情况\n3. 东南亚\n3.1 老挝\n1）储备策略：仅考虑1套储备，当地有5套合同备件；\n2）现状：当前雷击维修情况进展正常\n3.2 越南：\n1）越南项目的新签LTSA合同已将大部件纳入服务范围，但是机型通用性较好，现有策略可覆盖；\n2）由于齿轮箱（5个型号）连续失效，当前策略需要尽快调整，目前储备策略计划调整到9台\n4. 中东非\n4.1 埃及\n1）在运和在建项目的叶片182与171（两款V100 AND V300) 分别储备1套；\n2）新项目的储备策略和LMT进一步确认方案中\n4.2 沙特\nNeom项目叶片已到现场，其他大部件计划 3月发运，6月到现场\n5. 主轴系统储备策略\n风险：低速主轴系统要求旋转运输。陆运可接电，海运船东不允许接电，且蓄电池方案存在海运安全风险。该问题对未来埃及、沙特、巴西等海运项目影响较大，暂无明确解决方案。",
+      "goal": "",
+      "map26": "1. 需求收集清单：1）建立清单；2）收集信息；3）维护\n2. 大部件策略预评审：1）定义评审材料模板；2）定义评审角色；3）定期组织例会评审，考虑月度、季度和按需\n3. 基于现有流程，更新国际项目可执行的大部件资源规划流程（近期重点关注）",
+      "freq": "",
+      "plan": "[ ] 1. 沟通信息传递-计划三月中组会\n[ ] 2. COD表单（交付代表）- 赵若妍"
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "常规备件策略",
+      "input": "中小备件标准储备策略（陶丽娟）",
+      "deliver": "1. 1-2年项目COD计划\n2. 特殊储备需求（关注合同）",
+      "ops": "按需-常规备件规划（备件保证CBB）",
+      "value": "1. 对齐标准策略与基线\n2. 明确传递特殊储备需求，保证履约执行",
+      "status": "",
+      "goal": "",
+      "map26": "20251223\n基于当前备件失效率的分析结论，对齐国际的备件策略，将数据闭环进工作流。从如下两个方向进行后续讨论并推进：\n1. 对于目前认为可预测失效率的备件，将失效率和设计失效率进行对标和修正\n2. 失效和环境因素强相关的物料可用于项目级预测",
+      "freq": "重要不紧急\n月度会议",
+      "plan": "[ ] 对齐标准储备策略 - 3/9-3/13"
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "国家库规划与建设（by国家）",
+      "input": "国家库全球战略规划&现状",
+      "deliver": "1. 1-2年项目COD计划\n2. 全球大部件储备策略（from田涌）\n3. 特殊战略规划需求",
+      "ops": "双周-方案策划（仓网、区域）\n双周-方案执行沟通（区域）",
+      "value": "",
+      "status": "1. 菲律宾（重点）\n6家意向供应商，4月中实地考察。计划5-6月落地。\n2. 巴西\n1）国际工业部与拉美 Emmanuel 正在进行寻源，\n2）基于当前项目pipeline，2026年暂不落地巴西国家库，考虑明年6月再建\n3. 南非\n区域建立国家库意愿强烈，需求提出方为孙明刚，正在积极寻源，今年 Q3 落地可能性较大\n4. 印度\n项目信息确认中，计划2026年建成南/北区域库\n5. 沙特（借用客户）\nNEOM 项目借用业主库，为自营仓形式，面积 2000 平，配备60t行车，总部重点关注赋能支持\n6. 埃及\n首选借用业主的库房，同步寻源自建库（预算50-60W RMB）\n7. 土耳其\n1）片区意愿强烈，4月中下旬寻源完成后与片区具体对接方案\n2）不适合建立保税仓，选址重点考虑土耳其东北部\n8. 澳大利亚\n今年不落地\n9. 智利\n片区落地意愿不强烈，后续考虑建立储能国家库\n10. 中亚\n1）当地资源以棚房为主，无高库 / 行车库\n2）塔什干国家库仅覆盖乌兹别克斯坦\n3）阿拉木图（哈萨克）国家库需要扩充，准备发起寻源\n4）中亚考虑建设综合性运维中心，整合RCC、备件中心、培训中心、再造中心和办公等功能，选址考虑塔什干\n11. 欧洲\n1）辐射规划：西班牙库房覆盖地中海区域，波兰库房覆盖北欧区域，均为区域保税仓\n2）区域库目标2027年Q1启用，需在2026年签订合同",
+      "goal": "1）菲律宾：新建风机NDC，26年Q2（5-6月份落地）；\n2）南非：新建储能NDC，26年Q2资源确定，Q3落地；\n3）印度：扩建风机NDC二级国家库，时间TBD；\n4）沙特：在建风机NDC，Q3开仓（基于安全情况）\n\n\n* 在建：已经建成了一部分项目设备，还正在建设继续的项目设备；\n*新建：还没有建设项目设备，正在建设新的项目设备；\n*待建：还没有建设项目设备，已经获取了订单和项目建设计划，正在筹备建设；\n* 扩建：特指一个国家或地区已经建设了大容量的项目设备并具备了一个或几个NDC，并且持续扩建新的项目设备。",
+      "map26": "1. 基于已完成的工序自完结模型，以菲律宾国家库打样\n2. 菲律宾国家库规划与建设方案的评审\n3. 可用于执行的方案模板固化（可参考东南亚服务中心方案）\n4. 菲律宾国家库审批确认后的方案\n5. 将审批确认后的方案交接给片区执行落地",
+      "freq": "当前重点：CBB角色定义",
+      "plan": "[ ] 对齐更新战略规划\n[ ] 埃及国家库\n[ ] 中亚综合性运检中心（RCC、培训、服务中心、仓网）-3/3\n[ ] 巴西、菲律宾国家库规划-3/3\n[ ] 土耳其国家库规划进展-3/3"
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "国际各片区C段物流风险识别与方案策划",
+      "input": "C段路勘报告&风险识别",
+      "deliver": "1. 国际项目经纬度信息\n2. 国家库选址规划（from仓网团队）\n3. 大部件尺寸重量（from工艺团队）",
+      "ops": "双周-项目经纬度信息（区域）",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "解决实际问题。路勘。物流风险识别。",
+      "freq": "1月底前与锡炜组会，规划26年工作计划",
+      "plan": "[ ] 1. 了解运作流程\n[ ] 2. 菲律宾C段物流风险识别"
+    },
+    {
+      "l1": "",
+      "l2": "服务网络规划",
+      "l3": "RCC建设",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "中亚：客户对RCC功能有质疑，当前由江阴 ODC 提供远程监控技术支持，但时效性与预警功能不足，需要提升伽利略系统的预警能力。\n菲律宾需求：6月底能够基本建成，能够实现宣传功能\n欧洲：仅设置1个欧洲RCC（风储共用）。风机需在Q4到位，储能需在Q2或Q3初到位",
+      "goal": "1. 菲律宾：今年6月底落地\n2. 欧洲：风机Q4，储能Q2/Q3（风储一体）",
+      "map26": "1. RCC建设规划的工序自完结：1）活动项定义；2）角色定义",
+      "freq": "紧急 菲律宾RCC建设实例落地",
+      "plan": "[ ] 讨论收资表更新\n[ ] 对齐菲律宾RCC建设进度"
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "服务中心Service Center",
+      "input": "",
+      "deliver": "",
+      "ops": "按需-中亚当地服务中心",
+      "value": "",
+      "status": "中亚考虑建设综合性运维中心，整合RCC、备件中心、培训中心、再造中心和办公等功能，选址考虑塔什干",
+      "goal": "",
+      "map26": "",
+      "freq": "",
+      "plan": "[ ] 拉通中亚当地服务中心"
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "培训中心",
+      "input": "",
+      "deliver": "",
+      "ops": "按需-中亚当地培训中心",
+      "value": "",
+      "status": "中亚考虑建设综合性运维中心，整合RCC、备件中心、培训中心、再造中心和办公等功能，选址考虑塔什干",
+      "goal": "",
+      "map26": "",
+      "freq": "",
+      "plan": "[ ] 拉通中亚当地培训中心。规划&方案&预算-王硕，采购"
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "再制造中心",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "中亚考虑建设综合性运维中心，整合RCC、备件中心、培训中心、再造中心和办公等功能，选址考虑塔什干",
+      "goal": "",
+      "map26": "",
+      "freq": "",
+      "plan": "[ ] 越南长期存放齿轮箱再造规划&方案&预算-齿轮箱CBB（范上伟，管益旭）"
+    },
+    {
+      "l1": "",
+      "l2": "工装工具及设备规划",
+      "l3": "国际各片区当地吊装资源风险识别与方案策划",
+      "input": "",
+      "deliver": "国际各片区当地吊装资源风险识别与方案策划（基于1-2年项目COD计划）",
+      "ops": "双周-风险国家识别&当地供应链调研（服务解决方案CBB，安装保证CBB，采购，区域）",
+      "value": "",
+      "status": "中东非：摩洛哥与阿塞拜疆吊车资源稀少",
+      "goal": "",
+      "map26": "",
+      "freq": "",
+      "plan": ""
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "全球免吊工装规划",
+      "input": "全球免吊工装规划（from区域）",
+      "deliver": "1. 1-2年项目COD计划\n2. 国际各片区当地吊装资源风险识别与方案策划\n3. 区域特殊需求\n4. 免吊工装开发方案及规划（from开发团队）",
+      "ops": "双周-对齐免吊工装规划（区域）",
+      "value": "",
+      "status": "已有或相对成熟的免吊方案：\n1）齿轮箱更换\n2）发电机更换\n2. 正在开发或测试中的方案（计划5-6月测试）：\n1）下叶轮免吊方案\n2）变桨轴承免吊方案",
+      "goal": "",
+      "map26": "沉淀服务供应商标准技术评审流程（包含但不限于免吊）。供应商开发",
+      "freq": "与仇博深入讨论",
+      "plan": "[ ] 印度区域免吊工装供应商评审\n[ ] 免吊工装Model X 开发计划对齐"
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "一般工装与特殊工装规划",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "",
+      "freq": "",
+      "plan": ""
+    },
+    {
+      "l1": "服务成本概核验证",
+      "l2": "LTSA项目运营成本",
+      "l3": "概算成本结构与财经变革规则对齐",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "1. 打通概算和实际执行，识别关键成本指标，校验模型参数\n2. 驱动服务产品优化，传递压力",
+      "status": "等待财务提供财经变革报告",
+      "goal": "Q3前在1-2个区域的1-2个成熟项目上完成demo\n粗颗粒度大数概核",
+      "map26": "目标：完成财经变革对齐。为了后续LTSA执行成本降本，持续发现降本机会",
+      "freq": "",
+      "plan": "[ ] 对齐概核验证进展"
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "执行成本透视数据模型",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "目标TBD",
+      "freq": "",
+      "plan": ""
+    },
+    {
+      "l1": "服务产品验证",
+      "l2": "服务产品问题闭环验证",
+      "l3": "服务产品问题闭环验证",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "各片区完成kickoff，问题梳理中",
+      "goal": "",
+      "map26": "",
+      "freq": "",
+      "plan": ""
+    },
+    {
+      "l1": "",
+      "l2": "国际项目技术问题拉通",
+      "l3": "针对项目实际发生的问题，讨论服务产品优化闭环",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "按需/定期，长期工作。需要思考如何加强与片区的沟通/拉近距离：片区风险预案",
+      "freq": "1看合同履约执行是否有漏洞",
+      "plan": ""
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "正对当前正在处理中的技术议题（例如目前的印度免吊工装议题），沉淀出处理同类问题的工作流程或模式",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "按需，长期工作（计划年度完成3-4类）",
+      "freq": "2 工艺文档（月报等）交付件质量？如何管控此工作项？",
+      "plan": ""
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "SOP系统数据治理",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "考虑增加合同风险项模块？，核心：订单收入确认",
+      "freq": "3 现场执行效率提升机会",
+      "plan": ""
+    },
+    {
+      "l1": "",
+      "l2": "LTSA执行情况与问题",
+      "l3": "数据采集协议",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "参照李亮淑立项规划",
+      "freq": "1月底前组会，月度会议，跟进进展",
+      "plan": ""
+    },
+    {
+      "l1": "",
+      "l2": "片区需求项&决策事宜",
+      "l3": "",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "",
+      "freq": "",
+      "plan": ""
+    },
+    {
+      "l1": "",
+      "l2": "服务合同基线及预案提升管理",
+      "l3": "1）合同签署后，合同风险项的预案的实际规划（如timeline）；2）kickoff时，将预案传递给片区",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "基于合同基线拆分的分类形式，讨论制定各风险项的预案，形成片区执行问题应对指南。当前以表格形式呈现，后续逐渐分类梳理。\n工作方式：1）基于片区实际举手的问题；2）定期与片区组会复盘",
+      "freq": "服务产品验证",
+      "plan": ""
+    },
+    {
+      "l1": "流程建设相关",
+      "l2": "流程建设相关",
+      "l3": "解决方案中部屋管理流程",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "",
+      "freq": "",
+      "plan": ""
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "SL工序自完结",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "",
+      "freq": "下周组会与Lily沟通：关于SL在片区的定位",
+      "plan": ""
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "CBB工序自完结&角色定义（备件、服务网络规划、免吊工装资源规划？、服务本地化）",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "",
+      "freq": "",
+      "plan": ""
+    },
+    {
+      "l1": "",
+      "l2": "",
+      "l3": "服务履约中部屋管理流程",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "",
+      "freq": "",
+      "plan": ""
+    },
+    {
+      "l1": "LTSA续签",
+      "l2": "LTSA续签",
+      "l3": "LTSA续签",
+      "input": "",
+      "deliver": "",
+      "ops": "",
+      "value": "",
+      "status": "",
+      "goal": "",
+      "map26": "",
+      "freq": "",
+      "plan": ""
+    }
+  ];
+
+  /** ---------------- state ---------------- */
+  const state = {
+    settings: {
+      asrUrl: '',
+      llmUrl: '',
+      apiKey: '',
+      wecomUrl: ''
+    },
+    topics: [],
+    topicNotes: {}, // key-> editable overlay {goal,status,value,freq,plan,log,input,deliver,ops,map26}
+    meetings: [], // {id,title,level,topicKey,whenISO,transcript,minutes,createdAtISO}
+    tasks: []  // {id, owner, ddlISO, text, status, topicKey, createdAtISO, doneAtISO}
+  };
+
+  function topicKey(t){
+    return `${t.l1}||${t.l2}||${t.l3}`;
+  }
+
+  function mergeTopicSeed(){
+    const seen = new Set();
+    const merged = [];
+    // existing first
+    state.topics.forEach(t=>{ seen.add(topicKey(t)); merged.push(t); });
+    // seed append
+    TOPIC_SEED.forEach(t=>{
+      const k = topicKey(t);
+      if(seen.has(k)) return;
+      merged.push(t);
+      seen.add(k);
+    });
+    state.topics = merged;
+  }
+
+  function save(){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  }
+
+  function load(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(raw){
+      try{
+        const obj = JSON.parse(raw);
+        if(obj && typeof obj==='object'){
+          state.settings = Object.assign(state.settings, obj.settings||{});
+          state.topics = Array.isArray(obj.topics) ? obj.topics : [];
+          state.topicNotes = obj.topicNotes && typeof obj.topicNotes==='object' ? obj.topicNotes : {};
+          state.meetings = Array.isArray(obj.meetings) ? obj.meetings : [];
+          state.tasks = Array.isArray(obj.tasks) ? obj.tasks : [];
+        }
+      }catch(e){
+        console.warn(e);
+      }
+    }
+    mergeTopicSeed();
+  }
+
+  /** ---------------- navigation ---------------- */
+  function setView(view){
+    ['topics','meetings','actions','insights','settings'].forEach(v=>{
+      const el = document.querySelector(`[data-view="${v}"]`);
+      if(el) el.classList.toggle('active', v===view);
+      const panel = $(`view_${v}`);
+      if(panel) panel.style.display = (v===view)?'':'none';
+    });
+    if(view==='insights') setTimeout(renderCharts, 50);
+  }
+
+  /** ---------------- topic library ---------------- */
+  let selectedTopicKey = '';
+
+  function overlayForTopic(k, base){
+    const o = state.topicNotes[k] || {};
+    return {
+      goal: o.goal ?? base.goal ?? '',
+      status: o.status ?? base.status ?? '',
+      value: o.value ?? base.value ?? '',
+      freq: o.freq ?? base.freq ?? '',
+      plan: o.plan ?? base.plan ?? '',
+      log: o.log ?? '',
+      input: o.input ?? base.input ?? '',
+      deliver: o.deliver ?? base.deliver ?? '',
+      ops: o.ops ?? base.ops ?? '',
+      map26: o.map26 ?? base.map26 ?? ''
+    };
+  }
+
+  function saveOverlayFromUI(){
+    if(!selectedTopicKey) return;
+    const base = state.topics.find(t=>topicKey(t)===selectedTopicKey);
+    if(!base) return;
+    state.topicNotes[selectedTopicKey] = {
+      goal: $('tGoal').value,
+      status: $('tStatus').value,
+      value: $('tValue').value,
+      freq: $('tFreq').value,
+      plan: $('tPlan').value,
+      log: $('tLog').value,
+      input: $('tInput').value,
+      deliver: $('tDeliver').value,
+      ops: $('tOps').value,
+      map26: $('tMap').value
+    };
+    save();
+  }
+
+  function selectTopic(k){
+    selectedTopicKey = k;
+    // highlight tree
+    document.querySelectorAll('.treeItem').forEach(it=>{
+      it.classList.toggle('active', it.getAttribute('data-k')===k);
+    });
+
+    const base = state.topics.find(t=>topicKey(t)===k);
+    if(!base){
+      $('topicEmpty').style.display='';
+      $('topicDetail').style.display='none';
+      return;
+    }
+    $('topicEmpty').style.display='none';
+    $('topicDetail').style.display='';
+
+    $('topicPathChip').textContent = `${base.l1} / ${base.l2} / ${base.l3}`;
+    $('topicTitle').textContent = base.l3;
+
+    const o = overlayForTopic(k, base);
+    $('tGoal').value = o.goal;
+    $('tStatus').value = o.status;
+    $('tValue').value = o.value;
+    $('tFreq').value = o.freq;
+    $('tPlan').value = o.plan;
+    $('tLog').value = o.log;
+    $('tInput').value = o.input;
+    $('tDeliver').value = o.deliver;
+    $('tOps').value = o.ops;
+    $('tMap').value = o.map26;
+
+    // update meeting bind select default
+    $('mTopicBind').value = k;
+  }
+
+  function renderTopicTree(){
+    const q = $('topicSearch').value.trim().toLowerCase();
+    const root = $('topicTree');
+    root.innerHTML = '';
+
+    const list = state.topics
+      .map(t=>({ t, k: topicKey(t) }))
+      .filter(x=>{
+        if(!q) return true;
+        const blob = `${x.t.l1} ${x.t.l2} ${x.t.l3} ${(x.t.value||'')} ${(x.t.goal||'')} ${(x.t.status||'')}`.toLowerCase();
+        return blob.includes(q);
+      });
+
+    if(list.length===0){
+      const div = document.createElement('div');
+      div.className='hint';
+      div.textContent='没有匹配的议题';
+      root.appendChild(div);
+      return;
+    }
+
+    list.forEach(({t,k})=>{
+      const item = document.createElement('div');
+      item.className = 'treeItem' + (k===selectedTopicKey?' active':'');
+      item.setAttribute('data-k', k);
+      const sev = (state.tasks.filter(a=>a.topicKey===k && a.status!=='Done').length);
+      item.innerHTML = `
+        <div style="display:flex; justify-content:space-between; gap:10px; align-items:flex-start">
+          <div style="font-weight:800; font-size:12px; line-height:1.2">${escapeHTML(t.l3)}</div>
+          <div class="chip">未闭环 ${sev}</div>
+        </div>
+        <div class="treePath">${escapeHTML(t.l1)} / ${escapeHTML(t.l2)}</div>
+      `;
+      item.addEventListener('click', ()=> selectTopic(k));
+      root.appendChild(item);
+    });
+
+    // empty state selection
+    if(!selectedTopicKey){
+      $('topicEmpty').style.display='';
+      $('topicDetail').style.display='none';
+    }
+  }
+
+  function renderTopicSelectOptions(){
+    const opts = state.topics
+      .map(t=>({ k: topicKey(t), label: `${t.l1} / ${t.l2} / ${t.l3}` }))
+      .sort((a,b)=> a.label.localeCompare(b.label));
+
+    function fill(sel, allowEmpty){
+      sel.innerHTML = '';
+      if(allowEmpty){
+        const o = document.createElement('option');
+        o.value='';
+        o.textContent='（不绑定议题）';
+        sel.appendChild(o);
+      }
+      opts.forEach(x=>{
+        const o = document.createElement('option');
+        o.value=x.k;
+        o.textContent=x.label;
+        sel.appendChild(o);
+      });
+    }
+
+    fill($('mTopicBind'), true);
+    fill($('mTaskTopic'), true);
+  }
+
+  /** ---------------- meetings ---------------- */
+  function minutesTemplate({title, level, whenISO, transcript}){
+    // offline: create template + small excerpt; keep style similar to your Excel samples
+    const when = whenISO ? fmtLocal(whenISO) : '';
+    const head = `【会议纪要】${title || '国际ISD-服务中部屋会议'}\n${when?('时间：'+when+'\n'):''}${level && level!=='/'?('会议等级：'+level+'\n'):''}`;
+
+    const excerpt = (transcript||'').trim().slice(0, 520);
+    const body = [
+      head,
+      '',
+      '一、会议背景/目的',
+      '（请补充：为什么开会/要对齐什么/要做什么决策）',
+      '',
+      '二、主要讨论内容与结论',
+      excerpt ? ('- 摘要（来自转写前 520 字）：\n' + excerpt.replace(/\n+/g,'\n')) : '（请补充结论要点，建议分条）',
+      '',
+      '三、行动项',
+      '1）<事项> – <部门-姓名>；行动项ddl：YYYY/MM/DD',
+      '',
+      '（可选）决议项：',
+      '1. <决议内容>'
+    ].join('\n');
+
+    return body;
+  }
+
+  function saveMeeting(){
+    const m = {
+      id: uid(),
+      title: $('mTitle').value.trim(),
+      level: $('mLevel').value,
+      topicKey: $('mTopicBind').value,
+      whenISO: toISOFromLocalInput($('mWhen').value),
+      transcript: $('mTranscript').value,
+      minutes: $('mMinutes').value,
+      createdAtISO: new Date().toISOString()
+    };
+    state.meetings.unshift(m);
+    save();
+    renderMeetings();
+    toast('已保存会议');
+  }
+
+  function renderMeetings(){
+    const tb = $('meetingsTbody');
+    tb.innerHTML='';
+    state.meetings.slice(0, 50).forEach(m=>{
+      const tr = document.createElement('tr');
+      const when = m.whenISO ? fmtLocal(m.whenISO) : '';
+      const tlabel = m.topicKey ? prettyTopicLabel(m.topicKey) : '';
+      tr.innerHTML = `
+        <td>${escapeHTML(when || m.createdAtISO.slice(0,10))}</td>
+        <td>${escapeHTML(m.level||'/')}</td>
+        <td>${escapeHTML(m.title||'（未命名会议）')}</td>
+        <td>${escapeHTML(tlabel)}</td>
+        <td>
+          <button data-act="load" data-id="${m.id}">载入</button>
+          <button data-act="del" data-id="${m.id}" class="danger">删除</button>
+        </td>
+      `;
+      tb.appendChild(tr);
+    });
+
+    tb.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.getAttribute('data-id');
+        const act = btn.getAttribute('data-act');
+        const idx = state.meetings.findIndex(x=>x.id===id);
+        if(idx<0) return;
+        if(act==='del'){
+          state.meetings.splice(idx,1);
+          save();
+          renderMeetings();
+          toast('已删除');
+          return;
+        }
+        if(act==='load'){
+          const m = state.meetings[idx];
+          $('mTitle').value = m.title||'';
+          $('mLevel').value = m.level||'L2';
+          $('mTopicBind').value = m.topicKey||'';
+          $('mWhen').value = toLocalInputFromISO(m.whenISO);
+          $('mTranscript').value = m.transcript||'';
+          $('mMinutes').value = m.minutes||'';
+          toast('已载入到编辑区');
+        }
+      });
+    });
+  }
+
+  /** ---------------- minutes -> actions extraction ---------------- */
+  function parseDDLFromText(text){
+    // 2025/12/15 or 2025-12-15 (date only) + optional time
+    const reDT = /(20\d{2})[\/-](\d{1,2})[\/-](\d{1,2})(?:\s+(\d{1,2}):(\d{2}))?/;
+    const m = String(text||'').match(reDT);
+    if(!m) return '';
+    const yyyy = +m[1];
+    const mm = +m[2];
+    const dd = +m[3];
+    const hh = m[4] ? +m[4] : 18;
+    const mi = m[5] ? +m[5] : 0;
+    const d = new Date(yyyy, mm-1, dd, hh, mi, 0);
+    if(Number.isNaN(d.getTime())) return '';
+    return d.toISOString();
+  }
+
+  function parseOwnerFromText(text){
+    const re = /([\u4e00-\u9fa5A-Za-z0-9]+-[\u4e00-\u9fa5A-Za-z0-9]+)(?=\s|\||，|,|；|;|\)|\]|$)/;
+    const m = String(text||'').match(re);
+    return m ? m[1] : '';
+  }
+
+  function cleanActionText(text){
+    let s = String(text||'').trim();
+    s = s.replace(/^\s*(行动项|Action|TODO|待办)\s*[:：]?\s*/i,'');
+    s = s.replace(/^\s*\d+[\)）\.、]\s*/, '');
+    // strip ddls and owner patterns
+    s = s.replace(/行动项ddl\s*[:：]?\s*(20\d{2})[\/-](\d{1,2})[\/-](\d{1,2})(\s+\d{1,2}:\d{2})?/i, '').trim();
+    s = s.replace(/ddl\s*[:：]?\s*(20\d{2})[\/-](\d{1,2})[\/-](\d{1,2})(\s+\d{1,2}:\d{2})?/i, '').trim();
+    s = s.replace(/\s{2,}/g,' ').trim();
+    return s;
+  }
+
+  let extractedCache = [];
+  function renderExtracted(items){
+    extractedCache = items;
+    const tb = $('extractedTbody');
+    tb.innerHTML='';
+
+    items.forEach(it=>{
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><input type="text" data-k="owner" data-id="${it.id}" value="${escapeHTML(it.owner||'')}" placeholder="部门-姓名" /></td>
+        <td><input type="text" data-k="ddl" data-id="${it.id}" value="${escapeHTML(it.ddlISO?fmtLocal(it.ddlISO):'')}" placeholder="YYYY-MM-DD HH:MM 或 YYYY/MM/DD" /></td>
+        <td><input type="text" data-k="text" data-id="${it.id}" value="${escapeHTML(it.text||'')}" placeholder="事项" /></td>
+        <td>
+          <select data-k="topicKey" data-id="${it.id}"></select>
+        </td>
+        <td><button class="danger" data-act="rm" data-id="${it.id}">移除</button></td>
+      `;
+      tb.appendChild(tr);
+
+      // fill topic select
+      const sel = tr.querySelector('select');
+      fillTopicSelect(sel, true);
+      sel.value = it.topicKey || '';
+    });
+
+    tb.querySelectorAll('input,select').forEach(inp=>{
+      inp.addEventListener('input', ()=>{
+        const id = inp.getAttribute('data-id');
+        const k = inp.getAttribute('data-k');
+        const t = extractedCache.find(x=>x.id===id);
+        if(!t) return;
+        const v = inp.value;
+        if(k==='owner') t.owner = v.trim();
+        if(k==='ddl') t.ddlISO = parseDDLFromText(v.trim());
+        if(k==='text') t.text = v;
+        if(k==='topicKey') t.topicKey = v;
+      });
+      inp.addEventListener('change', ()=>{
+        const id = inp.getAttribute('data-id');
+        const k = inp.getAttribute('data-k');
+        const t = extractedCache.find(x=>x.id===id);
+        if(!t) return;
+        if(k==='topicKey') t.topicKey = inp.value;
+      });
+    });
+
+    tb.querySelectorAll('button[data-act="rm"]').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.getAttribute('data-id');
+        extractedCache = extractedCache.filter(x=>x.id!==id);
+        renderExtracted(extractedCache);
+      });
+    });
+  }
+
+  function autoMatchTopicKey(text){
+    const s = String(text||'').toLowerCase();
+    if(!s) return '';
+    // simple keyword match by l3 and l2
+    let best = {k:'', score:0};
+    for(const t of state.topics){
+      const k = topicKey(t);
+      let score = 0;
+      const l3 = (t.l3||'').toLowerCase();
+      const l2 = (t.l2||'').toLowerCase();
+      if(l3 && s.includes(l3.slice(0, Math.min(8,l3.length)))) score += 3;
+      if(l2 && s.includes(l2.slice(0, Math.min(6,l2.length)))) score += 1;
+      if(score>best.score){ best = {k, score}; }
+    }
+    return best.score>=2 ? best.k : '';
+  }
+
+  function extractActionsFromMinutes(){
+    const raw = $('mMinutes').value || '';
+    const lines = raw.split(/\n+/).map(x=>x.trim()).filter(Boolean);
+
+    // attempt: focus section after "行动项"
+    let start = 0;
+    for(let i=0;i<lines.length;i++){
+      if(/^三、?\s*行动项/.test(lines[i]) || /^行动项/.test(lines[i])){ start=i+1; break; }
+    }
+    const slice = lines.slice(start);
+
+    const items = [];
+    for(const line of slice){
+      if(/^（可选）决议项/.test(line) || /^决议项/.test(line) || /^四、/.test(line)) break;
+      if(!/\d+[\)）\.、]/.test(line) && !/[-–—]/.test(line)){
+        // still accept but low confidence
+      }
+      const owner = parseOwnerFromText(line);
+      const ddlISO = parseDDLFromText(line);
+      let text = cleanActionText(line);
+      // remove owner token tail like "- 张三" etc? keep for now.
+      text = text.replace(owner,'').trim();
+      text = text.replace(/\s*[–—-]\s*$/,'');
+      if(!text) continue;
+      const tk = $('mTopicBind').value || autoMatchTopicKey(text);
+      items.push({ id: uid(), owner, ddlISO, text, topicKey: tk });
+    }
+
+    renderExtracted(items);
+    toast(`已抽取 ${items.length} 条行动项`);
+  }
+
+  function addAllExtracted(){
+    if(!extractedCache.length){ toast('没有可入库的行动项'); return; }
+    let added = 0;
+    for(const it of extractedCache){
+      if(!it.text) continue;
+      const task = {
+        id: uid(),
+        owner: (it.owner||'').trim(),
+        ddlISO: it.ddlISO || '',
+        text: it.text.trim(),
+        status: 'Todo',
+        topicKey: it.topicKey || '',
+        createdAtISO: new Date().toISOString(),
+        doneAtISO: ''
+      };
+      state.tasks.push(task);
+      added++;
+    }
+    extractedCache = [];
+    renderExtracted([]);
+    save();
+    renderAll();
+    toast(`已入库 ${added} 条`);
+  }
+
+  /** ---------------- tasks / kanban ---------------- */
+  const STATUSES = ['Todo','Doing','Blocked','Done'];
+
+  function prettyTopicLabel(k){
+    const t = state.topics.find(x=>topicKey(x)===k);
+    if(!t) return k;
+    return `${t.l1} / ${t.l2} / ${t.l3}`;
+  }
+
+  function fillTopicSelect(sel, allowEmpty){
+    sel.innerHTML='';
+    if(allowEmpty){
+      const o = document.createElement('option');
+      o.value='';
+      o.textContent='（不绑定议题）';
+      sel.appendChild(o);
+    }
+    state.topics
+      .map(t=>({k:topicKey(t), label: `${t.l1} / ${t.l2} / ${t.l3}`}))
+      .sort((a,b)=>a.label.localeCompare(b.label))
+      .forEach(x=>{
+        const o = document.createElement('option');
+        o.value=x.k;
+        o.textContent=x.label;
+        sel.appendChild(o);
+      });
+  }
+
+  function renderKanban(){
+    const root = $('kanban');
+    root.innerHTML='';
+
+    const by = {
+      Todo: state.tasks.filter(t=>t.status==='Todo'),
+      Doing: state.tasks.filter(t=>t.status==='Doing'),
+      Blocked: state.tasks.filter(t=>t.status==='Blocked'),
+      Done: state.tasks.filter(t=>t.status==='Done'),
+    };
+
+    for(const st of STATUSES){
+      const col = document.createElement('div');
+      col.className = 'col';
+      col.setAttribute('data-status', st);
+      col.innerHTML = `
+        <div class="colhd">
+          <b>${st}</b>
+          <span>${by[st].length}</span>
+        </div>
+        <div class="cards" data-dropzone="${st}"></div>
+      `;
+      root.appendChild(col);
+      const cards = col.querySelector('.cards');
+
+      by[st].forEach(task=>{
+        const sev = severityTag(task);
+        const sevPill = sev ? `<span class="pill2 ${sev}">${sev==='overdue'?'逾期':'临期≤48h'}</span>` : '';
+        const topic = task.topicKey ? `<span class="pill2">${escapeHTML(prettyTopicLabel(task.topicKey).slice(0,42))}</span>` : '';
+
+        const card = document.createElement('div');
+        card.className='task';
+        card.setAttribute('draggable','true');
+        card.setAttribute('data-id', task.id);
+        card.innerHTML = `
+          <p class="t">${escapeHTML(task.text)}</p>
+          <div class="meta">
+            <span class="pill2">${escapeHTML(task.owner||'—')}</span>
+            <span class="pill2">${task.ddlISO?fmtLocal(task.ddlISO):'无DDL'}</span>
+            ${sevPill}
+            ${topic}
+          </div>
+          <div style="height:8px"></div>
+          <div class="row" style="gap:8px; justify-content:space-between">
+            <div class="row" style="gap:8px; flex-wrap:wrap">
+              <button data-act="edit" data-id="${task.id}">编辑</button>
+              <button data-act="next" data-id="${task.id}">移动</button>
+              <button data-act="copy" data-id="${task.id}">生成话术</button>
+            </div>
+            <button data-act="del" data-id="${task.id}" class="danger">删除</button>
+          </div>
+        `;
+        cards.appendChild(card);
+      });
+    }
+
+    root.querySelectorAll('.task').forEach(card=>{
+      card.addEventListener('dragstart', (e)=> e.dataTransfer.setData('text/plain', card.getAttribute('data-id')));
+    });
+    root.querySelectorAll('[data-dropzone]').forEach(zone=>{
+      zone.addEventListener('dragover', (e)=> e.preventDefault());
+      zone.addEventListener('drop', (e)=>{
+        e.preventDefault();
+        const id = e.dataTransfer.getData('text/plain');
+        const st = zone.getAttribute('data-dropzone');
+        moveTaskTo(id, st);
+      });
+    });
+
+    root.querySelectorAll('button').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const id = btn.getAttribute('data-id');
+        const act = btn.getAttribute('data-act');
+        if(act==='del'){
+          const i = state.tasks.findIndex(x=>x.id===id);
+          if(i>=0){ state.tasks.splice(i,1); save(); renderAll(); }
+        }
+        if(act==='edit') openTaskModal(id);
+        if(act==='next') cycleTaskStatus(id);
+        if(act==='copy'){
+          const t = state.tasks.find(x=>x.id===id);
+          if(t){
+            const msg = buildRemindText(t, 'neutral', 'zh');
+            $('remindText').value = msg;
+            setView('insights');
+            toast('已生成话术（可复制发送）');
+          }
+        }
+      });
+    });
+  }
+
+  function cycleTaskStatus(id){
+    const t = state.tasks.find(x=>x.id===id);
+    if(!t) return;
+    const i = STATUSES.indexOf(t.status);
+    const next = STATUSES[(i+1) % STATUSES.length];
+    moveTaskTo(id, next);
+  }
+
+  function moveTaskTo(id, status){
+    const t = state.tasks.find(x=>x.id===id);
+    if(!t) return;
+    t.status = status;
+    if(status==='Done') t.doneAtISO = new Date().toISOString();
+    else t.doneAtISO = '';
+    save();
+    renderAll();
+  }
+
+  function sortByDDL(){
+    state.tasks.sort((a,b)=>{
+      const da = a.ddlISO ? new Date(a.ddlISO).getTime() : Infinity;
+      const db = b.ddlISO ? new Date(b.ddlISO).getTime() : Infinity;
+      if(da!==db) return da-db;
+      return (a.createdAtISO||'').localeCompare(b.createdAtISO||'');
+    });
+    save();
+    renderAll();
+    toast('已按DDL排序');
+  }
+
+  /** ---------------- modal: task editor ---------------- */
+  let editingTaskId = '';
+  function openTaskModal(id){
+    editingTaskId = id || '';
+    const isEdit = !!id;
+    $('modalTitle').textContent = isEdit ? '编辑行动项' : '新增行动项';
+
+    fillTopicSelect($('mTaskTopic'), true);
+
+    const t = isEdit ? state.tasks.find(x=>x.id===id) : null;
+    $('mOwner').value = t ? (t.owner||'') : '';
+    $('mDDL').value = t ? toLocalInputFromISO(t.ddlISO) : '';
+    $('mText').value = t ? (t.text||'') : '';
+    $('mStatus').value = t ? t.status : 'Todo';
+    $('mTaskTopic').value = t ? (t.topicKey||'') : '';
+
+    syncWeComButtons();
+    $('modalBackdrop').style.display = 'flex';
+  }
+
+  function closeTaskModal(){ $('modalBackdrop').style.display='none'; }
+
+  function saveTaskFromModal(){
+    const owner = $('mOwner').value.trim();
+    const ddlISO = toISOFromLocalInput($('mDDL').value);
+    const text = $('mText').value.trim();
+    const status = $('mStatus').value;
+    const tk = $('mTaskTopic').value;
+
+    if(!text){ toast('事项不能为空'); return; }
+    if(owner && !isOwnerFormat(owner)) toast('Owner建议用“部门-姓名”');
+
+    if(editingTaskId){
+      const t = state.tasks.find(x=>x.id===editingTaskId);
+      if(!t) return;
+      t.owner = owner;
+      t.ddlISO = ddlISO;
+      t.text = text;
+      t.topicKey = tk;
+      const prev = t.status;
+      t.status = status;
+      if(prev!=='Done' && status==='Done') t.doneAtISO = new Date().toISOString();
+      if(prev==='Done' && status!=='Done') t.doneAtISO = '';
+    } else {
+      state.tasks.push({
+        id: uid(), owner, ddlISO, text, status,
+        topicKey: tk,
+        createdAtISO: new Date().toISOString(),
+        doneAtISO: status==='Done' ? new Date().toISOString() : ''
+      });
+    }
+
+    save();
+    renderAll();
+    closeTaskModal();
+    toast('已保存');
+  }
+
+  /** ---------------- remind & charts ---------------- */
+  let chartStatus, chartTrend;
+
+  function ensureCharts(){
+    chartStatus = chartStatus || echarts.init($('chartStatus'));
+    chartTrend = chartTrend || echarts.init($('chartTrend'));
+  }
+
+  function renderCharts(){
+    ensureCharts();
+
+    const counts = {
+      Todo: state.tasks.filter(t=>t.status==='Todo').length,
+      Doing: state.tasks.filter(t=>t.status==='Doing').length,
+      Blocked: state.tasks.filter(t=>t.status==='Blocked').length,
+      Done: state.tasks.filter(t=>t.status==='Done').length,
+    };
+
+    chartStatus.setOption({
+      backgroundColor: 'transparent',
+      tooltip: { trigger: 'item' },
+      legend: { bottom: 0, textStyle: { color: 'rgba(231,236,255,.85)' } },
+      series: [{
+        type: 'pie',
+        radius: ['42%','72%'],
+        label: { color: 'rgba(231,236,255,.85)' },
+        itemStyle: { borderRadius: 8, borderColor: 'rgba(0,0,0,.3)', borderWidth: 2 },
+        data: [
+          { value: counts.Todo, name: 'Todo' },
+          { value: counts.Doing, name: 'Doing' },
+          { value: counts.Blocked, name: 'Blocked' },
+          { value: counts.Done, name: 'Done' },
+        ]
+      }]
+    }, true);
+
+    const days = 14;
+    const today = new Date();
+    const labels = [];
+    const addArr = Array(days).fill(0);
+    const doneArr = Array(days).fill(0);
+    function dayKey(d){ return `${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}`; }
+    const idxMap = new Map();
+    for(let i=days-1;i>=0;i--){
+      const d = new Date(today.getFullYear(), today.getMonth(), today.getDate()-i);
+      const k = dayKey(d);
+      labels.push(k.slice(5));
+      idxMap.set(k, labels.length-1);
+    }
+    state.tasks.forEach(t=>{
+      if(t.createdAtISO){
+        const d = new Date(t.createdAtISO);
+        const k = dayKey(d);
+        if(idxMap.has(k)) addArr[idxMap.get(k)]++;
+      }
+      if(t.doneAtISO){
+        const d = new Date(t.doneAtISO);
+        const k = dayKey(d);
+        if(idxMap.has(k)) doneArr[idxMap.get(k)]++;
+      }
+    });
+
+    chartTrend.setOption({
+      backgroundColor: 'transparent',
+      tooltip: { trigger: 'axis' },
+      legend: { bottom: 0, textStyle: { color: 'rgba(231,236,255,.85)' } },
+      grid: { left: 32, right: 16, top: 12, bottom: 42 },
+      xAxis: { type: 'category', data: labels, axisLabel: { color: 'rgba(168,179,218,.9)' }, axisLine:{ lineStyle:{ color:'rgba(255,255,255,.14)'} } },
+      yAxis: { type: 'value', axisLabel: { color: 'rgba(168,179,218,.9)' }, splitLine:{ lineStyle:{ color:'rgba(255,255,255,.08)'} }, axisLine:{ lineStyle:{ color:'rgba(255,255,255,.14)'} } },
+      series: [
+        { name:'新增', type:'bar', data: addArr, itemStyle:{ color:'rgba(110,168,254,.78)', borderRadius:[6,6,0,0] } },
+        { name:'完成', type:'line', data: doneArr, smooth:true, symbolSize:7, lineStyle:{ width:3, color:'rgba(126,224,195,.9)' }, itemStyle:{ color:'rgba(126,224,195,.9)' } }
+      ]
+    }, true);
+
+    window.addEventListener('resize', ()=>{ chartStatus.resize(); chartTrend.resize(); });
+  }
+
+  function renderStatsAndRemindSelect(){
+    const open = state.tasks.filter(t=>t.status!=='Done').length;
+    const now = Date.now();
+    const overdue = state.tasks.filter(t=>t.status!=='Done' && t.ddlISO && new Date(t.ddlISO).getTime() < now).length;
+    const dueSoon = state.tasks.filter(t=>t.status!=='Done' && t.ddlISO && (new Date(t.ddlISO).getTime() - now) <= 48*3600*1000 && (new Date(t.ddlISO).getTime() - now) >= 0).length;
+
+    $('statOpen').textContent = open;
+    $('statOverdue').textContent = overdue;
+    $('statDueSoon').textContent = dueSoon;
+
+    const sel = $('remindTaskSelect');
+    const candidates = state.tasks
+      .filter(t=>t.status!=='Done')
+      .slice()
+      .sort((a,b)=>{
+        const sa = severityTag(a), sb = severityTag(b);
+        const rank = (s)=> s==='overdue'?0 : s==='urgent'?1 : 2;
+        const ra = rank(sa), rb = rank(sb);
+        if(ra!==rb) return ra-rb;
+        const da = a.ddlISO ? new Date(a.ddlISO).getTime() : Infinity;
+        const db = b.ddlISO ? new Date(b.ddlISO).getTime() : Infinity;
+        return da-db;
+      });
+
+    sel.innerHTML='';
+    if(candidates.length===0){
+      const opt = document.createElement('option');
+      opt.value='';
+      opt.textContent='暂无可跟催行动项';
+      sel.appendChild(opt);
+      return;
+    }
+
+    candidates.forEach(t=>{
+      const opt = document.createElement('option');
+      opt.value = t.id;
+      const sev = severityTag(t);
+      const prefix = sev==='overdue'?'[逾期] ' : sev==='urgent'?'[临期] ' : '';
+      opt.textContent = `${prefix}${t.owner||'—'} | ${t.ddlISO?fmtLocal(t.ddlISO):'无DDL'} | ${t.text.slice(0,38)}`;
+      sel.appendChild(opt);
+    });
+  }
+
+  function buildRemindText(task, tone, lang){
+    const sev = severityTag(task);
+    const ddl = task.ddlISO ? fmtLocal(task.ddlISO) : '';
+    const isOverdue = sev==='overdue';
+    const isUrgent = sev==='urgent';
+
+    let msg='';
+    if(lang==='zh'){
+      const greet = tone==='gentle' ? '辛苦～' : tone==='firm' ? '麻烦优先处理下：' : '麻烦确认下：';
+      const ask = tone==='firm'
+        ? '请在今天给到明确进展/预计完成时间，并同步阻塞点（如有）。'
+        : tone==='gentle'
+          ? '方便的话请给我一个进展&预计完成时间～如有阻塞我可以一起协调。'
+          : '请同步当前进展&预计完成时间，如有阻塞我这边协调。';
+      const urgency = isOverdue ? `该事项已逾期（DDL：${ddl}）。` : isUrgent ? `该事项临期（DDL：${ddl}）。` : (ddl?`DDL：${ddl}。`:'');
+      const topic = task.topicKey ? `【议题】${prettyTopicLabel(task.topicKey)}` : '';
+      msg = `${greet}\n\n${topic?topic+'\n':''}【待办】${task.text}\n【Owner】${task.owner||'—'}\n${urgency?('【时间】'+urgency.replace('DDL：','')):''}\n\n${ask}`.replace(/\n{3,}/g,'\n\n');
+    } else {
+      const greet = tone==='gentle' ? 'Thanks in advance.' : tone==='firm' ? 'Please prioritize this item:' : 'Could you please confirm:';
+      const ask = tone==='firm'
+        ? 'Please share the current status and the ETA today, and highlight blockers (if any).'
+        : tone==='gentle'
+          ? 'Could you share the status and ETA when you have a moment? If there are blockers, I can help coordinate.'
+          : 'Please share the current status and ETA. If there are blockers, I can help coordinate.';
+      const urgency = isOverdue ? `This item is overdue (DDL: ${ddl}).` : isUrgent ? `This item is due soon (DDL: ${ddl}).` : (ddl?`DDL: ${ddl}.`: '');
+      const topic = task.topicKey ? `[Topic] ${prettyTopicLabel(task.topicKey)}` : '';
+      msg = `${greet}\n\n${topic?topic+'\n':''}[Action] ${task.text}\n[Owner] ${task.owner||'—'}\n${urgency?('[Time] '+urgency):''}\n\n${ask}`.replace(/\n{3,}/g,'\n\n');
+    }
+    return msg;
+  }
+
+  function genRemind(){
+    const id = $('remindTaskSelect').value;
+    const t = state.tasks.find(x=>x.id===id);
+    if(!t){ toast('请选择行动项'); return; }
+    const tone = $('remindTone').value;
+    const lang = $('remindLang').value;
+    $('remindText').value = buildRemindText(t, tone, lang);
+    toast('已生成话术');
+  }
+
+  async function copyRemind(){
+    try{
+      await navigator.clipboard.writeText($('remindText').value||'');
+      toast('已复制');
+    }catch(e){ toast('复制失败：浏览器不支持'); }
+  }
+
+  /** ---------------- settings + placeholder integrations ---------------- */
+  function saveSettings(){
+    state.settings.asrUrl = $('cfgAsrUrl').value.trim();
+    state.settings.llmUrl = $('cfgLlmUrl').value.trim();
+    state.settings.apiKey = $('cfgApiKey').value;
+    state.settings.wecomUrl = $('cfgWeComUrl').value.trim();
+    save();
+    syncWeComButtons();
+    toast('配置已保存');
+  }
+
+  function syncWeComButtons(){
+    const enabled = !!state.settings.wecomUrl;
+    $('btnWeComSend').disabled = !enabled;
+    $('btnWeComSendFromModal').disabled = !enabled;
+  }
+
+  async function callAsr(file){
+    // placeholder; default mock
+    if(!state.settings.asrUrl){
+      await new Promise(r=>setTimeout(r, 450));
+      return { text: '[Mock] 这里是转写文本（请在配置中填写 ASR URL 后接入真实服务）' };
+    }
+    // if you enable later: implement fetch(multipart) here
+    return { text: '[未实现] 已配置 ASR URL，但前端未内置上传实现。建议由内网版本或 IT 网关提供标准接口。' };
+  }
+
+  async function callLlm(transcript){
+    // placeholder; default mock
+    if(!state.settings.llmUrl){
+      await new Promise(r=>setTimeout(r, 450));
+      return { minutesMarkdown: minutesTemplate({ title: $('mTitle').value, level: $('mLevel').value, whenISO: toISOFromLocalInput($('mWhen').value), transcript }) };
+    }
+    // if you enable later: implement fetch(JSON) here
+    return { minutesMarkdown: minutesTemplate({ title: $('mTitle').value, level: $('mLevel').value, whenISO: toISOFromLocalInput($('mWhen').value), transcript }) };
+  }
+
+  async function sendViaWeCom(payload){
+    // payload: { toUser, content }
+    if(!state.settings.wecomUrl){
+      return { ok:false, reason:'not_configured' };
+    }
+    // placeholder
+    return { ok:false, reason:'not_implemented_in_offline_build' };
+  }
+
+  async function tryWeComSendFromRemind(){
+    const id = $('remindTaskSelect').value;
+    const t = state.tasks.find(x=>x.id===id);
+    if(!t){ toast('请选择行动项'); return; }
+    const content = $('remindText').value||'';
+    const res = await sendViaWeCom({ toUser: t.owner, content });
+    toast(res.ok ? '已发送（接口返回成功）' : '发送未启用/未接入');
+  }
+
+  /** ---------------- export / import ---------------- */
+  function exportJSON(){
+    download(`isd-cockpit-v2-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(state, null, 2));
+  }
+
+  function importJSON(file){
+    const reader = new FileReader();
+    reader.onload = ()=>{
+      try{
+        const obj = JSON.parse(String(reader.result||''));
+        if(!obj || typeof obj!=='object') throw new Error('bad');
+        state.settings = Object.assign(state.settings, obj.settings||{});
+        state.topics = Array.isArray(obj.topics) ? obj.topics : state.topics;
+        state.topicNotes = obj.topicNotes && typeof obj.topicNotes==='object' ? obj.topicNotes : state.topicNotes;
+        state.meetings = Array.isArray(obj.meetings) ? obj.meetings : state.meetings;
+        state.tasks = Array.isArray(obj.tasks) ? obj.tasks : state.tasks;
+        mergeTopicSeed();
+        save();
+        renderAll();
+        toast('已导入');
+      }catch(e){
+        toast('导入失败：不是合法JSON');
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function exportCSV(){
+    const header = ['Owner','DDL','事项','状态','议题'];
+    const rows = state.tasks.map(t=>[
+      (t.owner||''),
+      (t.ddlISO?fmtLocal(t.ddlISO):''),
+      (t.text||''),
+      (t.status||''),
+      (t.topicKey?prettyTopicLabel(t.topicKey):'')
+    ]);
+    const csv = [header, ...rows]
+      .map(r=> r.map(cell=> '"' + String(cell).replace(/"/g,'""') + '"').join(','))
+      .join('\n');
+    download(`isd-actions-${new Date().toISOString().slice(0,10)}.csv`, csv);
+  }
+
+  function exportTopicsOnly(){
+    const out = { topics: state.topics, topicNotes: state.topicNotes };
+    download(`isd-topics-${new Date().toISOString().slice(0,10)}.json`, JSON.stringify(out, null, 2));
+  }
+
+  /** ---------------- UI wiring ---------------- */
+  function renderAll(){
+    // settings
+    $('cfgAsrUrl').value = state.settings.asrUrl||'';
+    $('cfgLlmUrl').value = state.settings.llmUrl||'';
+    $('cfgApiKey').value = state.settings.apiKey||'';
+    $('cfgWeComUrl').value = state.settings.wecomUrl||'';
+    syncWeComButtons();
+
+    renderTopicSelectOptions();
+    renderTopicTree();
+    renderMeetings();
+    renderKanban();
+    renderStatsAndRemindSelect();
+    renderCharts();
+  }
+
+  function renderTopicSelectOptions(){
+    fillTopicSelect($('mTopicBind'), true);
+    fillTopicSelect($('mTaskTopic'), true);
+  }
+
+  function bindAutoSaveTopicFields(){
+    ['tGoal','tStatus','tValue','tFreq','tPlan','tLog','tInput','tDeliver','tOps','tMap'].forEach(id=>{
+      $(id).addEventListener('input', ()=> saveOverlayFromUI());
+    });
+  }
+
+  function initNav(){
+    document.querySelectorAll('.navTab').forEach(tab=>{
+      tab.addEventListener('click', ()=> setView(tab.getAttribute('data-view')));
+    });
+  }
+
+  async function genMinutes(){
+    const transcript = $('mTranscript').value || '';
+    const res = await callLlm(transcript);
+    $('mMinutes').value = res.minutesMarkdown || minutesTemplate({ title: $('mTitle').value, level: $('mLevel').value, whenISO: toISOFromLocalInput($('mWhen').value), transcript });
+    toast('已生成纪要（可手动校准）');
+  }
+
+  async function transcribeAudio(){
+    const f = $('audioInput').files && $('audioInput').files[0];
+    if(!f){ toast('请先选择音频文件'); return; }
+    const res = await callAsr(f);
+    $('mTranscript').value = res.text || '';
+    toast('已生成转写（mock/预留）');
+  }
+
+  function appendLog(){
+    if(!selectedTopicKey){ toast('请先选择议题'); return; }
+    const now = new Date();
+    const stamp = `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`;
+    const current = $('tLog').value || '';
+    const next = (current.trim()? (current.trimEnd()+'\n') : '') + `${stamp}  `;
+    $('tLog').value = next;
+    saveOverlayFromUI();
+    toast('已追加时间戳');
+  }
+
+  /** topic quick add */
+  function openTopicModal(){
+    $('qtL1').value='';
+    $('qtL2').value='';
+    $('qtL3').value='';
+    $('topicModal').style.display='flex';
+  }
+  function closeTopicModal(){ $('topicModal').style.display='none'; }
+  function createTopic(){
+    const l1=$('qtL1').value.trim();
+    const l2=$('qtL2').value.trim();
+    const l3=$('qtL3').value.trim();
+    if(!l1||!l2||!l3){ toast('请补全一级/二级/三级议题'); return; }
+    const t={l1,l2,l3,input:'',deliver:'',ops:'',value:'',status:'',goal:'',map26:'',freq:'',plan:''};
+    const k = topicKey(t);
+    if(state.topics.some(x=>topicKey(x)===k)){ toast('该议题已存在'); return; }
+    state.topics.unshift(t);
+    save();
+    renderAll();
+    selectTopic(k);
+    closeTopicModal();
+    toast('已新增议题');
+  }
+
+  /** placeholder bind buttons */
+  function bindMeetingToTopic(){
+    if(!selectedTopicKey){ toast('请选择议题'); return; }
+    setView('meetings');
+    $('mTopicBind').value = selectedTopicKey;
+    toast('已带入议题到会议中心');
+  }
+  function bindActionToTopic(){
+    if(!selectedTopicKey){ toast('请选择议题'); return; }
+    openTaskModal('');
+    $('mTaskTopic').value = selectedTopicKey;
+    toast('已带入议题到行动项');
+  }
+
+  /** ---------------- init ---------------- */
+  function init(){
+    load();
+    initNav();
+
+    // topic search
+    $('topicSearch').addEventListener('input', renderTopicTree);
+    $('btnTopicResetFilter').addEventListener('click', ()=>{ $('topicSearch').value=''; renderTopicTree(); });
+
+    bindAutoSaveTopicFields();
+
+    $('btnAppendLog').addEventListener('click', appendLog);
+    $('btnBindMeeting').addEventListener('click', bindMeetingToTopic);
+    $('btnBindAction').addEventListener('click', bindActionToTopic);
+
+    $('btnTopicQuickAdd').addEventListener('click', openTopicModal);
+    $('btnCloseTopicModal').addEventListener('click', closeTopicModal);
+    $('topicModal').addEventListener('click', (e)=>{ if(e.target=== $('topicModal')) closeTopicModal(); });
+    $('btnCreateTopic').addEventListener('click', createTopic);
+    $('btnTopicExport').addEventListener('click', exportTopicsOnly);
+
+    // meetings
+    $('btnGenMinutes').addEventListener('click', genMinutes);
+    $('btnTranscribeAudio').addEventListener('click', transcribeAudio);
+    $('btnExtractActions').addEventListener('click', extractActionsFromMinutes);
+    $('btnAddAllExtracted').addEventListener('click', addAllExtracted);
+    $('btnSaveMeeting').addEventListener('click', saveMeeting);
+
+    // tasks
+    $('btnNewTask').addEventListener('click', ()=> openTaskModal(''));
+    $('btnSortByDDL').addEventListener('click', sortByDDL);
+
+    $('btnCloseModal').addEventListener('click', closeTaskModal);
+    $('modalBackdrop').addEventListener('click', (e)=>{ if(e.target=== $('modalBackdrop')) closeTaskModal(); });
+    $('btnSaveTask').addEventListener('click', saveTaskFromModal);
+
+    // remind
+    $('btnGenRemind').addEventListener('click', genRemind);
+    $('btnCopyRemind').addEventListener('click', copyRemind);
+    $('btnWeComSend').addEventListener('click', tryWeComSendFromRemind);
+    $('btnWeComSendFromModal').addEventListener('click', ()=> toast('待接入：请在配置中填写企业微信发送URL，并由IT提供网关服务'));
+
+    // settings
+    $('btnSaveSettings').addEventListener('click', saveSettings);
+    $('btnTestMock').addEventListener('click', ()=>{ toast('Mock OK：你可以回到会议中心试“上传音频→转写”'); });
+
+    // export/import/reset
+    $('btnExportJSON').addEventListener('click', exportJSON);
+    $('btnExportCSV').addEventListener('click', exportCSV);
+    $('btnImportJSON').addEventListener('click', ()=> $('fileInput').click());
+    $('fileInput').addEventListener('change', ()=>{
+      const f = $('fileInput').files && $('fileInput').files[0];
+      if(f) importJSON(f);
+      $('fileInput').value='';
+    });
+
+    $('btnReset').addEventListener('click', ()=>{
+      if(!confirm('确认清空本地数据？建议先导出 JSON 备份。')) return;
+      state.settings = { asrUrl:'', llmUrl:'', apiKey:'', wecomUrl:'' };
+      state.topics = [];
+      state.topicNotes = {};
+      state.meetings = [];
+      state.tasks = [];
+      mergeTopicSeed();
+      save();
+      selectedTopicKey='';
+      renderAll();
+      toast('已清空');
+    });
+
+    renderAll();
+    setView('topics');
+
+    // default select first topic
+    if(state.topics.length){
+      selectTopic(topicKey(state.topics[0]));
+    } else {
+      $('topicEmpty').style.display='';
+      $('topicDetail').style.display='none';
+    }
+  }
+
+  init();
+})();
+</script>
+</body>
+</html>
