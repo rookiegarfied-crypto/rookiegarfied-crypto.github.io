@@ -5168,9 +5168,9 @@
       previewPath: "",
       editingKnowledgePath: "",
       knowledgeSpreadsheetBoards: {
-        cases: { workbook: null },
-        encyclopedia: { workbook: null },
-        contract: { workbook: null }
+        cases: { workbook: null, defaultLoaded: false, defaultLoading: false },
+        encyclopedia: { workbook: null, defaultLoaded: false, defaultLoading: false },
+        contract: { workbook: null, defaultLoaded: false, defaultLoading: false }
       },
       summaryQueue: [],
       summaryRunning: false,
@@ -6597,6 +6597,7 @@
         cases: {
           title: "解决方案案例库",
           emptyText: "",
+          defaultFile: "LTSA_case_list.xlsx",
           tabsEl: solutionCaseSheetTabsEl,
           gridEl: solutionCaseGridEl,
           emptyEl: solutionCaseEmptyEl
@@ -6611,6 +6612,7 @@
         contract: {
           title: "合同基线",
           emptyText: "",
+          defaultFile: "LTSA_Baselines.xlsx",
           tabsEl: knowledgeContractSheetTabsEl,
           gridEl: knowledgeContractGridEl,
           emptyEl: knowledgeContractEmptyEl
@@ -6795,6 +6797,78 @@
         config.gridEl.classList.add("hidden");
         config.emptyEl.classList.remove("hidden");
         config.emptyEl.textContent = config.emptyText;
+      }
+    }
+
+    function readKnowledgeSpreadsheetArrayBuffer(url) {
+      return new Promise((resolve, reject) => {
+        try {
+          const request = new XMLHttpRequest();
+          request.open("GET", url, true);
+          request.responseType = "arraybuffer";
+          request.onload = () => {
+            if (request.status === 0 || (request.status >= 200 && request.status < 300)) {
+              resolve(request.response);
+            } else {
+              reject(new Error("默认表格读取失败"));
+            }
+          };
+          request.onerror = () => reject(new Error("默认表格读取失败"));
+          request.send();
+        } catch (error) {
+          reject(error);
+        }
+      });
+    }
+
+    async function loadDefaultKnowledgeSpreadsheet(board = "cases") {
+      const config = getKnowledgeSpreadsheetBoardConfig(board);
+      const boardState = appState.knowledgeSpreadsheetBoards?.[board];
+      if (!config?.defaultFile || !boardState || boardState.defaultLoaded || boardState.defaultLoading || boardState.workbook) {
+        return;
+      }
+
+      boardState.defaultLoading = true;
+      const defaultUrl = new URL(`./${config.defaultFile}`, window.location.href).href;
+      try {
+        if (!window.XLSX) {
+          throw new Error("XLSX 库未加载成功");
+        }
+
+        let buffer;
+        try {
+          const response = await fetch(defaultUrl);
+          if (!response.ok) {
+            throw new Error("默认表格读取失败");
+          }
+          buffer = await response.arrayBuffer();
+        } catch (fetchError) {
+          buffer = await readKnowledgeSpreadsheetArrayBuffer(defaultUrl);
+        }
+
+        if (boardState.workbook) {
+          return;
+        }
+
+        const workbook = window.XLSX.read(buffer, { type: "array" });
+        const sheets = workbook.SheetNames.map((sheetName) => ({
+          name: sheetName,
+          data: window.XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], {
+            header: 1,
+            defval: ""
+          })
+        }));
+        boardState.workbook = {
+          name: config.defaultFile,
+          sheets
+        };
+        boardState.defaultLoaded = true;
+        renderKnowledgeSpreadsheetBoard(board);
+        renderHomeKnowledgeMetrics();
+      } catch (error) {
+        console.warn(`${board} default spreadsheet load failed:`, error);
+      } finally {
+        boardState.defaultLoading = false;
       }
     }
 
@@ -8025,6 +8099,8 @@
     renderKnowledgeSpreadsheetBoard("cases");
     renderKnowledgeSpreadsheetBoard("encyclopedia");
     renderKnowledgeSpreadsheetBoard("contract");
+    void loadDefaultKnowledgeSpreadsheet("cases");
+    void loadDefaultKnowledgeSpreadsheet("contract");
     renderSkillModule();
   </script>
   <script>
