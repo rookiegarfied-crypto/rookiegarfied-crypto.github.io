@@ -1652,11 +1652,13 @@
       overflow: auto;
     }
 
-    .middle-room-page {
+    .middle-room-page,
+    .embedded-page {
       padding-bottom: 16px;
     }
 
-    .middle-room-shell {
+    .middle-room-shell,
+    .embedded-shell {
       overflow: visible;
       border-radius: 0;
       background: transparent;
@@ -1664,7 +1666,8 @@
       border: 0;
     }
 
-    .middle-room-frame {
+    .middle-room-frame,
+    .embedded-frame {
       display: block;
       width: 100%;
       min-height: calc(100vh - var(--header-height) - 56px);
@@ -4510,8 +4513,9 @@
         <button class="nav-item active" type="button" data-page="home">首页</button>
         <button class="nav-item" type="button" data-page="skill">中部屋管理</button>
         <button class="nav-item" type="button" data-page="map">LTSA Map</button>
+        <button class="nav-item" type="button" data-page="commercial">商业分析</button>
         <button class="nav-item" type="button" data-page="knowledge">知识库</button>
-        <button class="nav-item" type="button" data-page="apps">应用库</button>
+        <button class="nav-item" type="button" data-page="apps">AI工具库</button>
       </nav>
     </div>
   </header>
@@ -4716,8 +4720,8 @@
         <div class="app-shell">
           <aside class="shell-panel app-sidebar-panel">
             <div class="app-sidebar-head">
-              <h2>应用库</h2>
-              <span>按分类统一管理可调用应用</span>
+              <h2>AI工具库</h2>
+              <span>按分类统一管理可调用 AI 工具</span>
             </div>
             <div class="app-sidebar-body">
               <div class="app-filter-tabs" id="appFilterTabs">
@@ -4763,6 +4767,20 @@
             class="middle-room-frame"
             title="中部屋管理"
             src="./isd-meeting-dashboard-v2.html"
+            loading="lazy">
+          </iframe>
+        </div>
+      </div>
+    </section>
+
+    <section class="page" id="page-commercial">
+      <div class="container embedded-page">
+        <div class="embedded-shell">
+          <iframe
+            id="commercialAnalysisFrame"
+            class="embedded-frame"
+            title="商业分析"
+            src="./commercial_analysis.html"
             loading="lazy">
           </iframe>
         </div>
@@ -5321,6 +5339,7 @@
       apps: document.getElementById("page-apps"),
       knowledge: document.getElementById("page-knowledge"),
       skill: document.getElementById("page-skill"),
+      commercial: document.getElementById("page-commercial"),
       map: document.getElementById("page-map")
     };
 
@@ -5392,6 +5411,7 @@
     const skillInputEl = document.getElementById("skillInput");
     const skillSendBtnEl = document.getElementById("skillSendBtn");
     const middleRoomFrameEl = document.getElementById("middleRoomFrame");
+    const commercialAnalysisFrameEl = document.getElementById("commercialAnalysisFrame");
     const projectMapEl = document.getElementById("projectMap");
     const mapStatusEl = document.getElementById("mapStatus");
     const mapHomeBtnEl = document.getElementById("mapHomeBtn");
@@ -5924,11 +5944,11 @@
       const activeApp = ensureActiveAppLibrarySelection();
 
       if (!filteredItems.length) {
-        appLibraryListEl.innerHTML = "<div class='empty-state'>当前分类下还没有应用。</div>";
-        appLibraryTitleEl.textContent = "应用库";
-        appLibraryDescriptionEl.textContent = "当前分类暂无可用应用。";
+        appLibraryListEl.innerHTML = "<div class='empty-state'>当前分类下还没有 AI 工具。</div>";
+        appLibraryTitleEl.textContent = "AI工具库";
+        appLibraryDescriptionEl.textContent = "当前分类暂无可用 AI 工具。";
         appLibraryTagsEl.innerHTML = "";
-        appLibraryConversationEl.innerHTML = `<div class="app-bubble">当前分类暂无应用。</div>`;
+        appLibraryConversationEl.innerHTML = `<div class="app-bubble">当前分类暂无 AI 工具。</div>`;
         if (appLibraryInputEl) {
           appLibraryInputEl.placeholder = "请输入你的需求、原始文本或待处理内容";
         }
@@ -5988,6 +6008,12 @@
         setTimeout(() => {
           initMiddleRoomEmbed();
           resizeMiddleRoomFrame();
+        }, 40);
+      }
+      if (pageName === "commercial") {
+        setTimeout(() => {
+          initCommercialAnalysisEmbed();
+          resizeCommercialAnalysisFrame();
         }, 40);
       }
       if (pageName === "map") {
@@ -6107,6 +6133,58 @@
         }
       } catch (error) {
         console.warn("Middle room initial ready check failed:", error);
+      }
+    }
+
+    function resizeCommercialAnalysisFrame() {
+      if (!commercialAnalysisFrameEl) return;
+      try {
+        const frameDoc = commercialAnalysisFrameEl.contentDocument;
+        if (!frameDoc) return;
+        const nextHeight = Math.max(
+          1120,
+          frameDoc.documentElement ? frameDoc.documentElement.scrollHeight : 0,
+          frameDoc.body ? frameDoc.body.scrollHeight : 0
+        );
+        commercialAnalysisFrameEl.style.height = nextHeight + "px";
+      } catch (error) {
+        commercialAnalysisFrameEl.style.height = "1400px";
+      }
+    }
+
+    function initCommercialAnalysisEmbed() {
+      if (!commercialAnalysisFrameEl || commercialAnalysisFrameEl.dataset.initialized === "true") return;
+      commercialAnalysisFrameEl.dataset.initialized = "true";
+      const handleCommercialAnalysisReady = () => {
+        try {
+          const frameDoc = commercialAnalysisFrameEl.contentDocument;
+          const frameWin = commercialAnalysisFrameEl.contentWindow;
+          if (frameDoc && frameWin && !commercialAnalysisFrameEl.dataset.boundResize) {
+            commercialAnalysisFrameEl.dataset.boundResize = "true";
+            if (frameWin.ResizeObserver && frameDoc.body) {
+              const ro = new frameWin.ResizeObserver(() => resizeCommercialAnalysisFrame());
+              ro.observe(frameDoc.body);
+              if (frameDoc.documentElement) {
+                ro.observe(frameDoc.documentElement);
+              }
+            }
+            frameWin.addEventListener("resize", resizeCommercialAnalysisFrame);
+            frameDoc.addEventListener("click", () => setTimeout(resizeCommercialAnalysisFrame, 30), true);
+            frameDoc.addEventListener("input", () => setTimeout(resizeCommercialAnalysisFrame, 30), true);
+          }
+        } catch (error) {
+          console.warn("Commercial analysis resize binding failed:", error);
+        }
+        resizeCommercialAnalysisFrame();
+      };
+      commercialAnalysisFrameEl.addEventListener("load", handleCommercialAnalysisReady);
+      try {
+        const frameDoc = commercialAnalysisFrameEl.contentDocument;
+        if (frameDoc && frameDoc.readyState === "complete") {
+          setTimeout(handleCommercialAnalysisReady, 0);
+        }
+      } catch (error) {
+        console.warn("Commercial analysis initial ready check failed:", error);
       }
     }
 
@@ -8125,7 +8203,7 @@
 
     appLibraryConfigBtnEl?.addEventListener("click", () => {
       const activeApp = appLibraryCatalog.find((item) => item.id === appState.activeAppLibraryId);
-      const appName = activeApp ? activeApp.name : "当前应用";
+      const appName = activeApp ? activeApp.name : "当前 AI 工具";
       window.alert(`${appName} 的接口配置入口已预留，可在 APP_LIBRARY_CONFIG 中接入真实接口。`);
     });
 
@@ -8228,6 +8306,7 @@
 
     initLibraries();
     initMiddleRoomEmbed();
+    initCommercialAnalysisEmbed();
     syncHomeActionMetrics();
     window.syncHomePipelineCapacityMetrics();
     renderHomeKnowledgeMetrics();
