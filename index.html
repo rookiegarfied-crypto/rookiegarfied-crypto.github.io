@@ -200,8 +200,8 @@
     .hero-grid {
       position: relative;
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 36px;
+      grid-template-columns: 1.05fr 0.95fr;
+      gap: 30px;
       align-items: center;
     }
 
@@ -412,21 +412,45 @@
 
     .snapshot-capacity-list {
       display: grid;
-      gap: 12px;
+      gap: 14px;
     }
 
-    .snapshot-capacity-row {
+    .snapshot-capacity-section {
       display: grid;
-      grid-template-columns: auto 1fr;
-      gap: 12px;
-      align-items: baseline;
+      gap: 8px;
       padding-top: 12px;
       border-top: 1px solid rgba(255, 255, 255, 0.08);
     }
 
-    .snapshot-capacity-row:first-child {
+    .snapshot-capacity-section:first-child {
       padding-top: 0;
       border-top: 0;
+    }
+
+    .snapshot-capacity-group-title {
+      color: #f4fbff;
+      font-size: 1rem;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: 0.02em;
+    }
+
+    .snapshot-capacity-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .snapshot-capacity-row--compact .snapshot-capacity-label {
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: rgba(238, 247, 255, 0.76);
+      white-space: nowrap;
+    }
+
+    .snapshot-capacity-row--compact .snapshot-capacity-value {
+      font-size: 0.92rem;
     }
 
     .snapshot-capacity-label {
@@ -434,6 +458,7 @@
       font-size: 0.9rem;
       font-weight: 700;
       letter-spacing: 0.02em;
+      min-width: 0;
     }
 
     .snapshot-capacity-value {
@@ -442,6 +467,7 @@
       font-weight: 800;
       line-height: 1.2;
       white-space: nowrap;
+      justify-self: end;
     }
 
     .snapshot-item.knowledge-item {
@@ -1631,14 +1657,11 @@
     }
 
     .middle-room-shell {
-      overflow: hidden;
-      border-radius: 34px;
-      background:
-        radial-gradient(1200px 620px at 10% 0%, rgba(110, 168, 254, 0.18), transparent 55%),
-        radial-gradient(900px 520px at 90% 10%, rgba(126, 224, 195, 0.14), transparent 50%),
-        linear-gradient(180deg, #08111f, #0f1730);
-      box-shadow: 0 26px 60px rgba(13, 28, 37, 0.18);
-      border: 1px solid rgba(10, 27, 39, 0.08);
+      overflow: visible;
+      border-radius: 0;
+      background: transparent;
+      box-shadow: none;
+      border: 0;
     }
 
     .middle-room-frame {
@@ -4519,15 +4542,29 @@
                   </div>
                 </div>
                 <div class="snapshot-item capacity-item">
-                  <strong class="snapshot-capacity-title">在投项目总容量</strong>
+                  <strong class="snapshot-capacity-title">O&amp;M Overview</strong>
                   <div class="snapshot-capacity-list">
-                    <div class="snapshot-capacity-row">
-                      <span class="snapshot-capacity-label">WTG</span>
-                      <span id="homeTotalWtgCapacity" class="snapshot-capacity-value">0 MW</span>
+                    <div class="snapshot-capacity-section">
+                      <div class="snapshot-capacity-group-title">WTG</div>
+                      <div class="snapshot-capacity-row snapshot-capacity-row--compact">
+                        <span class="snapshot-capacity-label">Delivered</span>
+                        <span id="homeWtgDeliveredCapacity" class="snapshot-capacity-value">0 MW</span>
+                      </div>
+                      <div class="snapshot-capacity-row snapshot-capacity-row--compact">
+                        <span class="snapshot-capacity-label">To be delivered</span>
+                        <span id="homeWtgToBeDeliveredCapacity" class="snapshot-capacity-value">0 MW</span>
+                      </div>
                     </div>
-                    <div class="snapshot-capacity-row">
-                      <span class="snapshot-capacity-label">BESS</span>
-                      <span id="homeTotalBessCapacity" class="snapshot-capacity-value">0 MWh</span>
+                    <div class="snapshot-capacity-section">
+                      <div class="snapshot-capacity-group-title">BESS</div>
+                      <div class="snapshot-capacity-row snapshot-capacity-row--compact">
+                        <span class="snapshot-capacity-label">Delivered</span>
+                        <span id="homeBessDeliveredCapacity" class="snapshot-capacity-value">0 MWh</span>
+                      </div>
+                      <div class="snapshot-capacity-row snapshot-capacity-row--compact">
+                        <span class="snapshot-capacity-label">To be delivered</span>
+                        <span id="homeBessToBeDeliveredCapacity" class="snapshot-capacity-value">0 MWh</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -4553,8 +4590,8 @@
                   </div>
                 </div>
                 <div class="snapshot-item execution-item">
-                  <strong>项目执行</strong>
-                  <table class="snapshot-execution-table" aria-label="项目执行统计">
+                  <strong>资源规划</strong>
+                  <table class="snapshot-execution-table" aria-label="资源规划统计">
                     <colgroup>
                       <col class="col-label">
                       <col class="col-metric">
@@ -4569,7 +4606,7 @@
                     </thead>
                     <tbody>
                       <tr>
-                        <th>Service Center</th>
+                        <th>RCC</th>
                         <td id="homeServiceCenterPlannedCount">0</td>
                         <td id="homeServiceCenterOperatingCount">0</td>
                       </tr>
@@ -5145,6 +5182,8 @@
       }
     };
 
+    const MIDDLE_ROOM_STORAGE_KEY = "isd_cockpit_v2";
+
     const APP_LIBRARY_CONFIG = {
       endpoint: "",
       apiKey: "",
@@ -5358,8 +5397,10 @@
     const mapHomeBtnEl = document.getElementById("mapHomeBtn");
     const homeOpenActionCountEl = document.getElementById("homeOpenActionCount");
     const homeOverdueActionCountEl = document.getElementById("homeOverdueActionCount");
-    const homeTotalWtgCapacityEl = document.getElementById("homeTotalWtgCapacity");
-    const homeTotalBessCapacityEl = document.getElementById("homeTotalBessCapacity");
+    const homeWtgDeliveredCapacityEl = document.getElementById("homeWtgDeliveredCapacity");
+    const homeWtgToBeDeliveredCapacityEl = document.getElementById("homeWtgToBeDeliveredCapacity");
+    const homeBessDeliveredCapacityEl = document.getElementById("homeBessDeliveredCapacity");
+    const homeBessToBeDeliveredCapacityEl = document.getElementById("homeBessToBeDeliveredCapacity");
     const homeServiceCenterPlannedCountEl = document.getElementById("homeServiceCenterPlannedCount");
     const homeServiceCenterOperatingCountEl = document.getElementById("homeServiceCenterOperatingCount");
     const homeWarehousePlannedCountEl = document.getElementById("homeWarehousePlannedCount");
@@ -5498,6 +5539,47 @@
       };
     }
 
+    function buildHomeActionMetricsFromMiddleRoomState(stateLike = {}) {
+      const tasks = Array.isArray(stateLike?.tasks) ? stateLike.tasks : [];
+      const now = Date.now();
+      return {
+        openCriticalActions: tasks.filter((task) => String(task?.status || "").trim() !== "Done").length,
+        overdueCriticalActions: tasks.filter((task) => {
+          if (String(task?.status || "").trim() === "Done" || !task?.ddlISO) {
+            return false;
+          }
+          const ddl = new Date(task.ddlISO).getTime();
+          return Number.isFinite(ddl) && ddl < now;
+        }).length
+      };
+    }
+
+    function readMiddleRoomActionMetrics() {
+      try {
+        const frameWin = middleRoomFrameEl?.contentWindow;
+        if (frameWin?.ISD_DASHBOARD_BRIDGE?.getIndexMetrics) {
+          const payload = frameWin.ISD_DASHBOARD_BRIDGE.getIndexMetrics();
+          if (payload) {
+            return normalizeHomeActionMetrics(payload);
+          }
+        }
+      } catch (error) {
+        console.warn("Read middle room metrics from iframe failed:", error);
+      }
+
+      try {
+        const raw = localStorage.getItem(MIDDLE_ROOM_STORAGE_KEY);
+        if (!raw) {
+          return null;
+        }
+        const parsed = JSON.parse(raw);
+        return buildHomeActionMetricsFromMiddleRoomState(parsed);
+      } catch (error) {
+        console.warn("Read middle room metrics from localStorage failed:", error);
+      }
+      return null;
+    }
+
     function renderHomeActionMetrics(payload = HOME_ACTION_API.mockData) {
       const metrics = normalizeHomeActionMetrics(payload);
       if (homeOpenActionCountEl) {
@@ -5524,27 +5606,63 @@
       return `${text} ${baseUnit}`;
     }
 
-    function renderHomePipelineCapacityMetrics(projects = []) {
+    function getHomeOmOverviewBucket(progress) {
+      const raw = String(progress || "").trim();
+      if (!raw) {
+        return "";
+      }
+      const lowered = raw.toLowerCase().replace(/\s+/g, " ");
+      const compact = lowered.replace(/[\s/&_-]+/g, "");
+      if (
+        lowered === "o&m" ||
+        ["om", "operating", "operation", "operational"].includes(compact) ||
+        ["运营中", "已运营", "运行中", "已投运", "投运"].includes(raw)
+      ) {
+        return "delivered";
+      }
+      if (
+        lowered === "awarded" ||
+        ["awarded", "construction", "constructing", "underconstruction"].includes(compact) ||
+        ["已中标", "已授标", "授标", "建设中", "施工中", "在建"].includes(raw)
+      ) {
+        return "toBeDelivered";
+      }
+      return "";
+    }
+
+    function renderHomeOmOverviewMetrics(projects = []) {
       const summary = (Array.isArray(projects) ? projects : []).reduce((acc, project) => {
-        const category = String(project?.category || "").trim().toUpperCase();
-        const progress = String(project?.progress || "").trim().toLowerCase();
-        if (progress !== "bidding" && progress !== "shortlisted") {
+        const category = getHomeProjectBaseCategory(project?.category || "");
+        if (category !== "WTG" && category !== "BESS") {
+          return acc;
+        }
+        const bucket = getHomeOmOverviewBucket(project?.progress || "");
+        if (!bucket) {
           return acc;
         }
         const capacity = Number(project?.capacity) || 0;
         if (category === "WTG") {
-          acc.wtg += capacity;
-        } else if (category === "BESS") {
-          acc.bess += capacity;
+          acc.wtg[bucket] += capacity;
+        } else {
+          acc.bess[bucket] += capacity;
         }
         return acc;
-      }, { wtg: 0, bess: 0 });
+      }, {
+        wtg: { delivered: 0, toBeDelivered: 0 },
+        bess: { delivered: 0, toBeDelivered: 0 }
+      });
 
-      if (homeTotalWtgCapacityEl) {
-        homeTotalWtgCapacityEl.textContent = formatHomeCapacityValue("WTG", summary.wtg);
+      if (homeWtgDeliveredCapacityEl) {
+        homeWtgDeliveredCapacityEl.textContent = formatHomeCapacityValue("WTG", summary.wtg.delivered);
       }
-      if (homeTotalBessCapacityEl) {
-        homeTotalBessCapacityEl.textContent = formatHomeCapacityValue("BESS", summary.bess);
+      if (homeWtgToBeDeliveredCapacityEl) {
+        homeWtgToBeDeliveredCapacityEl.textContent = formatHomeCapacityValue("WTG", summary.wtg.toBeDelivered);
+      }
+      if (homeBessDeliveredCapacityEl) {
+        homeBessDeliveredCapacityEl.textContent = formatHomeCapacityValue("BESS", summary.bess.delivered);
+      }
+      if (homeBessToBeDeliveredCapacityEl) {
+        homeBessToBeDeliveredCapacityEl.textContent = formatHomeCapacityValue("BESS", summary.bess.toBeDelivered);
       }
     }
 
@@ -5560,6 +5678,7 @@
         normalized === "training centre" ||
         normalized === "service center" ||
         normalized === "service centre" ||
+        normalized === "rcc" ||
         normalized === "office" ||
         normalized === "运维中心" ||
         normalized === "服务中心" ||
@@ -5568,6 +5687,7 @@
         compact === "trainingcentre" ||
         compact === "servicecenter" ||
         compact === "servicecentre" ||
+        compact === "rcc" ||
         compact === "office"
       ) {
         return "Service Center";
@@ -5608,7 +5728,7 @@
         if (!executionStage) {
           return acc;
         }
-        const bucket = category === "Warehouse" ? acc.warehouse : acc.serviceCenter;
+        const bucket = category === "Warehouse" ? acc.warehouse : acc.rcc;
         if (executionStage === "planned") {
           bucket.planned += 1;
         } else if (executionStage === "operating") {
@@ -5616,15 +5736,15 @@
         }
         return acc;
       }, {
-        serviceCenter: { planned: 0, operating: 0 },
+        rcc: { planned: 0, operating: 0 },
         warehouse: { planned: 0, operating: 0 }
       });
 
       if (homeServiceCenterPlannedCountEl) {
-        homeServiceCenterPlannedCountEl.textContent = String(summary.serviceCenter.planned);
+        homeServiceCenterPlannedCountEl.textContent = String(summary.rcc.planned);
       }
       if (homeServiceCenterOperatingCountEl) {
-        homeServiceCenterOperatingCountEl.textContent = String(summary.serviceCenter.operating);
+        homeServiceCenterOperatingCountEl.textContent = String(summary.rcc.operating);
       }
       if (homeWarehousePlannedCountEl) {
         homeWarehousePlannedCountEl.textContent = String(summary.warehouse.planned);
@@ -5667,7 +5787,7 @@
 
     async function syncHomeActionMetrics() {
       if (!HOME_ACTION_API.endpoint) {
-        renderHomeActionMetrics(HOME_ACTION_API.mockData);
+        renderHomeActionMetrics(readMiddleRoomActionMetrics() || HOME_ACTION_API.mockData);
         return;
       }
       try {
@@ -5687,9 +5807,9 @@
     }
 
     window.updateHomeActionMetrics = renderHomeActionMetrics;
-    window.syncHomePipelineCapacityMetrics = () => {
+    window.syncHomeOmOverviewMetrics = window.syncHomePipelineCapacityMetrics = () => {
       const projects = appState.map?.projects || [];
-      renderHomePipelineCapacityMetrics(projects);
+      renderHomeOmOverviewMetrics(projects);
       renderHomeExecutionMetrics(projects);
     };
     window.syncHomeKnowledgeMetrics = renderHomeKnowledgeMetrics;
@@ -5978,6 +6098,7 @@
       const handleMiddleRoomReady = () => {
         applyMiddleRoomEmbedSkin();
         resizeMiddleRoomFrame();
+        syncHomeActionMetrics();
       };
       middleRoomFrameEl.addEventListener("load", handleMiddleRoomReady);
       try {
@@ -8047,6 +8168,24 @@
       }
     });
 
+    window.addEventListener("message", (event) => {
+      const data = event?.data;
+      if (!data || data.type !== "isd-dashboard-sync") {
+        return;
+      }
+      if (data.payload) {
+        renderHomeActionMetrics(data.payload);
+      } else {
+        syncHomeActionMetrics();
+      }
+    });
+
+    window.addEventListener("storage", (event) => {
+      if (event.key === MIDDLE_ROOM_STORAGE_KEY) {
+        syncHomeActionMetrics();
+      }
+    });
+
     previewModalEl.addEventListener("click", (event) => {
       if (event.target === previewModalEl) {
         closePreview();
@@ -8584,6 +8723,7 @@
           normalized === "training centre" ||
           normalized === "service center" ||
           normalized === "service centre" ||
+          normalized === "rcc" ||
           normalized === "office" ||
           normalized === "运维中心" ||
           normalized === "服务中心" ||
@@ -8591,7 +8731,8 @@
           compact === "trainingcenter" ||
           compact === "trainingcentre" ||
           compact === "servicecenter" ||
-          compact === "servicecentre"
+          compact === "servicecentre" ||
+          compact === "rcc"
         ) {
           return "Service Center";
         }
