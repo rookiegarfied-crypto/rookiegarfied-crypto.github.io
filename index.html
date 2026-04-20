@@ -3088,6 +3088,26 @@
       color: var(--muted);
     }
 
+    .map-filter-form .map-filter-field {
+      gap: 4px;
+      font-size: 0.7rem;
+    }
+
+    .map-filter-form .multi-select-trigger {
+      min-height: 38px;
+      gap: 10px;
+      padding: 0 14px;
+    }
+
+    .map-filter-form .multi-select-value {
+      font-size: 0.84rem;
+    }
+
+    .map-filter-form .multi-select-trigger svg {
+      width: 14px;
+      height: 14px;
+    }
+
     .capacity-filter-card {
       padding: 11px 12px;
       border-radius: 16px;
@@ -3217,11 +3237,12 @@
 
     .business-analysis-card {
       min-height: 0;
+      padding: 10px 12px 12px;
     }
 
     .business-analysis-tree {
       display: grid;
-      gap: 10px;
+      gap: 6px;
     }
 
     .business-analysis-section {
@@ -3238,6 +3259,14 @@
       white-space: nowrap;
     }
 
+    .business-analysis-summary-metrics {
+      display: inline-grid;
+      gap: 2px;
+      justify-items: end;
+      margin-left: auto;
+      flex: 0 0 auto;
+    }
+
     .business-analysis-empty {
       padding: 14px;
       border-radius: 16px;
@@ -3252,7 +3281,7 @@
     .business-analysis-subgroup,
     .business-analysis-country {
       display: grid;
-      gap: 8px;
+      gap: 4px;
     }
 
     .business-analysis-group summary,
@@ -3260,15 +3289,31 @@
     .business-analysis-country summary {
       list-style: none;
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: 16px;
-      background: rgba(255, 255, 255, 0.82);
-      border: 1px solid rgba(23, 35, 31, 0.08);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto auto;
+      align-items: start;
+      gap: 8px;
+      padding: 4px 0;
+      border-radius: 0;
+      background: transparent;
+      border: 0;
       user-select: none;
+    }
+
+    .business-analysis-group {
+      margin-left: 0;
+    }
+
+    .business-analysis-group > summary {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .business-analysis-subgroup {
+      margin-left: 10px;
+    }
+
+    .business-analysis-country {
+      margin-left: 20px;
     }
 
     .business-analysis-group summary::-webkit-details-marker,
@@ -3283,12 +3328,9 @@
       gap: 8px;
       min-width: 0;
       max-width: 100%;
-      width: 132px;
-      flex: 0 0 132px;
       font-size: 0.74rem;
       font-weight: 700;
       color: var(--text);
-      white-space: normal;
     }
 
     .business-analysis-title::before {
@@ -3312,16 +3354,14 @@
 
     .business-analysis-title-text {
       overflow: visible;
-      text-overflow: initial;
+      text-overflow: clip;
       white-space: normal;
       word-break: break-word;
       line-height: 1.35;
-      font-size: 0.68rem;
     }
 
     .business-analysis-value {
       flex: 0 0 auto;
-      margin-left: auto;
       color: var(--text);
       font-size: 0.7rem;
       font-weight: 800;
@@ -3344,31 +3384,42 @@
     .business-analysis-subgroup-body,
     .business-analysis-country-body {
       display: grid;
-      gap: 8px;
-      padding-left: 10px;
+      gap: 4px;
+      padding-left: 0;
+    }
+
+    .business-analysis-country {
+      gap: 4px;
+    }
+
+    .business-analysis-country .business-analysis-title {
+      font-size: 0.68rem;
+    }
+
+    .business-analysis-country .business-analysis-meta,
+    .business-analysis-country .business-analysis-value {
+      align-self: start;
     }
 
     .business-analysis-leaf {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 9px 12px;
-      border-radius: 14px;
-      background: rgba(255, 255, 255, 0.7);
-      border: 1px solid rgba(23, 35, 31, 0.06);
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 8px;
+      padding: 3px 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
     }
 
     .business-analysis-leaf-label {
       min-width: 0;
-      width: 132px;
-      flex: 0 0 132px;
       color: var(--text);
       font-size: 0.66rem;
       font-weight: 700;
       white-space: normal;
       overflow: visible;
-      text-overflow: initial;
+      text-overflow: clip;
       word-break: break-word;
       line-height: 1.35;
     }
@@ -3376,7 +3427,7 @@
     .business-analysis-leaf-value {
       flex: 0 0 auto;
       color: var(--text);
-      font-size: 0.68rem;
+      font-size: 0.66rem;
       font-weight: 800;
       white-space: nowrap;
       text-align: right;
@@ -3554,11 +3605,6 @@
       white-space: nowrap;
     }
 
-    .warehouse-network-table thead th:last-child,
-    .warehouse-network-table tbody td.warehouse-remark-cell {
-      width: 48%;
-    }
-
     .warehouse-network-table tbody th,
     .warehouse-network-table tbody td {
       font-size: 0.7rem;
@@ -3569,15 +3615,6 @@
       text-overflow: ellipsis;
     }
 
-    .warehouse-network-table tbody td.warehouse-remark-cell {
-      white-space: pre-wrap;
-      overflow: visible;
-      text-overflow: initial;
-      word-break: break-word;
-      line-height: 1.6;
-      min-width: 180px;
-    }
-
     .warehouse-network-table tbody th {
       font-weight: 700;
       text-align: left;
@@ -3586,6 +3623,17 @@
     .warehouse-network-table tbody td {
       font-weight: 600;
       text-align: left;
+    }
+
+    .warehouse-storage-table thead th:first-child,
+    .warehouse-storage-table tbody th {
+      width: 34%;
+    }
+
+    .warehouse-storage-table thead th:last-child,
+    .warehouse-storage-table tbody td {
+      width: 66%;
+      white-space: normal;
     }
 
     .warehouse-network-empty {
@@ -4885,7 +4933,7 @@
                         <thead>
                           <tr>
                             <th>Service Center</th>
-                            <th>运营时间(含预计)</th>
+                            <th>运营日期(含预计)</th>
                           </tr>
                         </thead>
                         <tbody id="serviceCenterTableBody"></tbody>
@@ -4893,11 +4941,10 @@
                     </article>
                     <article class="summary-card compact-summary-card warehouse-table-card">
                       <h5>仓储网络</h5>
-                      <table class="warehouse-network-table">
+                      <table class="warehouse-network-table warehouse-storage-table">
                         <thead>
                           <tr>
                             <th>Warehouse</th>
-                            <th>仓库地址</th>
                             <th>大部件存放情况</th>
                           </tr>
                         </thead>
@@ -4955,7 +5002,7 @@
           </svg>
         </button>
       </div>
-      <form id="mapProjectForm" class="form-modal-body">
+      <form id="mapProjectForm" class="form-modal-body" novalidate>
         <div class="form-grid">
           <label class="form-field">
             <span>项目名称</span>
@@ -5372,6 +5419,45 @@
       });
     }
 
+    function formatDateOnlyLabel(year, month, day) {
+      return `${String(year).padStart(4, "0")}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+    }
+
+    function formatOperatingDate(value) {
+      const raw = String(value ?? "").trim();
+      if (!raw) return "-";
+
+      if (/^\d+(\.\d+)?$/.test(raw)) {
+        const excelSerial = Number(raw);
+        if (Number.isFinite(excelSerial) && excelSerial >= 1 && excelSerial < 100000) {
+          const utcDate = new Date(Math.round((excelSerial - 25569) * 86400 * 1000));
+          if (!Number.isNaN(utcDate.getTime())) {
+            return formatDateOnlyLabel(
+              utcDate.getUTCFullYear(),
+              utcDate.getUTCMonth() + 1,
+              utcDate.getUTCDate()
+            );
+          }
+        }
+      }
+
+      const directMatch = raw.match(/(\d{4})[./-](\d{1,2})[./-](\d{1,2})/);
+      if (directMatch) {
+        return formatDateOnlyLabel(directMatch[1], directMatch[2], directMatch[3]);
+      }
+
+      const parsedDate = new Date(raw.replace(/\./g, "/"));
+      if (!Number.isNaN(parsedDate.getTime())) {
+        return formatDateOnlyLabel(
+          parsedDate.getFullYear(),
+          parsedDate.getMonth() + 1,
+          parsedDate.getDate()
+        );
+      }
+
+      return raw;
+    }
+
     function formatDateTimeLocalValue(value) {
       if (!value) return "";
       const date = new Date(value);
@@ -5382,35 +5468,6 @@
       const hour = String(date.getHours()).padStart(2, "0");
       const minute = String(date.getMinutes()).padStart(2, "0");
       return `${year}-${month}-${day}T${hour}:${minute}`;
-    }
-
-    function formatOperatingDate(value) {
-      const raw = String(value ?? "").trim();
-      if (!raw) return "-";
-      if (/^\d{4,5}(\.\d+)?$/.test(raw)) {
-        const excelSerial = Number(raw);
-        if (Number.isFinite(excelSerial)) {
-          const utcDays = Math.floor(excelSerial - 25569);
-          const utcValue = utcDays * 86400 * 1000;
-          const date = new Date(utcValue);
-          if (!Number.isNaN(date.getTime())) {
-            return date.toLocaleDateString("zh-CN", {
-              year: "numeric",
-              month: "2-digit",
-              day: "2-digit"
-            });
-          }
-        }
-      }
-      const parsed = new Date(raw);
-      if (!Number.isNaN(parsed.getTime())) {
-        return parsed.toLocaleDateString("zh-CN", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit"
-        });
-      }
-      return raw;
     }
 
     function formatSize(bytes) {
@@ -5498,16 +5555,15 @@
           return acc;
         }
         const normalizedProgress = normalizeProjectProgress(category, project?.progress || "");
-        const isPlanned = normalizedProgress === "Planning";
-        const isCompleted = normalizedProgress === "Constructing" || normalizedProgress === "Construction" || normalizedProgress === "Operating";
-        if (!isPlanned && !isCompleted) {
+        const isPlanned = normalizedProgress === "Planning" || normalizedProgress === "Constructing" || normalizedProgress === "Construction";
+        const isOperating = normalizedProgress === "Operating";
+        if (!isPlanned && !isOperating) {
           return acc;
         }
         const bucket = category === "Warehouse" ? acc.warehouse : acc.serviceCenter;
         if (isPlanned) {
           bucket.planned += 1;
-        }
-        if (isCompleted) {
+        } else if (isOperating) {
           bucket.operating += 1;
         }
         return acc;
@@ -8345,8 +8401,8 @@
         mapWorkbenchEls.progressInput.value = options.includes(selectedValue) ? selectedValue : "";
       }
 
-      function syncProjectCategoryField() {
-        const currentProgress = mapWorkbenchEls.progressInput?.value || "";
+      function syncProjectCategoryField(preferredProgress = "") {
+        const currentProgress = preferredProgress || mapWorkbenchEls.progressInput?.value || "";
         const isCustom = mapWorkbenchEls.categoryInput?.value === "CUSTOM";
         if (mapWorkbenchEls.categoryCustomField) {
           mapWorkbenchEls.categoryCustomField.classList.toggle("hidden", !isCustom);
@@ -8457,7 +8513,7 @@
           if (getProjectBaseCategory(project.category) !== targetCategory || !project.country) {
             return;
           }
-          const progress = normalizeProjectProgress(project.category, project.progress);
+          const progress = String(project.progress || "").trim();
           let bucket = "";
           if (progress === "Construction" || progress === "O&M") {
             bucket = "delivered";
@@ -8679,11 +8735,19 @@
         const name = String(projectLike.name || "").trim();
         const lat = Number(projectLike.lat);
         const lng = Number(projectLike.lng);
-        const capacity = Number(projectLike.capacity);
-        const priceText = String(projectLike.price ?? "").trim();
         const category = String(projectLike.category || "").trim();
+        const isFacility = isFacilityProjectCategory(category);
+        const capacityText = String(projectLike.capacity ?? "").trim();
+        const capacity = capacityText === "" && isFacility ? 0 : Number(projectLike.capacity);
+        const priceText = String(projectLike.price ?? "").trim();
         const progress = normalizeProjectProgress(category, projectLike.progress);
-        if (!name || !Number.isFinite(lat) || !Number.isFinite(lng) || !Number.isFinite(capacity) || !progress || !category) {
+        if (!name || !Number.isFinite(lat) || !Number.isFinite(lng) || !progress || !category) {
+          return null;
+        }
+        if (!isFacility && capacityText === "") {
+          return null;
+        }
+        if (!Number.isFinite(capacity)) {
           return null;
         }
         return {
@@ -8950,6 +9014,10 @@
           minimumFractionDigits: numeric >= 100 ? 0 : 2,
           maximumFractionDigits: numeric >= 100 ? 0 : 2
         }).replace(/\.00$/, "").replace(/(\.\d)0$/, "$1");
+      }
+
+      function getBusinessAnalysisUnitLabel(category) {
+        return String(category || "").trim().toUpperCase() === "BESS" ? "USD/MWh/YR" : "USD/WTG/YR";
       }
 
       function createBusinessAnalysisBucket() {
@@ -9963,16 +10031,12 @@
                 <span class="business-analysis-title">
                   <span class="business-analysis-title-text">${escapeHtml(category)}</span>
                 </span>
-                <span class="business-analysis-meta">${categoryEntry.bucket.count}</span>
+                <span class="business-analysis-summary-metrics">
+                  <span class="business-analysis-unit">${escapeHtml(getBusinessAnalysisUnitLabel(category))}</span>
+                  <span class="business-analysis-value">${escapeHtml(formatBusinessAnalysisAverage(category, getBusinessAnalysisAverage(categoryEntry.bucket)))}</span>
+                </span>
               </summary>
-              <div class="business-analysis-group-body">
-                <div class="business-analysis-unit">单位 ${escapeHtml(String(category).toUpperCase() === "BESS" ? "USD/MWh/YR" : "USD/WTG/YR")}</div>
-                <div class="business-analysis-leaf">
-                  <span class="business-analysis-leaf-label">均价</span>
-                  <span class="business-analysis-leaf-value">${escapeHtml(formatBusinessAnalysisAverage(category, getBusinessAnalysisAverage(categoryEntry.bucket)))}</span>
-                </div>
-                ${continentsMarkup}
-              </div>
+              <div class="business-analysis-group-body">${continentsMarkup}</div>
             </details>
           `;
         }).join("");
@@ -10005,26 +10069,22 @@
           .sort((a, b) => String(a.name || "").localeCompare(String(b.name || ""), "en"));
 
         mapWorkbenchEls.serviceCenterTableBody.innerHTML = serviceCenters.length
-          ? serviceCenters.map((project) => {
-              const operatingDate = formatOperatingDate(project.operatingTime);
-              return `
+          ? serviceCenters.map((project) => `
               <tr>
                 <th scope="row" title="${escapeHtml(project.name || "-")}">${escapeHtml(project.name || "-")}</th>
-                <td title="${escapeHtml(operatingDate)}">${escapeHtml(operatingDate)}</td>
+                <td title="${escapeHtml(formatOperatingDate(project.operatingTime))}">${escapeHtml(formatOperatingDate(project.operatingTime))}</td>
               </tr>
-            `;
-            }).join("")
+            `).join("")
           : `<tr><td class="warehouse-network-empty" colspan="2">当前筛选条件下暂无 Service Center 数据。</td></tr>`;
 
         mapWorkbenchEls.warehouseTableBody.innerHTML = warehouses.length
           ? warehouses.map((project) => `
               <tr>
                 <th scope="row" title="${escapeHtml(project.name || "-")}">${escapeHtml(project.name || "-")}</th>
-                <td title="${escapeHtml(buildWarehouseAddress(project))}">${escapeHtml(buildWarehouseAddress(project))}</td>
-                <td class="warehouse-remark-cell" title="${escapeHtml(project.remark || "-")}">${escapeHtml(project.remark || "-")}</td>
+                <td title="${escapeHtml(project.remark || "-")}">${escapeHtml(project.remark || "-")}</td>
               </tr>
             `).join("")
-          : `<tr><td class="warehouse-network-empty" colspan="3">当前筛选条件下暂无 Warehouse 数据。</td></tr>`;
+          : `<tr><td class="warehouse-network-empty" colspan="2">当前筛选条件下暂无 Warehouse 数据。</td></tr>`;
       }
 
       function renderStats() {
@@ -10345,8 +10405,6 @@
           mapStore.projects = projects;
           mapStore.defaultLibraryLoaded = true;
           refreshProjectWorkbench({ resetCapacity: true });
-          renderHomeExecutionMetrics(projects);
-          renderHomePipelineCapacityMetrics(projects);
           if (mapStore.instance) {
             const bounds = L.latLngBounds(projects.map((project) => [project.lat, project.lng]));
             if (bounds.isValid()) {
@@ -10598,8 +10656,7 @@
           mapWorkbenchEls.categoryInput.value = "";
         }
         mapWorkbenchEls.capacityInput.value = isFacilityProjectCategory(category) ? "" : (project?.capacity ?? "");
-        mapWorkbenchEls.progressInput.value = normalizeProjectProgress(category, project?.progress || "");
-        syncProjectCategoryField();
+        syncProjectCategoryField(normalizeProjectProgress(category, project?.progress || ""));
         mapWorkbenchEls.coordinatesInput.value = `${latlng.lat.toFixed(6)}, ${latlng.lng.toFixed(6)}`;
         mapWorkbenchEls.modalTitle.textContent = project ? "Edit Project" : "Add Project";
         mapWorkbenchEls.modalDelete.hidden = !project;
@@ -11006,46 +11063,6 @@
 
       mapWorkbenchEls.modalForm?.addEventListener("submit", (event) => {
         event.preventDefault();
-        if (!mapStore.pendingLatLng) return;
-        const isEditing = Boolean(mapStore.editingProjectId);
-        const categoryValue = getProjectCategoryValue();
-        const project = normalizeProject({
-          name: mapWorkbenchEls.nameInput.value,
-          capacity: mapWorkbenchEls.capacityInput.value,
-          progress: mapWorkbenchEls.progressInput.value,
-          category: categoryValue,
-          country: mapWorkbenchEls.countryInput.value,
-          lat: mapStore.pendingLatLng.lat,
-          lng: mapStore.pendingLatLng.lng
-        });
-        if (!project) {
-          mapWorkbenchEls.formHint.textContent = "Please complete name, capacity, progress, and category.";
-          return;
-        }
-        if (mapWorkbenchEls.categoryInput?.value === "CUSTOM" && !categoryValue) {
-          mapWorkbenchEls.formHint.textContent = "Please enter a custom category.";
-          mapWorkbenchEls.categoryCustomInput?.focus();
-          return;
-        }
-        if (isEditing) {
-          const index = mapStore.projects.findIndex((item) => item.id === mapStore.editingProjectId);
-          if (index >= 0) {
-            mapStore.projects[index] = {
-              ...mapStore.projects[index],
-              ...project,
-              id: mapStore.editingProjectId
-            };
-            refreshProjectWorkbench({ resetCapacity: true });
-          }
-        } else {
-          addProjects([project], { fitToProjects: false, resetCapacity: true });
-        }
-        closeProjectModal();
-        setMapStatus(isEditing ? "Project updated" : "Project added");
-      });
-
-      mapWorkbenchEls.modalForm?.addEventListener("submit", (event) => {
-        event.preventDefault();
         event.stopImmediatePropagation();
         if (!mapStore.pendingLatLng) return;
 
@@ -11088,9 +11105,6 @@
         }
 
         closeProjectModal();
-        if (mapWorkbenchEls.modal) {
-          mapWorkbenchEls.modal.classList.remove("open");
-        }
         setMapStatus(isEditing ? "Project updated" : "Project added");
       }, true);
     })();
