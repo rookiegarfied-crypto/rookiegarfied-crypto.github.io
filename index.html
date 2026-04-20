@@ -5548,22 +5548,70 @@
       }
     }
 
+    function getHomeProjectBaseCategory(category) {
+      const raw = String(category || "").trim();
+      const normalized = raw.toLowerCase().replace(/\s+/g, " ");
+      const compact = normalized.replace(/[\s_-]+/g, "");
+      if (normalized === "wtg") return "WTG";
+      if (normalized === "bess") return "BESS";
+      if (normalized === "warehouse" || normalized === "仓库" || compact === "warehouse") return "Warehouse";
+      if (
+        normalized === "training center" ||
+        normalized === "training centre" ||
+        normalized === "service center" ||
+        normalized === "service centre" ||
+        normalized === "office" ||
+        normalized === "运维中心" ||
+        normalized === "服务中心" ||
+        normalized === "培训中心" ||
+        compact === "trainingcenter" ||
+        compact === "trainingcentre" ||
+        compact === "servicecenter" ||
+        compact === "servicecentre" ||
+        compact === "office"
+      ) {
+        return "Service Center";
+      }
+      return raw;
+    }
+
+    function getHomeFacilityExecutionStage(progress) {
+      const raw = String(progress || "").trim();
+      if (!raw) {
+        return "";
+      }
+      const lowered = raw.toLowerCase().replace(/\s+/g, " ");
+      const compact = lowered.replace(/[\s/_-]+/g, "");
+      if (
+        ["planning", "planned", "plan", "constructing", "construction", "underconstruction"].includes(compact) ||
+        ["计划中", "规划中", "建设中", "施工中", "在建"].includes(raw)
+      ) {
+        return "planned";
+      }
+      if (
+        ["operating", "operation", "operational", "o&m", "om", "established", "completed", "complete"].includes(lowered) ||
+        ["operating", "operation", "operational", "om", "established", "completed", "complete"].includes(compact) ||
+        ["运营中", "已运营", "运行中", "已建成", "已投运", "投运", "已完工"].includes(raw)
+      ) {
+        return "operating";
+      }
+      return "";
+    }
+
     function renderHomeExecutionMetrics(projects = []) {
       const summary = (Array.isArray(projects) ? projects : []).reduce((acc, project) => {
-        const category = getProjectBaseCategory(project?.category || "");
+        const category = getHomeProjectBaseCategory(project?.category || "");
         if (category !== "Warehouse" && category !== "Service Center") {
           return acc;
         }
-        const normalizedProgress = normalizeProjectProgress(category, project?.progress || "");
-        const isPlanned = normalizedProgress === "Planning" || normalizedProgress === "Constructing" || normalizedProgress === "Construction";
-        const isOperating = normalizedProgress === "Operating";
-        if (!isPlanned && !isOperating) {
+        const executionStage = getHomeFacilityExecutionStage(project?.progress || "");
+        if (!executionStage) {
           return acc;
         }
         const bucket = category === "Warehouse" ? acc.warehouse : acc.serviceCenter;
-        if (isPlanned) {
+        if (executionStage === "planned") {
           bucket.planned += 1;
-        } else if (isOperating) {
+        } else if (executionStage === "operating") {
           bucket.operating += 1;
         }
         return acc;
@@ -8449,12 +8497,62 @@
       }
 
       function getProjectBaseCategory(category) {
-        const normalized = String(category || "").trim().toLowerCase();
+        const raw = String(category || "").trim();
+        const normalized = raw.toLowerCase().replace(/\s+/g, " ");
+        const compact = normalized.replace(/[\s_-]+/g, "");
         if (normalized === "wtg") return "WTG";
         if (normalized === "bess") return "BESS";
-        if (normalized === "warehouse") return "Warehouse";
-        if (normalized === "training center" || normalized === "service center") return "Service Center";
+        if (normalized === "warehouse" || normalized === "仓库") return "Warehouse";
+        if (
+          normalized === "training center" ||
+          normalized === "training centre" ||
+          normalized === "service center" ||
+          normalized === "service centre" ||
+          normalized === "office" ||
+          normalized === "运维中心" ||
+          normalized === "服务中心" ||
+          normalized === "培训中心" ||
+          compact === "trainingcenter" ||
+          compact === "trainingcentre" ||
+          compact === "servicecenter" ||
+          compact === "servicecentre"
+        ) {
+          return "Service Center";
+        }
+        if (compact === "warehouse") return "Warehouse";
+        if (compact === "office") return "Service Center";
         return String(category || "").trim();
+      }
+
+      function getFacilityExecutionStage(progress) {
+        const raw = String(progress || "").trim();
+        if (!raw) {
+          return "";
+        }
+        const normalized = normalizeProjectProgress("Service Center", raw);
+        if (normalized === "Planning" || normalized === "Constructing" || normalized === "Construction") {
+          return "planned";
+        }
+        if (normalized === "Operating") {
+          return "operating";
+        }
+
+        const lowered = raw.toLowerCase().replace(/\s+/g, " ");
+        const compact = lowered.replace(/[\s/_-]+/g, "");
+        if (
+          ["planning", "planned", "plan", "constructing", "construction", "underconstruction"].includes(compact) ||
+          ["计划中", "规划中", "建设中", "施工中", "在建"].includes(raw)
+        ) {
+          return "planned";
+        }
+        if (
+          ["operating", "operation", "operational", "o&m", "om", "established", "completed", "complete"].includes(lowered) ||
+          ["operating", "operation", "operational", "om", "established", "completed", "complete"].includes(compact) ||
+          ["运营中", "已运营", "运行中", "已建成", "已投运", "投运", "已完工"].includes(raw)
+        ) {
+          return "operating";
+        }
+        return "";
       }
 
       function getProjectCapacityUnit(category) {
