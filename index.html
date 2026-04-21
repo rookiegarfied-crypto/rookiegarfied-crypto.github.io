@@ -3656,6 +3656,23 @@
       width: 34%;
     }
 
+    .warehouse-storage-table tbody th {
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      overflow-wrap: anywhere;
+      word-break: break-word;
+    }
+
+    .warehouse-storage-table tbody tr[data-warehouse-project-id] {
+      cursor: pointer;
+    }
+
+    .warehouse-storage-table tbody tr[data-warehouse-project-id]:hover th,
+    .warehouse-storage-table tbody tr[data-warehouse-project-id]:hover td {
+      color: var(--primary);
+    }
+
     .warehouse-storage-table thead th:last-child,
     .warehouse-storage-table tbody td {
       width: 66%;
@@ -3734,7 +3751,8 @@
     }
 
     .form-field input,
-    .form-field select {
+    .form-field select,
+    .form-field textarea {
       min-height: 42px;
       padding: 0 12px;
       border-radius: 14px;
@@ -3742,6 +3760,17 @@
       background: rgba(255, 255, 255, 0.94);
       color: var(--text);
       outline: none;
+    }
+
+    .form-field textarea {
+      min-height: 88px;
+      padding: 10px 12px;
+      line-height: 1.45;
+      resize: vertical;
+    }
+
+    .form-field.full {
+      grid-column: 1 / -1;
     }
 
     .form-field.hidden {
@@ -5107,6 +5136,10 @@
           <label class="form-field">
             <span>经纬度</span>
             <input id="projectCoordinatesInput" name="coordinates" type="text" readonly>
+          </label>
+          <label class="form-field full hidden" id="projectRemarkField">
+            <span>备注</span>
+            <textarea id="projectRemarkInput" name="remark" placeholder="请输入仓库备注"></textarea>
           </label>
         </div>
         <div class="form-helper" id="mapProjectFormHint">右键地图后会自动带入当前坐标。</div>
@@ -8387,6 +8420,8 @@
         categoryCustomInput: document.getElementById("projectCategoryCustomInput"),
         machineTypeField: document.getElementById("projectMachineTypeField"),
         machineTypeInput: document.getElementById("projectMachineTypeInput"),
+        remarkField: document.getElementById("projectRemarkField"),
+        remarkInput: document.getElementById("projectRemarkInput"),
         countryInput: document.getElementById("projectCountryInput"),
         coordinatesInput: document.getElementById("projectCoordinatesInput")
       };
@@ -8757,12 +8792,19 @@
         const resolvedCategory = getProjectBaseCategory(getProjectCategoryValue());
         const isWTG = resolvedCategory === "WTG";
         const isBESS = resolvedCategory === "BESS";
+        const isWarehouse = resolvedCategory === "Warehouse";
         const isFacility = isFacilityProjectCategory(resolvedCategory);
         if (mapWorkbenchEls.machineTypeField) {
           mapWorkbenchEls.machineTypeField.classList.toggle("hidden", !isWTG);
         }
         if (mapWorkbenchEls.machineTypeInput && !isWTG) {
           mapWorkbenchEls.machineTypeInput.value = "";
+        }
+        if (mapWorkbenchEls.remarkField) {
+          mapWorkbenchEls.remarkField.classList.toggle("hidden", !isWarehouse);
+        }
+        if (mapWorkbenchEls.remarkInput && !isWarehouse) {
+          mapWorkbenchEls.remarkInput.value = "";
         }
         if (mapWorkbenchEls.capacityField) {
           mapWorkbenchEls.capacityField.classList.toggle("hidden", isFacility);
@@ -10472,7 +10514,7 @@
 
         mapWorkbenchEls.warehouseTableBody.innerHTML = warehouses.length
           ? warehouses.map((project) => `
-              <tr>
+              <tr data-warehouse-project-id="${escapeHtml(project.id)}" tabindex="0" role="button" aria-label="定位仓库 ${escapeHtml(project.name || "-")}">
                 <th scope="row" title="${escapeHtml(project.name || "-")}">${escapeHtml(project.name || "-")}</th>
                 <td title="${escapeHtml(project.remark || "-")}">${escapeHtml(project.remark || "-")}</td>
               </tr>
@@ -10926,6 +10968,24 @@
         }
       }
 
+      function zoomToWarehouseProject(projectId) {
+        const project = mapStore.projects.find((item) => item.id === projectId);
+        if (!project) return;
+        ensureInteractiveMap();
+        const center = L.latLng(project.lat, project.lng);
+        mapStore.instance.fitBounds(center.toBounds(50000), {
+          animate: true,
+          maxZoom: 10
+        });
+        const marker = mapStore.visibleMarkers.get(projectId);
+        if (marker && !isFootprintBaseName(mapStore.activeBaseName)) {
+          marker.setZIndexOffset?.(500);
+          setMapStatus(`已定位仓库 ${project.name}，地图尺度约 50km`);
+        } else {
+          setMapStatus(`已定位仓库 ${project.name}，但当前筛选未显示项目点位`);
+        }
+      }
+
       function renderProjectLibrary() {
         if (!mapWorkbenchEls.libraryList) return;
         if (!mapStore.projects.length) {
@@ -11039,6 +11099,9 @@
         mapWorkbenchEls.nameInput.value = project?.name || "";
         mapWorkbenchEls.countryInput.value = project?.country || "";
         mapWorkbenchEls.machineTypeInput.value = project?.machineType || "";
+        if (mapWorkbenchEls.remarkInput) {
+          mapWorkbenchEls.remarkInput.value = project?.remark || "";
+        }
         const category = getProjectBaseCategory(project?.category || "");
         if (["WTG", "BESS", "Warehouse", "Service Center"].includes(category)) {
           mapWorkbenchEls.categoryInput.value = category;
@@ -11277,6 +11340,20 @@
         renderDashboardSwitch();
       });
 
+      mapWorkbenchEls.warehouseTableBody?.addEventListener("click", (event) => {
+        const row = event.target.closest("[data-warehouse-project-id]");
+        if (!row) return;
+        zoomToWarehouseProject(row.dataset.warehouseProjectId);
+      });
+
+      mapWorkbenchEls.warehouseTableBody?.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        const row = event.target.closest("[data-warehouse-project-id]");
+        if (!row) return;
+        event.preventDefault();
+        zoomToWarehouseProject(row.dataset.warehouseProjectId);
+      });
+
       mapWorkbenchEls.searchBtn?.addEventListener("click", handleMapSearch);
       mapWorkbenchEls.searchInput?.addEventListener("keydown", (event) => {
         if (event.key === "Enter") {
@@ -11466,6 +11543,7 @@
           name: mapWorkbenchEls.nameInput.value,
           capacity: capacityValue,
           machineType: mapWorkbenchEls.machineTypeInput.value,
+          remark: mapWorkbenchEls.remarkInput?.value || "",
           progress: mapWorkbenchEls.progressInput.value,
           category: categoryValue,
           country: mapWorkbenchEls.countryInput.value,
