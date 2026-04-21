@@ -2549,39 +2549,44 @@
     }
 
     .map-route-widget {
-      display: grid;
-      justify-items: end;
-      gap: 6px;
+      display: inline-flex;
+      align-items: flex-start;
+      gap: 8px;
     }
 
     .map-icon-button {
-      min-height: 34px;
-      padding: 0 12px 0 10px;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      border-radius: 999px;
-      border: 1px solid rgba(23, 35, 31, 0.1);
-      background: linear-gradient(135deg, #20302c, #2d4b43);
-      color: #fff;
+      width: 40px;
+      height: 40px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      border: 1px solid rgba(23, 35, 31, 0.08);
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--text);
       cursor: pointer;
-      box-shadow: 0 12px 24px rgba(24, 42, 37, 0.16);
-      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
-      font-size: 0.78rem;
-      font-weight: 700;
-      white-space: nowrap;
+      box-shadow: 0 10px 24px rgba(24, 42, 37, 0.12);
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, color 0.16s ease;
     }
 
-    .map-icon-button:hover,
-    .map-icon-button.active {
+    .map-icon-button:hover {
       transform: translateY(-1px);
-      box-shadow: 0 16px 30px rgba(24, 42, 37, 0.2);
-      background: linear-gradient(135deg, #0b776a, #25a58f);
+      box-shadow: 0 14px 28px rgba(24, 42, 37, 0.16);
+    }
+
+    .map-icon-button.active {
+      background: linear-gradient(135deg, #20302c, #2d4b43);
+      color: #ffffff;
+      border-color: transparent;
     }
 
     .map-icon-button svg {
-      width: 14px;
-      height: 14px;
+      width: 16px;
+      height: 16px;
+    }
+
+    .map-icon-button span {
+      display: none;
     }
 
     .map-route-summary {
@@ -2596,7 +2601,7 @@
       color: var(--muted);
       display: none;
       gap: 2px;
-      text-align: right;
+      text-align: left;
     }
 
     .map-route-summary.visible {
@@ -2984,16 +2989,18 @@
 
     .map-route-overlay {
       position: absolute;
-      top: 64px;
-      right: 14px;
+      top: 110px;
+      left: 14px;
+      right: auto;
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start;
       pointer-events: none;
       z-index: 540;
       transition: opacity 0.18s ease, transform 0.18s ease;
     }
 
-    .map-controls-toggle {
+    .map-controls-toggle,
+    .map-fullscreen-toggle {
       position: absolute;
       top: 14px;
       left: 14px;
@@ -3011,30 +3018,97 @@
       transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, color 0.16s ease;
     }
 
-    .map-controls-toggle:hover {
+    .map-fullscreen-toggle {
+      top: 62px;
+    }
+
+    .map-controls-toggle:hover,
+    .map-fullscreen-toggle:hover {
       transform: translateY(-1px);
       box-shadow: 0 14px 28px rgba(24, 42, 37, 0.16);
     }
 
-    .map-controls-toggle.active {
+    .map-controls-toggle.active,
+    .map-fullscreen-toggle.active {
       background: linear-gradient(135deg, #20302c, #2d4b43);
       color: #ffffff;
       border-color: transparent;
     }
 
-    .map-controls-toggle svg {
+    .map-controls-toggle svg,
+    .map-fullscreen-toggle svg {
       width: 16px;
       height: 16px;
     }
 
     .map-canvas-shell.controls-hidden .map-search-overlay,
     .map-canvas-shell.controls-hidden .map-route-overlay,
+    .map-canvas-shell.controls-hidden .map-fullscreen-toggle,
     .map-canvas-shell.controls-hidden #footprintLegend,
     .map-canvas-shell.controls-hidden .leaflet-top.leaflet-right,
     .map-canvas-shell.controls-hidden .leaflet-bottom.leaflet-left {
       opacity: 0;
       pointer-events: none;
       transform: translateY(-6px);
+    }
+
+    body.map-fullscreen-active {
+      overflow: hidden;
+    }
+
+    body.map-fullscreen-active #page-map.active {
+      position: fixed;
+      inset: 0;
+      z-index: 8200;
+      display: block;
+      padding: 0;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(225, 238, 234, 0.86), transparent 34%),
+        linear-gradient(135deg, #f4f5f1, #e7eee9);
+    }
+
+    body.map-fullscreen-active #page-map .container {
+      width: 100%;
+      height: 100%;
+      max-width: none;
+      margin: 0;
+    }
+
+    body.map-fullscreen-active .map-workbench-shell {
+      display: block;
+      height: 100%;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    body.map-fullscreen-active .map-workbench-toolbar,
+    body.map-fullscreen-active .project-library-panel,
+    body.map-fullscreen-active .map-insights-panel {
+      display: none;
+    }
+
+    body.map-fullscreen-active .map-workbench-grid {
+      display: block;
+      height: 100%;
+      min-height: 0;
+    }
+
+    body.map-fullscreen-active .workbench-map-stage,
+    body.map-fullscreen-active .map-canvas-shell,
+    body.map-fullscreen-active .map-canvas {
+      height: 100%;
+      min-height: 0;
+      margin: 0;
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    body.map-fullscreen-active .form-modal.open {
+      z-index: 9200;
     }
 
     .map-canvas-shell.context-target {
@@ -4463,17 +4537,13 @@
         align-items: stretch;
       }
 
-      .map-route-widget {
-        justify-items: stretch;
-      }
-
       .map-search-overlay {
         left: 58px;
         right: 58px;
       }
 
       .map-route-overlay {
-        top: 64px;
+        top: 110px;
       }
     }
 
@@ -4509,8 +4579,9 @@
       }
 
       .map-route-overlay {
-        top: 58px;
-        right: 10px;
+        top: 106px;
+        left: 10px;
+        right: auto;
       }
 
       .map-route-summary {
@@ -4875,6 +4946,14 @@
                       <path d="M5 17h14"></path>
                     </svg>
                   </button>
+                  <button id="mapFullscreenToggle" class="map-fullscreen-toggle" type="button" aria-label="地图全屏" title="地图全屏">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M8 3H3v5"></path>
+                      <path d="M16 3h5v5"></path>
+                      <path d="M21 16v5h-5"></path>
+                      <path d="M8 21H3v-5"></path>
+                    </svg>
+                  </button>
                   <div class="map-search-overlay">
                     <div class="map-searchbar">
                       <label class="map-search-label" for="mapSearchInput">地图搜索</label>
@@ -4886,7 +4965,7 @@
                   </div>
                   <div class="map-route-overlay">
                     <div class="map-route-widget">
-                      <button id="mapRouteBtn" class="map-icon-button" type="button" title="点击后依次选择起点和终点">
+                      <button id="mapRouteBtn" class="map-icon-button" type="button" aria-label="导航" title="点击后依次选择起点和终点">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                           <path d="M10 14 21 3"></path>
                           <path d="m21 3-7 18-4-7-7-4 18-7Z"></path>
@@ -6980,9 +7059,6 @@
         return;
       }
 
-      config.tabsEl.innerHTML = "";
-      config.tabsEl.classList.add("hidden");
-
       config.emptyEl.classList.add("hidden");
       config.gridEl.classList.remove("hidden");
       destroyKnowledgeSpreadsheetBoard(board);
@@ -8362,6 +8438,7 @@
         routeSummary: document.getElementById("mapRouteSummary"),
         footprintLegend: document.getElementById("footprintLegend"),
         controlsToggle: document.getElementById("mapControlsToggle"),
+        fullscreenToggle: document.getElementById("mapFullscreenToggle"),
         searchInput: document.getElementById("mapSearchInput"),
         searchBtn: document.getElementById("mapSearchBtn"),
         libraryPanel: document.getElementById("projectLibraryPanel"),
@@ -8639,6 +8716,7 @@
       mapStore.footprintBoundaryLayer = mapStore.footprintBoundaryLayer || null;
       mapStore.footprintBoundaryPromise = mapStore.footprintBoundaryPromise || null;
       mapStore.controlsHidden = Boolean(mapStore.controlsHidden);
+      mapStore.fullscreen = Boolean(mapStore.fullscreen);
       mapStore.searchDismissHandler = mapStore.searchDismissHandler || null;
       mapStore.activeDashboard = mapStore.activeDashboard || "ltsa";
       mapStore.filters = mapStore.filters || {
@@ -8688,6 +8766,20 @@
           mapWorkbenchEls.controlsToggle.classList.toggle("active", mapStore.controlsHidden);
           mapWorkbenchEls.controlsToggle.setAttribute("aria-label", mapStore.controlsHidden ? "显示地图组件" : "隐藏地图组件");
           mapWorkbenchEls.controlsToggle.title = mapStore.controlsHidden ? "显示地图组件" : "隐藏地图组件";
+        }
+      }
+
+      function renderMapFullscreenState() {
+        document.body.classList.toggle("map-fullscreen-active", mapStore.fullscreen);
+        if (mapWorkbenchEls.fullscreenToggle) {
+          mapWorkbenchEls.fullscreenToggle.classList.toggle("active", mapStore.fullscreen);
+          mapWorkbenchEls.fullscreenToggle.setAttribute("aria-label", mapStore.fullscreen ? "退出地图全屏" : "地图全屏");
+          mapWorkbenchEls.fullscreenToggle.title = mapStore.fullscreen ? "退出地图全屏" : "地图全屏";
+        }
+        if (mapStore.instance) {
+          setTimeout(() => {
+            mapStore.instance.invalidateSize();
+          }, 80);
         }
       }
 
@@ -9481,6 +9573,18 @@
             duration: "预计时间：计算中..."
           };
         }
+        if (mapStore.route.selecting && !mapStore.route.start) {
+          return {
+            distance: "请选择导航起点",
+            duration: "点击地图或项目点"
+          };
+        }
+        if (mapStore.route.selecting && mapStore.route.start && !mapStore.route.end) {
+          return {
+            distance: "起点已选择",
+            duration: "请继续选择终点"
+          };
+        }
         if (mapStore.route.distance > 0) {
           return {
             distance: "Driving distance: " + formatRouteDistance(mapStore.route.distance),
@@ -9497,13 +9601,14 @@
         if (!mapWorkbenchEls.routeSummary) return;
         const lines = routeSummaryText();
         mapWorkbenchEls.routeSummary.innerHTML = `<span>${escapeHtml(lines.distance)}</span><span>${escapeHtml(lines.duration)}</span>`;
-        const isVisible = mapStore.route.loading || mapStore.route.distance > 0;
+        const isVisible = mapStore.route.selecting || mapStore.route.loading || mapStore.route.distance > 0;
         const isEmpty = !isVisible;
         mapWorkbenchEls.routeSummary.classList.toggle("empty", isEmpty);
         mapWorkbenchEls.routeSummary.classList.toggle("visible", isVisible);
         if (mapWorkbenchEls.routeBtn) {
           mapWorkbenchEls.routeBtn.classList.toggle("active", mapStore.route.selecting || mapStore.route.loading);
           mapWorkbenchEls.routeBtn.disabled = mapStore.route.loading;
+          mapWorkbenchEls.routeBtn.title = mapStore.route.selecting ? "导航选择中：请在地图上选择起点和终点" : "点击后依次选择起点和终点";
         }
       }
 
@@ -9596,6 +9701,16 @@
           route.endMarker = createRoutePointMarker(latlng, "#ef7b49", "终点");
           computeDrivingRoute();
         }
+      }
+
+      function handleProjectMarkerClick(project, event) {
+        if (mapStore.route.selecting && !mapStore.route.loading) {
+          event?.originalEvent?.preventDefault?.();
+          event?.originalEvent?.stopPropagation?.();
+          handleMapClickForRoute({ lat: project.lat, lng: project.lng });
+          return;
+        }
+        openProjectModal({ lat: project.lat, lng: project.lng }, project);
       }
 
       function getFilteredProjects() {
@@ -10161,8 +10276,8 @@
           const marker = L.marker([project.lat, project.lng], {
             icon: createProjectMarkerIcon(project)
           });
-          marker.on("click", () => {
-            openProjectModal({ lat: project.lat, lng: project.lng }, project);
+          marker.on("click", (event) => {
+            handleProjectMarkerClick(project, event);
           });
           marker.addTo(mapStore.projectLayer);
           mapStore.visibleMarkers.set(project.id, marker);
@@ -10313,8 +10428,8 @@
             : L.marker([project.lat, project.lng], {
                 icon: createProjectMarkerIcon(project, markerMode === "detailed", visualConfig)
               });
-          marker.on("click", () => {
-            openProjectModal({ lat: project.lat, lng: project.lng }, project);
+          marker.on("click", (event) => {
+            handleProjectMarkerClick(project, event);
           });
           marker.addTo(mapStore.projectLayer);
           mapStore.visibleMarkers.set(project.id, marker);
@@ -11300,6 +11415,7 @@
         renderRouteSummary();
         renderLibraryCollapseState();
         renderMapControlVisibility();
+        renderMapFullscreenState();
         updateFootprintMode();
         setMapStatus("Current base map: English");
         setMapStatus("Current base map: English");
@@ -11310,12 +11426,15 @@
       }
       renderDashboardSwitch();
       renderMapControlVisibility();
+      renderMapFullscreenState();
       refreshProjectWorkbench({ resetCapacity: true });
       loadDefaultProjectLibrary();
       renderRouteSummary();
       renderLibraryCollapseState();
 
-      mapWorkbenchEls.routeBtn?.addEventListener("click", () => {
+      mapWorkbenchEls.routeBtn?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
         if (mapStore.route.loading) return;
         startRouteSelection();
       });
@@ -11323,6 +11442,17 @@
       mapWorkbenchEls.controlsToggle?.addEventListener("click", () => {
         mapStore.controlsHidden = !mapStore.controlsHidden;
         renderMapControlVisibility();
+      });
+
+      mapWorkbenchEls.fullscreenToggle?.addEventListener("click", () => {
+        mapStore.fullscreen = !mapStore.fullscreen;
+        renderMapFullscreenState();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key !== "Escape" || !mapStore.fullscreen) return;
+        mapStore.fullscreen = false;
+        renderMapFullscreenState();
       });
 
       mapWorkbenchEls.ltsaDashboardTab?.addEventListener("click", () => {
