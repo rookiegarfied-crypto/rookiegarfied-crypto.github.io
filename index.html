@@ -92,18 +92,23 @@
       border-bottom: 1px solid rgba(23, 35, 31, 0.06);
     }
 
+    .topbar .container {
+      width: calc(100% - clamp(32px, 4vw, 96px));
+      max-width: none;
+    }
+
     .topbar-inner {
       height: 100%;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 24px;
+      gap: clamp(16px, 2vw, 32px);
     }
 
     .brand {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: clamp(12px, 1.2vw, 18px);
       min-width: 0;
     }
 
@@ -2154,21 +2159,6 @@
       gap: 18px;
     }
 
-    .map-toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      flex-wrap: wrap;
-      padding: 18px;
-    }
-
-    .map-toolbar-note {
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.8;
-    }
-
     .map-filter-row {
       display: flex;
       align-items: center;
@@ -2490,26 +2480,21 @@
     }
 
     #page-map .container {
-      width: min(1720px, calc(100% - 20px));
+      width: calc(100% - clamp(20px, 4vw, 96px));
+      max-width: none;
     }
 
     .map-workbench-shell {
-      padding: 16px;
-      gap: 16px;
-    }
-
-    .map-workbench-toolbar {
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      flex-wrap: wrap;
-      padding: 0 2px;
-      background: transparent;
+      padding: 0;
+      gap: 0;
+      width: 100%;
+      min-width: 0;
+      overflow: hidden;
       border: 0;
     }
 
     .map-searchbar {
-      width: min(700px, calc(100% - 120px));
+      width: min(350px, calc(100% - 120px));
       display: grid;
       gap: 6px;
     }
@@ -2539,13 +2524,11 @@
       outline: none;
       background: transparent;
       color: var(--text);
-      font-size: 0.9rem;
+      font-size: clamp(0.72rem, 0.66rem + 0.14vw, 0.8rem);
     }
 
-    .map-quick-actions {
-      display: flex;
-      align-items: center;
-      gap: 12px;
+    .map-search-field input::placeholder {
+      font-size: inherit;
     }
 
     .map-route-widget {
@@ -2554,33 +2537,63 @@
       gap: 8px;
     }
 
-    .map-icon-button {
-      width: 40px;
-      height: 40px;
+    .map-compact-tools {
+      display: inline-flex;
+      align-items: center;
+      overflow: visible;
+      border-radius: 8px;
+      border: 1px solid rgba(23, 35, 31, 0.1);
+      background: rgba(255, 255, 255, 0.94);
+      box-shadow: 0 10px 20px rgba(24, 42, 37, 0.1);
+    }
+
+    .map-layer-control-mount {
+      position: relative;
+      width: 34px;
+      height: 34px;
+      flex: 0 0 34px;
+      border-left: 1px solid rgba(23, 35, 31, 0.1);
+    }
+
+    .map-icon-button,
+    .map-controls-toggle,
+    .map-fullscreen-toggle {
+      width: 34px;
+      height: 34px;
       padding: 0;
       display: grid;
       place-items: center;
-      border-radius: 14px;
-      border: 1px solid rgba(23, 35, 31, 0.08);
-      background: rgba(255, 255, 255, 0.96);
+      border: 0;
+      border-left: 1px solid rgba(23, 35, 31, 0.1);
+      border-radius: 0;
+      background: transparent;
       color: var(--text);
       cursor: pointer;
-      box-shadow: 0 10px 24px rgba(24, 42, 37, 0.12);
-      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, color 0.16s ease;
+      box-shadow: none;
+      transition: background 0.16s ease, color 0.16s ease;
     }
 
-    .map-icon-button:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 28px rgba(24, 42, 37, 0.16);
+    .map-controls-toggle {
+      border-left: 0;
     }
 
-    .map-icon-button.active {
+    .map-icon-button:hover,
+    .map-controls-toggle:hover,
+    .map-fullscreen-toggle:hover,
+    .map-layer-control-mount:hover {
+      background: rgba(11, 119, 106, 0.08);
+    }
+
+    .map-icon-button.active,
+    .map-controls-toggle.active,
+    .map-fullscreen-toggle.active {
       background: linear-gradient(135deg, #20302c, #2d4b43);
       color: #ffffff;
-      border-color: transparent;
     }
 
-    .map-icon-button svg {
+    .map-icon-button svg,
+    .map-controls-toggle svg,
+    .map-fullscreen-toggle svg {
       width: 16px;
       height: 16px;
     }
@@ -2589,9 +2602,51 @@
       display: none;
     }
 
-    .map-route-summary {
-      min-width: 132px;
+    .map-layer-control-mount .leaflet-control {
+      margin: 0 !important;
+    }
+
+    .map-layer-control-mount .leaflet-control-layers {
+      width: 34px;
+      min-height: 34px;
+      border: 0 !important;
+      border-radius: 0 !important;
+      background: transparent;
+      box-shadow: none;
+      overflow: visible;
+    }
+
+    .map-layer-control-mount .leaflet-control-layers-toggle {
+      width: 34px !important;
+      height: 34px !important;
+      background-size: 16px 16px !important;
+    }
+
+    .map-layer-control-mount .leaflet-control-layers-expanded {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: max-content;
+      min-width: 160px;
+      min-height: 0;
       padding: 8px 10px;
+      border-radius: 12px !important;
+      background: rgba(255, 255, 255, 0.97);
+      box-shadow: 0 16px 30px rgba(24, 42, 37, 0.16);
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .map-layer-control-mount .leaflet-control-layers label {
+      margin: 2px 0;
+      font-size: inherit;
+      line-height: inherit;
+      white-space: nowrap;
+    }
+
+    .map-route-summary {
+      min-width: 180px;
+      padding: 7px 8px 7px 10px;
       border-radius: 14px;
       background: rgba(255, 255, 255, 0.9);
       border: 1px solid rgba(23, 35, 31, 0.08);
@@ -2600,8 +2655,40 @@
       line-height: 1.5;
       color: var(--muted);
       display: none;
-      gap: 2px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 8px;
       text-align: left;
+    }
+
+    .map-route-summary-lines {
+      min-width: 0;
+      display: grid;
+      gap: 2px;
+    }
+
+    .map-route-clear {
+      width: 24px;
+      height: 24px;
+      padding: 0;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(23, 35, 31, 0.08);
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.16s ease, color 0.16s ease;
+    }
+
+    .map-route-clear:hover {
+      background: rgba(214, 60, 60, 0.14);
+      color: #a83232;
+    }
+
+    .map-route-clear svg {
+      width: 13px;
+      height: 13px;
     }
 
     .map-route-summary.visible {
@@ -2613,15 +2700,22 @@
     }
 
     .map-workbench-grid {
+      --project-library-left: 0px;
+      --project-library-width: clamp(260px, calc(100% - 388px), 300px);
+      --map-floating-left: calc(var(--project-library-left) + var(--project-library-width) + 20px);
+      --map-insights-width: min(300px, 33.333%);
+      position: relative;
       display: grid;
-      grid-template-columns: clamp(84px, 18vw, 300px) minmax(0, 1fr) clamp(250px, 19vw, 300px);
-      gap: 16px;
+      grid-template-columns: minmax(0, 1fr) var(--map-insights-width);
+      gap: 0;
       align-items: stretch;
       min-height: calc(100vh - 210px);
+      min-width: 0;
     }
 
     .map-workbench-grid.library-collapsed {
-      grid-template-columns: 80px minmax(0, 1fr) 280px;
+      --project-library-width: 0px;
+      grid-template-columns: minmax(0, 1fr) var(--map-insights-width);
     }
 
     .map-side-panel {
@@ -2642,24 +2736,131 @@
     }
 
     .project-library-panel {
-      align-self: start;
-      height: auto;
-      max-height: calc(100vh - 210px);
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: var(--project-library-left);
+      z-index: 510;
+      width: var(--project-library-width);
+      min-width: min(260px, var(--project-library-width));
+      height: 100%;
+      max-height: none;
+      border-radius: var(--radius-xl) 0 0 var(--radius-xl);
+      font-size: 0.78rem;
       transition: width 0.2s ease, min-width 0.2s ease, padding 0.2s ease;
     }
 
+    .project-library-panel .map-side-header h2 {
+      font-size: 0.92rem;
+      margin-left: 5px;
+    }
+
+    .project-library-panel .map-side-header {
+      position: relative;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 32px;
+      align-items: start;
+      gap: 10px;
+      min-height: 78px;
+      padding: 0 12px 8px 18px;
+    }
+
+    .project-library-heading {
+      display: grid;
+      gap: 8px;
+      min-width: 0;
+      padding-top: 10px;
+    }
+
+    .project-library-panel .map-side-header .window-button {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      margin-top: 6px;
+    }
+
     .map-insights-panel {
-      align-self: start;
-      height: auto;
-      max-height: calc(100vh - 210px);
+      grid-column: 2;
+      grid-row: 1;
+      align-self: stretch;
+      height: 100%;
+      max-height: none;
+      border-radius: 0 var(--radius-xl) var(--radius-xl) 0;
+    }
+
+    .map-resize-handle {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      right: calc(var(--map-insights-width) - 8px);
+      z-index: 650;
+      width: 16px;
+      min-height: 44px;
+      padding: 0;
+      border: 0;
+      border-radius: 0;
+      background: transparent;
+      color: var(--primary);
+      cursor: col-resize;
+      touch-action: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .map-resize-handle::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 50%;
+      width: 1px;
+      transform: translateX(-50%);
+      background: rgba(23, 35, 31, 0.12);
+    }
+
+    .map-resize-grip {
+      position: relative;
+      width: 6px;
+      height: 48px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.78);
+      border: 1px solid rgba(23, 35, 31, 0.12);
+      box-shadow: 0 8px 18px rgba(24, 42, 37, 0.16);
+      transition: background 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease, transform 0.16s ease;
+    }
+
+    .map-resize-handle:hover .map-resize-grip,
+    .map-resize-handle:focus-visible .map-resize-grip,
+    .map-resize-handle.dragging .map-resize-grip {
+      background: rgba(11, 119, 106, 0.92);
+      border-color: rgba(11, 119, 106, 0.46);
+      box-shadow: 0 10px 22px rgba(11, 119, 106, 0.24);
+      transform: scaleX(1.2);
+    }
+
+    .map-resize-handle:focus-visible {
+      outline: 2px solid rgba(11, 119, 106, 0.28);
+      outline-offset: 2px;
+    }
+
+    body.map-insights-resizing {
+      cursor: col-resize;
+      user-select: none;
     }
 
     .project-library-panel.collapsed {
-      width: 80px;
-      min-width: 80px;
+      width: var(--project-library-width);
+      min-width: var(--project-library-width);
+      overflow: visible;
+      background: transparent;
+      border: 0;
+      box-shadow: none;
+      backdrop-filter: none;
+      pointer-events: none;
     }
 
+    .project-library-panel.collapsed .project-library-heading,
     .project-library-panel.collapsed .project-library-toolbar,
+    .project-library-panel.collapsed .project-library-filters,
     .project-library-panel.collapsed .project-library-search,
     .project-library-panel.collapsed .project-library-body,
     .project-library-panel.collapsed .map-side-header span {
@@ -2667,60 +2868,435 @@
     }
 
     .project-library-panel.collapsed .map-side-header {
+      display: flex;
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 0;
       min-height: 100%;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 16px;
-      padding: 14px 6px;
+      gap: 0;
+      padding: 0;
+      border-bottom: 0;
+      pointer-events: none;
     }
 
     .project-library-panel.collapsed .map-side-header h2 {
       writing-mode: vertical-rl;
+      text-orientation: upright;
       transform: none;
-      font-size: 0.96rem;
-      letter-spacing: 0.12em;
+      font-size: 0.88rem;
+      line-height: 1.08;
+      letter-spacing: 0.04em;
+      margin-left: 0;
+      color: var(--ink);
+    }
+
+    .project-library-panel.collapsed .map-side-header .window-button {
+      position: absolute;
+      top: 50%;
+      left: 0;
+      width: 20px;
+      height: 140px;
+      margin-top: 0;
+      transform: translateY(-50%);
+      display: grid;
+      place-items: center;
+      padding: 0;
+      border-radius: 0 8px 8px 0;
+      background: rgba(255, 255, 255, 0.86);
+      border-color: rgba(23, 35, 31, 0.08);
+      border-left: 0;
+      box-shadow: 0 10px 22px rgba(24, 42, 37, 0.1);
+      pointer-events: auto;
     }
 
     .project-library-panel.collapsed .window-button svg {
+      width: 13px;
+      height: 13px;
       transform: rotate(180deg);
     }
 
     .project-library-toolbar {
-      padding: 8px 18px 12px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
+      justify-self: start;
+      gap: 0;
+      height: 32px;
+      overflow: visible;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(23, 35, 31, 0.1);
+      box-shadow: 0 8px 18px rgba(24, 42, 37, 0.08);
     }
 
-    .project-template-button {
-      margin-left: 8px;
+    .project-template-menu {
+      position: relative;
+      display: grid;
+      width: 34px;
+      height: 32px;
+    }
+
+    .project-template-menu .project-library-action {
+      width: 100%;
+      height: 100%;
+    }
+
+    .project-template-menu-panel {
+      position: absolute;
+      top: calc(100% + 8px);
+      left: 0;
+      z-index: 820;
+      display: none;
+      width: 126px;
+      padding: 6px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 1px solid rgba(23, 35, 31, 0.1);
+      box-shadow: 0 16px 30px rgba(24, 42, 37, 0.14);
+      backdrop-filter: blur(10px);
+    }
+
+    .project-template-menu.open .project-template-menu-panel {
+      display: grid;
+      gap: 4px;
+    }
+
+    .project-template-option {
+      min-height: 30px;
+      padding: 0 8px;
+      border: 0;
+      border-radius: 6px;
+      background: transparent;
+      color: var(--text);
+      font-size: 0.68rem;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .project-template-option:hover,
+    .project-template-option:focus-visible {
+      background: rgba(11, 119, 106, 0.08);
+      color: var(--primary);
+      outline: none;
+    }
+
+    .project-library-action {
+      width: 34px;
+      height: 32px;
+      display: grid;
+      place-items: center;
+      border: 0;
+      border-left: 1px solid rgba(23, 35, 31, 0.08);
+      background: transparent;
+      color: rgba(23, 35, 31, 0.82);
+      cursor: pointer;
+      transition: background 0.16s ease, color 0.16s ease;
+    }
+
+    .project-library-action:first-child {
+      border-left: 0;
+    }
+
+    .project-library-action:hover {
+      background: rgba(11, 119, 106, 0.08);
+      color: var(--primary);
+    }
+
+    .project-library-action svg {
+      width: 15px;
+      height: 15px;
+      stroke-width: 1.8;
+    }
+
+    .project-library-filters {
+      --filter-select-width: 42px;
+      --filter-tail-width: 66px;
+      --filter-menu-width: 168px;
+      --filter-menu-center-left: calc((var(--project-library-width) - var(--filter-menu-width)) / 2 + 12px);
+      padding: 10px 8px 12px;
+      border-bottom: 1px solid rgba(23, 35, 31, 0.06);
+      display: grid;
+      gap: 6px;
+      overflow: visible;
+    }
+
+    .wtg-filter-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      min-width: 0;
+      white-space: nowrap;
+    }
+
+    .wtg-filter-toggle {
+      width: 34px;
+      height: 24px;
+      padding: 0 4px;
+      border-radius: 0;
+      border: 1px solid rgba(11, 119, 106, 0.22);
+      background: rgba(11, 119, 106, 0.1);
+      color: var(--primary);
+      font-size: 0.58rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      margin-left: 5px;
+    }
+
+    .wtg-filter-toggle.is-hidden {
+      border-color: rgba(23, 35, 31, 0.12);
+      background: rgba(23, 35, 31, 0.05);
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    .bess-filter-row .wtg-filter-toggle {
+      border-color: rgba(41, 112, 219, 0.24);
+      background: rgba(41, 112, 219, 0.1);
+      color: #1f6fd1;
+    }
+
+    .bess-filter-row .wtg-filter-toggle.is-hidden {
+      border-color: rgba(23, 35, 31, 0.12);
+      background: rgba(23, 35, 31, 0.05);
+      color: var(--muted);
+    }
+
+    .facility-filter-row .wtg-filter-toggle {
+      border-color: rgba(207, 67, 56, 0.24);
+      background: rgba(207, 67, 56, 0.1);
+      color: #cf4338;
+      font-size: 0.46rem;
+    }
+
+    .facility-filter-row .wtg-filter-toggle.is-hidden {
+      border-color: rgba(23, 35, 31, 0.12);
+      background: rgba(23, 35, 31, 0.05);
+      color: var(--muted);
+    }
+
+    .facility-filter-row .multi-select-trigger {
+      border-color: rgba(207, 67, 56, 0.14);
+    }
+
+    .facility-filter-row .multi-select.has-selection .multi-select-trigger {
+      color: #cf4338;
+      background: rgba(207, 67, 56, 0.08);
+      border-color: rgba(207, 67, 56, 0.22);
+    }
+
+    .facility-filter-row .multi-select-option:hover {
+      background: rgba(207, 67, 56, 0.08);
+    }
+
+    .facility-filter-row .multi-select-option.selected {
+      background: rgba(207, 67, 56, 0.12);
+      color: #b83a31;
+    }
+
+    .wtg-filter-divider {
+      width: 1px;
+      height: 18px;
+      flex: 0 0 1px;
+      margin: 0 3px;
+      background: rgba(23, 35, 31, 0.18);
+    }
+
+    .wtg-filter-label {
+      flex: 0 0 auto;
+      color: rgba(86, 102, 95, 0.92);
+      font-size: 0.58rem;
+      font-weight: 700;
+    }
+
+    .project-library-filters .multi-select-trigger {
+      min-height: 24px;
+      padding: 0 5px;
+      border-radius: 0;
+      gap: 3px;
+    }
+
+    .project-library-filters .multi-select {
+      width: var(--filter-select-width);
+      flex: 0 0 var(--filter-select-width);
+    }
+
+    .project-library-filters .multi-select-value {
+      font-size: 0.58rem;
+      text-align: center;
+    }
+
+    .project-library-filters .multi-select-trigger svg {
+      width: 8px;
+      height: 8px;
+    }
+
+    .project-library-filters .multi-select-menu {
+      top: calc(100% + 6px);
+      left: calc(var(--filter-menu-center-left) - var(--filter-control-left, 0px));
+      right: auto;
+      width: var(--filter-menu-width);
+      max-height: 180px;
+      border-radius: 8px;
+      z-index: 780;
+    }
+
+    #mapCountryFilterWrap,
+    #mapBessCountryFilterWrap,
+    #mapFacilityCountryFilterWrap {
+      --filter-control-left: 77px;
+    }
+
+    #mapProgressFilterWrap,
+    #mapBessProgressFilterWrap,
+    #mapFacilityProgressFilterWrap {
+      --filter-control-left: 164px;
+    }
+
+    #mapFacilityTypeFilterWrap {
+      --filter-control-left: 235px;
+    }
+
+    .project-library-filters .multi-select-option {
+      min-height: 24px;
+      gap: 6px;
+      padding: 5px 7px;
+      border-radius: 6px;
+      font-size: 0.58rem;
+    }
+
+    .project-library-filters .multi-select-option.clear-option {
+      font-size: 0.58rem;
+    }
+
+    .project-library-filters .multi-select-option-label {
+      font-size: 0.58rem;
+    }
+
+    .wtg-capacity-filter {
+      width: var(--filter-tail-width);
+      height: 24px;
+      flex: 0 0 var(--filter-tail-width);
+      display: flex;
+      align-items: center;
+    }
+
+    .wtg-capacity-filter .dual-range-slider {
+      width: 100%;
+      height: 16px;
+    }
+
+    .project-library-filters .dual-range-track,
+    .project-library-filters .dual-range-selection {
+      height: 4px;
+    }
+
+    .bess-filter-row .dual-range-selection {
+      background: linear-gradient(135deg, #1f6fd1, #4aa3ff);
+      box-shadow: 0 6px 14px rgba(31, 111, 209, 0.18);
+    }
+
+    .project-library-filters .dual-range-slider input[type="range"]::-webkit-slider-thumb {
+      width: 12px;
+      height: 12px;
+      margin-top: -5px;
+      border-width: 2px;
+    }
+
+    .bess-filter-row .dual-range-slider input[type="range"]::-webkit-slider-thumb {
+      border-color: #1f6fd1;
+    }
+
+    .project-library-filters .dual-range-slider input[type="range"]::-moz-range-thumb {
+      width: 12px;
+      height: 12px;
+      border-width: 2px;
+    }
+
+    .bess-filter-row .dual-range-slider input[type="range"]::-moz-range-thumb {
+      border-color: #1f6fd1;
+    }
+
+    .project-library-filters .dual-range-tooltip {
+      top: -28px;
+      min-width: 28px;
+      padding: 4px 6px;
+      border-radius: 4px;
+      background: rgba(23, 35, 31, 0.72);
+      color: #ffffff;
+      font-size: 0.58rem;
+      line-height: 1;
+      font-weight: 800;
+      box-shadow: 0 10px 22px rgba(24, 42, 37, 0.18);
+      backdrop-filter: blur(5px);
+    }
+
+    .project-library-filters .dual-range-tooltip::after {
+      border-top-color: rgba(23, 35, 31, 0.72);
+    }
+
+    .bess-filter-row .dual-range-tooltip {
+      background: rgba(31, 111, 209, 0.76);
+      box-shadow: 0 10px 22px rgba(31, 111, 209, 0.2);
+    }
+
+    .bess-filter-row .dual-range-tooltip::after {
+      border-top-color: rgba(31, 111, 209, 0.76);
+    }
+
+    .wtg-capacity-value {
+      display: none;
+    }
+
+    .facility-type-filter {
+      width: var(--filter-tail-width);
+      height: 24px;
+      flex: 0 0 var(--filter-tail-width);
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      min-width: 0;
+    }
+
+    .facility-type-label {
+      flex: 0 0 auto;
+      color: rgba(86, 102, 95, 0.92);
+      font-size: 0.58rem;
+      font-weight: 700;
+    }
+
+    .facility-type-filter .multi-select {
+      flex: 1 1 0;
+      width: auto;
+      min-width: 0;
     }
 
     .project-library-search {
-      padding: 0 18px 14px;
+      padding: 12px 18px 14px;
     }
 
     .project-library-search input {
       width: 100%;
-      min-height: 40px;
-      padding: 0 14px;
+      min-height: 34px;
+      padding: 0 12px;
       border-radius: 14px;
       border: 1px solid rgba(23, 35, 31, 0.1);
       background: rgba(255, 255, 255, 0.92);
       color: var(--text);
+      font-size: 0.78rem;
       outline: none;
     }
 
     .project-toolbar-button {
-      min-height: 38px;
-      padding: 0 12px;
+      min-height: 32px;
+      padding: 0 10px;
       border-radius: 12px;
       border: 1px solid rgba(23, 35, 31, 0.1);
       background: rgba(255, 255, 255, 0.92);
       color: var(--text);
-      font-size: 0.76rem;
+      font-size: 0.68rem;
       font-weight: 700;
       white-space: nowrap;
     }
@@ -2751,7 +3327,7 @@
       border-radius: 18px;
       border: 1px dashed rgba(23, 35, 31, 0.14);
       color: var(--muted);
-      font-size: 0.84rem;
+      font-size: 0.76rem;
       line-height: 1.7;
       background: rgba(255, 255, 255, 0.68);
     }
@@ -2794,7 +3370,7 @@
     }
 
     .project-library-title strong {
-      font-size: 0.9rem;
+      font-size: 0.78rem;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -2803,7 +3379,7 @@
     .project-library-title span,
     .project-library-meta,
     .project-library-coords {
-      font-size: 0.76rem;
+      font-size: 0.66rem;
       line-height: 1.55;
       color: var(--muted);
     }
@@ -2815,24 +3391,24 @@
     }
 
     .project-library-zoom {
-      min-height: 32px;
-      padding: 0 12px;
+      min-height: 28px;
+      padding: 0 10px;
       border-radius: 999px;
       border: 1px solid rgba(23, 35, 31, 0.1);
       background: #fff;
       color: var(--text);
-      font-size: 0.76rem;
+      font-size: 0.66rem;
       font-weight: 700;
     }
 
     .project-library-delete {
-      min-height: 30px;
-      padding: 0 12px;
+      min-height: 28px;
+      padding: 0 10px;
       border-radius: 999px;
       border: 1px solid rgba(214, 60, 60, 0.18);
       background: rgba(214, 60, 60, 0.08);
       color: #a83232;
-      font-size: 0.74rem;
+      font-size: 0.66rem;
       font-weight: 700;
     }
 
@@ -2898,7 +3474,7 @@
       border-radius: 999px;
       background: rgba(11, 119, 106, 0.08);
       color: var(--muted);
-      font-size: 0.72rem;
+      font-size: 0.64rem;
       font-weight: 700;
     }
 
@@ -2917,7 +3493,7 @@
       border: 1px solid rgba(214, 60, 60, 0.14);
       background: rgba(214, 60, 60, 0.08);
       color: #a83232;
-      font-size: 0.72rem;
+      font-size: 0.64rem;
       font-weight: 700;
     }
 
@@ -2929,21 +3505,29 @@
     }
 
     .workbench-map-stage {
-      min-height: 0;
+      grid-column: 1;
+      grid-row: 1;
+      min-height: max(420px, calc(100vh - 210px));
       overflow: hidden;
       position: relative;
       display: flex;
       flex-direction: column;
+      border-radius: var(--radius-xl) 0 0 var(--radius-xl);
+    }
+
+    .workbench-map-stage .map-canvas {
+      border-radius: inherit;
     }
 
     .map-canvas-shell {
       position: relative;
-      margin: 0 20px 20px;
       flex: 1 1 auto;
+      width: 100%;
+      height: 100%;
       min-height: 0;
-      border-radius: 28px;
+      border-radius: inherit;
       overflow: hidden;
-      border: 1px solid rgba(23, 35, 31, 0.08);
+      border: 0;
       box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.16);
     }
 
@@ -2957,12 +3541,12 @@
     .map-search-overlay {
       position: absolute;
       top: 14px;
-      left: 62px;
+      left: var(--map-floating-left);
       right: 62px;
       display: flex;
-      justify-content: center;
+      justify-content: flex-start;
       pointer-events: none;
-      transition: opacity 0.18s ease, transform 0.18s ease;
+      transition: opacity 0.18s ease, transform 0.18s ease, left 0.2s ease;
     }
 
     .map-search-overlay .map-searchbar,
@@ -2981,75 +3565,60 @@
     }
 
     .map-search-overlay .toolbar-button {
+      width: 38px;
       min-height: 34px;
-      padding: 0 16px;
-      border-radius: 999px;
+      padding: 0;
+      border-radius: 50%;
       font-size: 0.82rem;
+    }
+
+    .map-search-overlay .toolbar-button svg {
+      width: 16px;
+      height: 16px;
     }
 
     .map-route-overlay {
       position: absolute;
-      top: 110px;
-      left: 14px;
+      top: 62px;
+      left: var(--map-floating-left);
       right: auto;
       display: flex;
       justify-content: flex-start;
       pointer-events: none;
       z-index: 540;
-      transition: opacity 0.18s ease, transform 0.18s ease;
+      transition: opacity 0.18s ease, transform 0.18s ease, left 0.2s ease;
     }
 
-    .map-controls-toggle,
-    .map-fullscreen-toggle {
-      position: absolute;
-      top: 14px;
-      left: 14px;
-      width: 40px;
-      height: 40px;
-      display: grid;
-      place-items: center;
-      border-radius: 14px;
-      border: 1px solid rgba(23, 35, 31, 0.08);
-      background: rgba(255, 255, 255, 0.96);
-      color: var(--text);
-      box-shadow: 0 10px 24px rgba(24, 42, 37, 0.12);
-      pointer-events: auto;
-      z-index: 560;
-      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease, color 0.16s ease;
+    .map-canvas-shell .leaflet-bottom.leaflet-left {
+      left: calc(var(--map-floating-left) - 1px);
+      right: auto;
+      transition: opacity 0.18s ease, transform 0.18s ease, left 0.2s ease;
     }
 
-    .map-fullscreen-toggle {
-      top: 62px;
-    }
-
-    .map-controls-toggle:hover,
-    .map-fullscreen-toggle:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 14px 28px rgba(24, 42, 37, 0.16);
-    }
-
-    .map-controls-toggle.active,
-    .map-fullscreen-toggle.active {
-      background: linear-gradient(135deg, #20302c, #2d4b43);
-      color: #ffffff;
-      border-color: transparent;
-    }
-
-    .map-controls-toggle svg,
-    .map-fullscreen-toggle svg {
-      width: 16px;
-      height: 16px;
+    .map-canvas-shell .leaflet-bottom.leaflet-left .leaflet-control {
+      margin-left: 0;
     }
 
     .map-canvas-shell.controls-hidden .map-search-overlay,
-    .map-canvas-shell.controls-hidden .map-route-overlay,
+    .map-canvas-shell.controls-hidden .map-layer-control-mount,
     .map-canvas-shell.controls-hidden .map-fullscreen-toggle,
+    .map-canvas-shell.controls-hidden #mapRouteBtn,
+    .map-canvas-shell.controls-hidden .map-route-summary,
     .map-canvas-shell.controls-hidden #footprintLegend,
     .map-canvas-shell.controls-hidden .leaflet-top.leaflet-right,
     .map-canvas-shell.controls-hidden .leaflet-bottom.leaflet-left {
       opacity: 0;
       pointer-events: none;
       transform: translateY(-6px);
+    }
+
+    .map-canvas-shell.controls-hidden .map-layer-control-mount,
+    .map-canvas-shell.controls-hidden .map-fullscreen-toggle,
+    .map-canvas-shell.controls-hidden #mapRouteBtn {
+      width: 0;
+      flex-basis: 0;
+      border-left: 0;
+      overflow: hidden;
     }
 
     body.map-fullscreen-active {
@@ -3084,7 +3653,6 @@
       background: transparent;
     }
 
-    body.map-fullscreen-active .map-workbench-toolbar,
     body.map-fullscreen-active .project-library-panel,
     body.map-fullscreen-active .map-insights-panel {
       display: none;
@@ -3174,6 +3742,12 @@
 
     .dashboard-panel.active {
       display: grid;
+    }
+
+    #warehouseDashboardPanel.active {
+      max-height: min(520px, calc(100vh - 300px));
+      min-height: 0;
+      overflow: hidden;
     }
 
     .map-filter-form {
@@ -3317,6 +3891,49 @@
 
     .dual-range-slider input[type="range"].range-max {
       z-index: 3;
+    }
+
+    .dual-range-slider input[type="range"].range-active {
+      z-index: 4;
+    }
+
+    .dual-range-tooltip {
+      position: absolute;
+      left: 0;
+      top: -32px;
+      min-width: 36px;
+      padding: 5px 8px;
+      border-radius: 6px;
+      background: rgba(23, 35, 31, 0.74);
+      color: #ffffff;
+      font-size: 0.68rem;
+      font-weight: 800;
+      line-height: 1;
+      text-align: center;
+      white-space: nowrap;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateX(-50%) translateY(4px);
+      transition: opacity 0.14s ease, transform 0.14s ease;
+      z-index: 7;
+    }
+
+    .dual-range-tooltip::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      width: 0;
+      height: 0;
+      border-left: 5px solid transparent;
+      border-right: 5px solid transparent;
+      border-top: 5px solid rgba(23, 35, 31, 0.74);
+      transform: translateX(-50%);
+    }
+
+    .dual-range-tooltip.visible {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
     }
 
     .compact-metric-card,
@@ -3666,11 +4283,20 @@
     .warehouse-dashboard-grid {
       display: grid;
       gap: 12px;
+      max-height: inherit;
+      min-height: 0;
+      overflow-y: auto;
+      padding-right: 4px;
+      overscroll-behavior: contain;
     }
 
     .warehouse-table-card {
       display: grid;
+      align-content: start;
       gap: 10px;
+      max-height: min(240px, calc((100vh - 330px) / 2));
+      min-height: 0;
+      overflow: auto;
       padding: 12px 14px;
       border-radius: 18px;
       background: rgba(255, 255, 255, 0.82);
@@ -4451,8 +5077,7 @@
       .hero-grid,
       .scenario-grid,
       .knowledge-content-grid,
-      .map-layout,
-      .map-workbench-grid {
+      .map-layout {
         grid-template-columns: 1fr;
       }
 
@@ -4465,40 +5090,50 @@
         position: static;
       }
 
-      .map-workbench-grid.library-collapsed {
-        grid-template-columns: 1fr;
-      }
-
-      .project-library-panel.collapsed {
-        width: auto;
-        min-width: 0;
-      }
-
-      .project-library-panel.collapsed .project-library-toolbar,
-      .project-library-panel.collapsed .project-library-search,
-      .project-library-panel.collapsed .project-library-body,
-      .project-library-panel.collapsed .map-side-header span {
-        display: block;
-      }
-
-      .project-library-panel.collapsed .map-side-header {
-        min-height: auto;
-        justify-content: space-between;
-        padding: 18px;
-      }
-
-      .project-library-panel.collapsed .map-side-header h2 {
-        writing-mode: initial;
-        transform: none;
-        letter-spacing: normal;
-      }
-
       .cap-card {
         grid-column: span 6;
       }
 
       #page-map .container {
-        width: min(100%, calc(100% - 18px));
+        width: calc(100% - 18px);
+      }
+    }
+
+    @media (max-width: 1100px) {
+      .map-workbench-grid,
+      .map-workbench-grid.library-collapsed {
+        grid-template-columns: 1fr;
+      }
+
+      .map-workbench-grid {
+        --project-library-width: clamp(260px, calc(100% - 86px), 300px);
+      }
+
+      .map-workbench-grid.library-collapsed {
+        --project-library-width: 0px;
+      }
+
+      .workbench-map-stage,
+      .map-insights-panel {
+        grid-column: 1;
+      }
+
+      .workbench-map-stage {
+        grid-row: 1;
+        border-radius: var(--radius-xl) var(--radius-xl) 0 0;
+      }
+
+      .map-insights-panel {
+        grid-row: 2;
+        border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+      }
+
+      .map-resize-handle {
+        display: none;
+      }
+
+      .map-search-overlay {
+        right: 58px;
       }
     }
 
@@ -4531,19 +5166,8 @@
         transform: none !important;
       }
 
-      .map-workbench-toolbar,
-      .map-quick-actions {
-        flex-direction: column;
-        align-items: stretch;
-      }
-
-      .map-search-overlay {
-        left: 58px;
-        right: 58px;
-      }
-
       .map-route-overlay {
-        top: 110px;
+        top: 62px;
       }
     }
 
@@ -4574,22 +5198,16 @@
 
       .map-search-overlay {
         top: 10px;
-        left: 56px;
         right: 56px;
       }
 
       .map-route-overlay {
-        top: 106px;
-        left: 10px;
+        top: 58px;
         right: auto;
       }
 
       .map-route-summary {
         min-width: 120px;
-      }
-
-      .map-canvas-shell {
-        margin: 0 12px 12px;
       }
 
       .map-canvas {
@@ -4890,19 +5508,42 @@
     <section class="page" id="page-map">
       <div class="container">
         <div class="shell-panel map-shell map-workbench-shell">
-          <div class="map-toolbar map-workbench-toolbar">
-            <div class="map-toolbar-note">右键地图可加入项目库，左侧可批量导入项目，顶部搜索支持地点名称和经纬度定位。</div>
-            <div class="map-quick-actions">
-              <button id="mapHomeBtn" class="toolbar-button" type="button">回到全局</button>
-            </div>
-          </div>
-
           <div class="map-workbench-grid">
             <aside id="projectLibraryPanel" class="shell-panel map-side-panel project-library-panel">
               <div class="shell-panel-header map-side-header">
-                <div>
+                <div class="project-library-heading">
                   <h2>项目库</h2>
-                  <span>支持右键新增和文件批量导入</span>
+                  <div class="project-library-toolbar" aria-label="项目库操作">
+                    <label class="project-library-action" for="projectUploadInput" title="上传项目文件" aria-label="上传项目文件">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 16V4"></path>
+                        <path d="m7 9 5-5 5 5"></path>
+                        <path d="M5 20h14"></path>
+                      </svg>
+                    </label>
+                    <input id="projectUploadInput" type="file" accept=".csv,.json,.xlsx,.xls" multiple hidden>
+                    <button id="exportProjectLibraryBtn" class="project-library-action" type="button" title="下载当前项目库" aria-label="下载当前项目库">
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 8v12"></path>
+                        <path d="m17 15-5 5-5-5"></path>
+                        <path d="M5 4h14"></path>
+                      </svg>
+                    </button>
+                    <div id="projectTemplateMenu" class="project-template-menu">
+                      <button id="downloadProjectTemplateBtn" class="project-library-action project-template-button" type="button" title="下载上传模板" aria-label="下载上传模板" aria-haspopup="menu" aria-expanded="false">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"></path>
+                          <path d="M14 3v5h5"></path>
+                          <path d="M8 13h8"></path>
+                          <path d="M8 17h5"></path>
+                        </svg>
+                      </button>
+                      <div id="projectTemplateMenuPanel" class="project-template-menu-panel" role="menu" aria-label="上传模板下载">
+                        <button id="downloadProjectListTemplateBtn" class="project-template-option" type="button" role="menuitem">项目上传模板</button>
+                        <button id="downloadFacilityListTemplateBtn" class="project-template-option" type="button" role="menuitem">设施上传模板</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
                 <button id="projectLibraryToggle" class="window-button" type="button" aria-label="折叠项目库">
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -4910,23 +5551,117 @@
                   </svg>
                 </button>
               </div>
-              <div class="project-library-toolbar">
-                <label class="upload-icon-button" for="projectUploadInput" title="上传项目文件">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 16V4"></path>
-                    <path d="m7 9 5-5 5 5"></path>
-                    <path d="M5 20h14"></path>
-                  </svg>
-                </label>
-                <input id="projectUploadInput" type="file" accept=".csv,.json,.xlsx,.xls" multiple hidden>
-                <button id="exportProjectLibraryBtn" class="upload-icon-button download-icon-button" type="button" title="下载当前项目库" aria-label="下载当前项目库">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M12 8v12"></path>
-                    <path d="m17 15-5 5-5-5"></path>
-                    <path d="M5 4h14"></path>
-                  </svg>
-                </button>
-                <button id="downloadProjectTemplateBtn" class="project-toolbar-button project-template-button" type="button">下载上传模板</button>
+              <div class="project-library-filters">
+                <div class="wtg-filter-row" aria-label="WTG 项目筛选">
+                  <button id="mapWtgVisibilityToggle" class="wtg-filter-toggle" type="button" aria-pressed="true" title="隐藏 WTG 项目">WTG</button>
+                  <span class="wtg-filter-divider" aria-hidden="true"></span>
+                  <span class="wtg-filter-label">Nation</span>
+                  <div id="mapCountryFilterWrap" class="multi-select" data-filter-key="country">
+                    <button id="mapCountryFilter" class="multi-select-trigger" type="button" aria-expanded="false" aria-haspopup="listbox">
+                      <span id="mapCountryFilterLabel" class="multi-select-value">ALL</span>
+                      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m5 7 5 6 5-6"></path>
+                      </svg>
+                    </button>
+                    <div id="mapCountryFilterMenu" class="multi-select-menu" role="listbox" aria-multiselectable="true"></div>
+                  </div>
+                  <span class="wtg-filter-divider" aria-hidden="true"></span>
+                  <span class="wtg-filter-label">Phase</span>
+                  <div id="mapProgressFilterWrap" class="multi-select" data-filter-key="progress">
+                    <button id="mapProgressFilter" class="multi-select-trigger" type="button" aria-expanded="false" aria-haspopup="listbox">
+                      <span id="mapProgressFilterLabel" class="multi-select-value">ALL</span>
+                      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m5 7 5 6 5-6"></path>
+                      </svg>
+                    </button>
+                    <div id="mapProgressFilterMenu" class="multi-select-menu" role="listbox" aria-multiselectable="true"></div>
+                  </div>
+                  <span class="wtg-filter-divider" aria-hidden="true"></span>
+                  <div class="wtg-capacity-filter" title="WTG Capacity Range">
+                    <strong id="capacityRangeValue" class="wtg-capacity-value">0 - 0</strong>
+                    <div class="dual-range-slider">
+                      <div class="dual-range-track"></div>
+                      <div id="capacityRangeSelection" class="dual-range-selection"></div>
+                      <input id="capacityMinRange" class="range-min" type="range" min="0" max="100" value="0" aria-label="WTG capacity minimum">
+                      <input id="capacityMaxRange" class="range-max" type="range" min="0" max="100" value="100" aria-label="WTG capacity maximum">
+                      <output class="dual-range-tooltip" aria-hidden="true"></output>
+                    </div>
+                  </div>
+                </div>
+                <div class="wtg-filter-row bess-filter-row" aria-label="BESS 项目筛选">
+                  <button id="mapBessVisibilityToggle" class="wtg-filter-toggle" type="button" aria-pressed="true" title="隐藏 BESS 项目">BESS</button>
+                  <span class="wtg-filter-divider" aria-hidden="true"></span>
+                  <span class="wtg-filter-label">Nation</span>
+                  <div id="mapBessCountryFilterWrap" class="multi-select" data-filter-key="bessCountry">
+                    <button id="mapBessCountryFilter" class="multi-select-trigger" type="button" aria-expanded="false" aria-haspopup="listbox">
+                      <span id="mapBessCountryFilterLabel" class="multi-select-value">ALL</span>
+                      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m5 7 5 6 5-6"></path>
+                      </svg>
+                    </button>
+                    <div id="mapBessCountryFilterMenu" class="multi-select-menu" role="listbox" aria-multiselectable="true"></div>
+                  </div>
+                  <span class="wtg-filter-divider" aria-hidden="true"></span>
+                  <span class="wtg-filter-label">Phase</span>
+                  <div id="mapBessProgressFilterWrap" class="multi-select" data-filter-key="bessProgress">
+                    <button id="mapBessProgressFilter" class="multi-select-trigger" type="button" aria-expanded="false" aria-haspopup="listbox">
+                      <span id="mapBessProgressFilterLabel" class="multi-select-value">ALL</span>
+                      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m5 7 5 6 5-6"></path>
+                      </svg>
+                    </button>
+                    <div id="mapBessProgressFilterMenu" class="multi-select-menu" role="listbox" aria-multiselectable="true"></div>
+                  </div>
+                  <span class="wtg-filter-divider" aria-hidden="true"></span>
+                  <div class="wtg-capacity-filter" title="BESS Capacity Range">
+                    <strong id="bessCapacityRangeValue" class="wtg-capacity-value">0 - 0</strong>
+                    <div class="dual-range-slider">
+                      <div class="dual-range-track"></div>
+                      <div id="bessCapacityRangeSelection" class="dual-range-selection"></div>
+                      <input id="bessCapacityMinRange" class="range-min" type="range" min="0" max="100" value="0" aria-label="BESS capacity minimum">
+                      <input id="bessCapacityMaxRange" class="range-max" type="range" min="0" max="100" value="100" aria-label="BESS capacity maximum">
+                      <output class="dual-range-tooltip" aria-hidden="true"></output>
+                    </div>
+                  </div>
+                </div>
+                <div class="wtg-filter-row facility-filter-row" aria-label="Facility 筛选">
+                  <button id="mapFacilityVisibilityToggle" class="wtg-filter-toggle" type="button" aria-pressed="true" title="隐藏 Facility">Facility</button>
+                  <span class="wtg-filter-divider" aria-hidden="true"></span>
+                  <span class="wtg-filter-label">Nation</span>
+                  <div id="mapFacilityCountryFilterWrap" class="multi-select" data-filter-key="facilityCountry">
+                    <button id="mapFacilityCountryFilter" class="multi-select-trigger" type="button" aria-expanded="false" aria-haspopup="listbox">
+                      <span id="mapFacilityCountryFilterLabel" class="multi-select-value">ALL</span>
+                      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m5 7 5 6 5-6"></path>
+                      </svg>
+                    </button>
+                    <div id="mapFacilityCountryFilterMenu" class="multi-select-menu" role="listbox" aria-multiselectable="true"></div>
+                  </div>
+                  <span class="wtg-filter-divider" aria-hidden="true"></span>
+                  <span class="wtg-filter-label">Phase</span>
+                  <div id="mapFacilityProgressFilterWrap" class="multi-select" data-filter-key="facilityProgress">
+                    <button id="mapFacilityProgressFilter" class="multi-select-trigger" type="button" aria-expanded="false" aria-haspopup="listbox">
+                      <span id="mapFacilityProgressFilterLabel" class="multi-select-value">ALL</span>
+                      <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m5 7 5 6 5-6"></path>
+                      </svg>
+                    </button>
+                    <div id="mapFacilityProgressFilterMenu" class="multi-select-menu" role="listbox" aria-multiselectable="true"></div>
+                  </div>
+                  <span class="wtg-filter-divider" aria-hidden="true"></span>
+                  <div class="facility-type-filter" title="Facility Type">
+                    <span class="facility-type-label">Type</span>
+                    <div id="mapFacilityTypeFilterWrap" class="multi-select" data-filter-key="facilityType">
+                      <button id="mapFacilityTypeFilter" class="multi-select-trigger" type="button" aria-expanded="false" aria-haspopup="listbox">
+                        <span id="mapFacilityTypeFilterLabel" class="multi-select-value">ALL</span>
+                        <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="m5 7 5 6 5-6"></path>
+                        </svg>
+                      </button>
+                      <div id="mapFacilityTypeFilterMenu" class="multi-select-menu" role="listbox" aria-multiselectable="true"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
               <div class="project-library-search">
                 <input id="projectLibrarySearchInput" type="text" placeholder="搜索项目名称">
@@ -4939,39 +5674,47 @@
             <section class="shell-panel map-stage workbench-map-stage">
               <div class="map-canvas-shell">
                 <div class="map-overlay-layer">
-                  <button id="mapControlsToggle" class="map-controls-toggle" type="button" aria-label="隐藏地图组件" title="隐藏地图组件">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M5 7h14"></path>
-                      <path d="M5 12h10"></path>
-                      <path d="M5 17h14"></path>
-                    </svg>
-                  </button>
-                  <button id="mapFullscreenToggle" class="map-fullscreen-toggle" type="button" aria-label="地图全屏" title="地图全屏">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M8 3H3v5"></path>
-                      <path d="M16 3h5v5"></path>
-                      <path d="M21 16v5h-5"></path>
-                      <path d="M8 21H3v-5"></path>
-                    </svg>
-                  </button>
                   <div class="map-search-overlay">
                     <div class="map-searchbar">
                       <label class="map-search-label" for="mapSearchInput">地图搜索</label>
                       <div class="map-search-field">
                         <input id="mapSearchInput" type="text" placeholder="输入地点名称或经纬度，例如 Shanghai 或 31.2304,121.4737">
-                        <button id="mapSearchBtn" class="toolbar-button" type="button">搜索</button>
+                        <button id="mapSearchBtn" class="toolbar-button" type="button" aria-label="搜索" title="搜索">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7"></circle>
+                            <path d="m20 20-3.5-3.5"></path>
+                          </svg>
+                        </button>
                       </div>
                     </div>
                   </div>
                   <div class="map-route-overlay">
                     <div class="map-route-widget">
-                      <button id="mapRouteBtn" class="map-icon-button" type="button" aria-label="导航" title="点击后依次选择起点和终点">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                          <path d="M10 14 21 3"></path>
-                          <path d="m21 3-7 18-4-7-7-4 18-7Z"></path>
-                        </svg>
-                        <span>导航</span>
-                      </button>
+                      <div class="map-compact-tools" aria-label="地图工具">
+                        <button id="mapControlsToggle" class="map-controls-toggle" type="button" aria-label="隐藏地图组件" title="隐藏地图组件">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M5 7h14"></path>
+                            <path d="M5 12h10"></path>
+                            <path d="M5 17h14"></path>
+                          </svg>
+                        </button>
+                        <div id="mapLayerControlMount" class="map-layer-control-mount" aria-label="地图模式" title="地图模式"></div>
+                        <button id="mapFullscreenToggle" class="map-fullscreen-toggle" type="button" aria-label="地图全屏" title="地图全屏">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M8 3H3v5"></path>
+                            <path d="M16 3h5v5"></path>
+                            <path d="M21 16v5h-5"></path>
+                            <path d="M8 21H3v-5"></path>
+                          </svg>
+                        </button>
+                        <button id="mapRouteBtn" class="map-icon-button" type="button" aria-label="测距" title="点击后依次选择起点和终点测距">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 14 21 3"></path>
+                            <path d="m21 3-7 18-4-7-7-4 18-7Z"></path>
+                          </svg>
+                          <span>测距</span>
+                        </button>
+                      </div>
                       <div id="mapRouteSummary" class="map-route-summary empty">
                         <span>行车距离：</span>
                         <span>预计时间：</span>
@@ -4984,6 +5727,10 @@
               </div>
             </section>
 
+            <button id="mapResizeHandle" class="map-resize-handle" type="button" role="separator" aria-orientation="vertical" aria-label="调整地图和看板宽度" aria-valuemin="260" aria-valuemax="300" aria-valuenow="300" title="拖动调整地图和看板宽度">
+              <span class="map-resize-grip" aria-hidden="true"></span>
+            </button>
+
             <aside class="shell-panel map-side-panel map-insights-panel">
               <div class="shell-panel-header map-side-header">
                 <div class="dashboard-tabs">
@@ -4994,57 +5741,6 @@
               </div>
               <div class="map-insights-body">
                 <section id="ltsaDashboardPanel" class="dashboard-panel active">
-                  <div class="map-filter-form">
-                    <div class="map-filter-field">
-                      <span>Country</span>
-                      <div id="mapCountryFilterWrap" class="multi-select" data-filter-key="country">
-                        <button id="mapCountryFilter" class="multi-select-trigger" type="button" aria-expanded="false" aria-haspopup="listbox">
-                          <span id="mapCountryFilterLabel" class="multi-select-value">All Countries</span>
-                          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m5 7 5 6 5-6"></path>
-                          </svg>
-                        </button>
-                        <div id="mapCountryFilterMenu" class="multi-select-menu" role="listbox" aria-multiselectable="true"></div>
-                      </div>
-                    </div>
-                    <div class="map-filter-field">
-                      <span>Progress</span>
-                      <div id="mapProgressFilterWrap" class="multi-select" data-filter-key="progress">
-                        <button id="mapProgressFilter" class="multi-select-trigger" type="button" aria-expanded="false" aria-haspopup="listbox">
-                          <span id="mapProgressFilterLabel" class="multi-select-value">All Progress</span>
-                          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m5 7 5 6 5-6"></path>
-                          </svg>
-                        </button>
-                        <div id="mapProgressFilterMenu" class="multi-select-menu" role="listbox" aria-multiselectable="true"></div>
-                      </div>
-                    </div>
-                    <div class="map-filter-field">
-                      <span>Category</span>
-                      <div id="mapCategoryFilterWrap" class="multi-select" data-filter-key="category">
-                        <button id="mapCategoryFilter" class="multi-select-trigger" type="button" aria-expanded="false" aria-haspopup="listbox">
-                          <span id="mapCategoryFilterLabel" class="multi-select-value">All Categories</span>
-                          <svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="m5 7 5 6 5-6"></path>
-                          </svg>
-                        </button>
-                        <div id="mapCategoryFilterMenu" class="multi-select-menu" role="listbox" aria-multiselectable="true"></div>
-                      </div>
-                    </div>
-                    <div class="capacity-filter-card">
-                      <div class="capacity-filter-head">
-                        <span>Capacity Range</span>
-                        <strong id="capacityRangeValue">0 - 0</strong>
-                      </div>
-                      <div class="dual-range-slider">
-                        <div class="dual-range-track"></div>
-                        <div id="capacityRangeSelection" class="dual-range-selection"></div>
-                        <input id="capacityMinRange" class="range-min" type="range" min="0" max="100" value="0">
-                        <input id="capacityMaxRange" class="range-max" type="range" min="0" max="100" value="100">
-                      </div>
-                    </div>
-                  </div>
-
                   <article class="summary-card compact-summary-card stats-table-card">
                     <table class="stats-table stats-table-top">
                       <colgroup>
@@ -5197,6 +5893,7 @@
               <option value="BESS">BESS</option>
               <option value="Warehouse">Warehouse</option>
               <option value="Service Center">Service Center</option>
+              <option value="Blade Yard">Blade Yard</option>
               <option value="CUSTOM">自行输入</option>
             </select>
           </label>
@@ -5526,7 +6223,6 @@
     const commercialAnalysisFrameEl = document.getElementById("commercialAnalysisFrame");
     const projectMapEl = document.getElementById("projectMap");
     const mapStatusEl = document.getElementById("mapStatus");
-    const mapHomeBtnEl = document.getElementById("mapHomeBtn");
     const homeOpenActionCountEl = document.getElementById("homeOpenActionCount");
     const homeOverdueActionCountEl = document.getElementById("homeOverdueActionCount");
     const homeWtgDeliveredCapacityEl = document.getElementById("homeWtgDeliveredCapacity");
@@ -8123,17 +8819,10 @@
     }
 
     function ensureInteractiveMap() {
-      const mapToolbarNoteEl = document.querySelector("#page-map .map-toolbar-note");
       const mapTitleEl = document.querySelector("#page-map .map-stage .shell-panel-header h2");
 
-      if (mapToolbarNoteEl) {
-        mapToolbarNoteEl.textContent = "支持高德中文、英文、无标注底图与 ArcGIS 卫星影像切换，地图右上角可按道路网络计算起点到终点的行车距离与预计时间。";
-      }
       if (mapTitleEl) {
         mapTitleEl.textContent = "LTSA Map";
-      }
-      if (mapHomeBtnEl) {
-        mapHomeBtnEl.textContent = "回到全局";
       }
       if (projectMapEl) {
         projectMapEl.setAttribute("aria-label", "LTSA Map");
@@ -8396,23 +9085,6 @@
       }
     });
 
-    mapHomeBtnEl.addEventListener("click", () => {
-      ensureInteractiveMap();
-      if (appState.map.instance) {
-        if (appState.map.worldBounds) {
-          appState.map.instance.fitBounds(appState.map.worldBounds, {
-            animate: true,
-            padding: [0, 0]
-          });
-        } else {
-          appState.map.instance.setView([0, 0], 2);
-        }
-        if (mapStatusEl) {
-          mapStatusEl.textContent = "已回到全局视图";
-        }
-      }
-    });
-
     initLibraries();
     initMiddleRoomEmbed();
     initCommercialAnalysisEmbed();
@@ -8434,10 +9106,13 @@
       const mapWorkbenchEls = {
         grid: document.querySelector("#page-map .map-workbench-grid"),
         canvasShell: document.querySelector("#page-map .map-canvas-shell"),
+        insightsPanel: document.querySelector("#page-map .map-insights-panel"),
+        resizeHandle: document.getElementById("mapResizeHandle"),
         routeBtn: document.getElementById("mapRouteBtn"),
         routeSummary: document.getElementById("mapRouteSummary"),
         footprintLegend: document.getElementById("footprintLegend"),
         controlsToggle: document.getElementById("mapControlsToggle"),
+        layerControlMount: document.getElementById("mapLayerControlMount"),
         fullscreenToggle: document.getElementById("mapFullscreenToggle"),
         searchInput: document.getElementById("mapSearchInput"),
         searchBtn: document.getElementById("mapSearchBtn"),
@@ -8445,9 +9120,15 @@
         libraryToggle: document.getElementById("projectLibraryToggle"),
         uploadInput: document.getElementById("projectUploadInput"),
         templateBtn: document.getElementById("downloadProjectTemplateBtn"),
+        templateMenu: document.getElementById("projectTemplateMenu"),
+        projectTemplateBtn: document.getElementById("downloadProjectListTemplateBtn"),
+        facilityTemplateBtn: document.getElementById("downloadFacilityListTemplateBtn"),
         exportBtn: document.getElementById("exportProjectLibraryBtn"),
         librarySearchInput: document.getElementById("projectLibrarySearchInput"),
         libraryList: document.getElementById("projectLibraryList"),
+        wtgFilterToggle: document.getElementById("mapWtgVisibilityToggle"),
+        bessFilterToggle: document.getElementById("mapBessVisibilityToggle"),
+        facilityFilterToggle: document.getElementById("mapFacilityVisibilityToggle"),
         countryFilterWrap: document.getElementById("mapCountryFilterWrap"),
         ltsaDashboardTab: document.getElementById("ltsaDashboardTab"),
         warehouseDashboardTab: document.getElementById("warehouseDashboardTab"),
@@ -8466,6 +9147,26 @@
         progressFilter: document.getElementById("mapProgressFilter"),
         progressFilterLabel: document.getElementById("mapProgressFilterLabel"),
         progressFilterMenu: document.getElementById("mapProgressFilterMenu"),
+        bessCountryFilterWrap: document.getElementById("mapBessCountryFilterWrap"),
+        bessCountryFilter: document.getElementById("mapBessCountryFilter"),
+        bessCountryFilterLabel: document.getElementById("mapBessCountryFilterLabel"),
+        bessCountryFilterMenu: document.getElementById("mapBessCountryFilterMenu"),
+        bessProgressFilterWrap: document.getElementById("mapBessProgressFilterWrap"),
+        bessProgressFilter: document.getElementById("mapBessProgressFilter"),
+        bessProgressFilterLabel: document.getElementById("mapBessProgressFilterLabel"),
+        bessProgressFilterMenu: document.getElementById("mapBessProgressFilterMenu"),
+        facilityCountryFilterWrap: document.getElementById("mapFacilityCountryFilterWrap"),
+        facilityCountryFilter: document.getElementById("mapFacilityCountryFilter"),
+        facilityCountryFilterLabel: document.getElementById("mapFacilityCountryFilterLabel"),
+        facilityCountryFilterMenu: document.getElementById("mapFacilityCountryFilterMenu"),
+        facilityProgressFilterWrap: document.getElementById("mapFacilityProgressFilterWrap"),
+        facilityProgressFilter: document.getElementById("mapFacilityProgressFilter"),
+        facilityProgressFilterLabel: document.getElementById("mapFacilityProgressFilterLabel"),
+        facilityProgressFilterMenu: document.getElementById("mapFacilityProgressFilterMenu"),
+        facilityTypeFilterWrap: document.getElementById("mapFacilityTypeFilterWrap"),
+        facilityTypeFilter: document.getElementById("mapFacilityTypeFilter"),
+        facilityTypeFilterLabel: document.getElementById("mapFacilityTypeFilterLabel"),
+        facilityTypeFilterMenu: document.getElementById("mapFacilityTypeFilterMenu"),
         categoryFilterWrap: document.getElementById("mapCategoryFilterWrap"),
         categoryFilter: document.getElementById("mapCategoryFilter"),
         categoryFilterLabel: document.getElementById("mapCategoryFilterLabel"),
@@ -8474,6 +9175,10 @@
         capacityMaxRange: document.getElementById("capacityMaxRange"),
         capacityRangeSelection: document.getElementById("capacityRangeSelection"),
         capacityRangeValue: document.getElementById("capacityRangeValue"),
+        bessCapacityMinRange: document.getElementById("bessCapacityMinRange"),
+        bessCapacityMaxRange: document.getElementById("bessCapacityMaxRange"),
+        bessCapacityRangeSelection: document.getElementById("bessCapacityRangeSelection"),
+        bessCapacityRangeValue: document.getElementById("bessCapacityRangeValue"),
         wtgProjectCount: document.getElementById("mapWtgProjectCount"),
         bessProjectCount: document.getElementById("mapBessProjectCount"),
         totalWtgCapacity: document.getElementById("mapTotalWtgCapacity"),
@@ -8507,11 +9212,29 @@
       const BESS_FOOTPRINT_BASE_NAME = "BESS Footprint";
       const STANDARD_PROGRESS_OPTIONS = ["Bidding", "Shortlisted", "Awarded", "Construction", "O&M"];
       const FACILITY_PROGRESS_OPTIONS = ["Planning", "Constructing", "Operating"];
+      const PROJECT_UPLOAD_SHEET_NAME = "项目清单";
+      const FACILITY_UPLOAD_SHEET_NAME = "设施清单";
+      const PROJECT_UPLOAD_HEADERS = ["项目名称", "坐标(纬度,经度)", "国家信息", "容量", "价格", "运营时间(含预计)", "remark", "机型", "项目进度", "项目类别"];
+      const FACILITY_UPLOAD_HEADERS = ["名称", "坐标", "国家", "进度", "类别", "blade容量", "blade存量", "gearbox容量", "gearbox存量", "generator容量", "generator存量", "main_bearing容量", "main_bearing存量"];
+      const DEFAULT_PROJECT_LIBRARY_FILE = "project_list.xlsx";
+      const DEFAULT_FACILITY_LIBRARY_FILE = "facilities_list.xlsx";
+      const PROJECT_LIST_CATEGORIES = ["WTG", "BESS"];
+      const FACILITY_LIST_CATEGORIES = ["Warehouse", "Service Center", "Blade Yard"];
+      const FACILITY_INVENTORY_FIELDS = [
+        { key: "blade", label: "Blade", capacityAliases: ["blade容量", "blade capacity", "bladecapacity"], stockAliases: ["blade存量", "blade stock", "bladestock"] },
+        { key: "gearbox", label: "Gearbox", capacityAliases: ["gearbox容量", "gearbox capacity", "gearboxcapacity"], stockAliases: ["gearbox存量", "gearbox stock", "gearboxstock"] },
+        { key: "generator", label: "Generator", capacityAliases: ["generator容量", "generator capacity", "generatorcapacity"], stockAliases: ["generator存量", "generator stock", "generatorstock"] },
+        { key: "main_bearing", label: "Main Bearing", capacityAliases: ["main_bearing容量", "main bearing容量", "mainbearing容量", "main bearing capacity", "mainbearingcapacity"], stockAliases: ["main_bearing存量", "main bearing存量", "mainbearing存量", "main bearing stock", "mainbearingstock"] }
+      ];
       const PROJECT_NAME_VISIBILITY_METERS = 50000;
       const PROJECT_CIRCLE_VISIBILITY_METERS = 500000;
       const PROJECT_LABEL_MARKER_LIMIT = 160;
       const PROJECT_CANVAS_MARKER_LIMIT = 320;
       const PROJECT_VIEWPORT_PAD_RATIO = 0.18;
+      const MAP_INSIGHTS_DEFAULT_WIDTH = 300;
+      const MAP_INSIGHTS_MIN_WIDTH = 260;
+      const MAP_INSIGHTS_MAX_RATIO = 1 / 3;
+      const MAP_INSIGHTS_KEY_STEP = 16;
       const PROJECT_MARKER_SCALE_CONFIG = {
         WTG: {
           minScale: 0.82,
@@ -8703,6 +9426,7 @@
       mapStore.pendingLatLng = null;
       mapStore.countryLookupToken = 0;
       mapStore.capacityBounds = mapStore.capacityBounds || { min: 0, max: 100 };
+      mapStore.bessCapacityBounds = mapStore.bessCapacityBounds || { min: 0, max: 100 };
       mapStore.lastContextMenuAt = 0;
       mapStore.librarySearchKeyword = mapStore.librarySearchKeyword || "";
       mapStore.activeBaseName = mapStore.activeBaseName || "英文地图";
@@ -8719,16 +9443,37 @@
       mapStore.fullscreen = Boolean(mapStore.fullscreen);
       mapStore.searchDismissHandler = mapStore.searchDismissHandler || null;
       mapStore.activeDashboard = mapStore.activeDashboard || "ltsa";
+      mapStore.insightsWidth = Number.isFinite(mapStore.insightsWidth) ? mapStore.insightsWidth : MAP_INSIGHTS_DEFAULT_WIDTH;
+      mapStore.insightsResizeFrame = mapStore.insightsResizeFrame || 0;
+      mapStore.insightsResizeState = null;
       mapStore.filters = mapStore.filters || {
+        wtgHidden: false,
+        bessHidden: false,
+        facilityHidden: false,
         country: [],
         progress: [],
         category: [],
         capacityMin: 0,
-        capacityMax: 100
+        capacityMax: 100,
+        bessCountry: [],
+        bessProgress: [],
+        bessCapacityMin: 0,
+        bessCapacityMax: 100,
+        facilityCountry: [],
+        facilityProgress: [],
+        facilityType: []
       };
+      mapStore.filters.wtgHidden = Boolean(mapStore.filters.wtgHidden);
+      mapStore.filters.bessHidden = Boolean(mapStore.filters.bessHidden);
+      mapStore.filters.facilityHidden = Boolean(mapStore.filters.facilityHidden);
       mapStore.filters.country = normalizeFilterSelection(mapStore.filters.country);
       mapStore.filters.progress = normalizeFilterSelection(mapStore.filters.progress);
       mapStore.filters.category = normalizeFilterSelection(mapStore.filters.category);
+      mapStore.filters.bessCountry = normalizeFilterSelection(mapStore.filters.bessCountry);
+      mapStore.filters.bessProgress = normalizeFilterSelection(mapStore.filters.bessProgress);
+      mapStore.filters.facilityCountry = normalizeFilterSelection(mapStore.filters.facilityCountry);
+      mapStore.filters.facilityProgress = normalizeFilterSelection(mapStore.filters.facilityProgress);
+      mapStore.filters.facilityType = normalizeFilterSelection(mapStore.filters.facilityType);
       mapStore.openFilterMenu = mapStore.openFilterMenu || "";
       mapStore.route = mapStore.route || {
         selecting: false,
@@ -8749,6 +9494,118 @@
         }
       }
 
+      function getMapInsightsWidthBounds() {
+        const gridWidth = mapWorkbenchEls.grid?.getBoundingClientRect().width || 0;
+        const maxWidth = gridWidth > 0
+          ? Math.floor(gridWidth * MAP_INSIGHTS_MAX_RATIO)
+          : MAP_INSIGHTS_DEFAULT_WIDTH;
+        const minWidth = Math.min(MAP_INSIGHTS_MIN_WIDTH, maxWidth);
+        return {
+          min: Math.max(0, minWidth),
+          max: Math.max(minWidth, maxWidth)
+        };
+      }
+
+      function clampMapInsightsWidth(width) {
+        const bounds = getMapInsightsWidthBounds();
+        const numericWidth = Number.isFinite(width) ? width : MAP_INSIGHTS_DEFAULT_WIDTH;
+        return Math.round(Math.min(bounds.max, Math.max(bounds.min, numericWidth)));
+      }
+
+      function scheduleMapLayoutRefresh() {
+        if (mapStore.insightsResizeFrame) {
+          cancelAnimationFrame(mapStore.insightsResizeFrame);
+        }
+        mapStore.insightsResizeFrame = requestAnimationFrame(() => {
+          mapStore.insightsResizeFrame = 0;
+          mapStore.instance?.invalidateSize?.({ pan: false, animate: false });
+        });
+      }
+
+      function syncMapResizeHandle(width) {
+        if (!mapWorkbenchEls.resizeHandle) return;
+        const bounds = getMapInsightsWidthBounds();
+        mapWorkbenchEls.resizeHandle.setAttribute("aria-valuemin", String(Math.round(bounds.min)));
+        mapWorkbenchEls.resizeHandle.setAttribute("aria-valuemax", String(Math.round(bounds.max)));
+        mapWorkbenchEls.resizeHandle.setAttribute("aria-valuenow", String(Math.round(width)));
+      }
+
+      function applyMapInsightsWidth(width, options = {}) {
+        if (!mapWorkbenchEls.grid) return;
+        const nextWidth = clampMapInsightsWidth(width);
+        mapStore.insightsWidth = nextWidth;
+        mapWorkbenchEls.grid.style.setProperty("--map-insights-width", nextWidth + "px");
+        syncMapResizeHandle(nextWidth);
+        if (options.refreshMap) {
+          scheduleMapLayoutRefresh();
+        }
+      }
+
+      function getCurrentMapInsightsWidth() {
+        const renderedWidth = mapWorkbenchEls.insightsPanel?.getBoundingClientRect().width || 0;
+        return renderedWidth > 0 ? renderedWidth : mapStore.insightsWidth;
+      }
+
+      function startMapInsightsResize(event) {
+        if (!mapWorkbenchEls.grid || !mapWorkbenchEls.resizeHandle) return;
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        if (window.matchMedia("(max-width: 1100px)").matches) return;
+        event.preventDefault();
+        event.stopPropagation();
+        mapStore.insightsResizeState = {
+          pointerId: event.pointerId,
+          startX: event.clientX,
+          startWidth: getCurrentMapInsightsWidth()
+        };
+        mapWorkbenchEls.resizeHandle.setPointerCapture?.(event.pointerId);
+        mapWorkbenchEls.resizeHandle.classList.add("dragging");
+        document.body.classList.add("map-insights-resizing");
+      }
+
+      function handleMapInsightsResizeMove(event) {
+        const state = mapStore.insightsResizeState;
+        if (!state || state.pointerId !== event.pointerId) return;
+        event.preventDefault();
+        const nextWidth = state.startWidth - (event.clientX - state.startX);
+        applyMapInsightsWidth(nextWidth, { refreshMap: true });
+      }
+
+      function stopMapInsightsResize(event) {
+        const state = mapStore.insightsResizeState;
+        if (!state) return;
+        if (event?.pointerId != null && state.pointerId !== event.pointerId) return;
+        try {
+          mapWorkbenchEls.resizeHandle?.releasePointerCapture?.(state.pointerId);
+        } catch (error) {
+          // Pointer capture may already be released by the browser.
+        }
+        mapStore.insightsResizeState = null;
+        mapWorkbenchEls.resizeHandle?.classList.remove("dragging");
+        document.body.classList.remove("map-insights-resizing");
+        scheduleMapLayoutRefresh();
+      }
+
+      function handleMapResizeKeyboard(event) {
+        if (!mapWorkbenchEls.resizeHandle) return;
+        const bounds = getMapInsightsWidthBounds();
+        const currentWidth = clampMapInsightsWidth(getCurrentMapInsightsWidth());
+        let nextWidth = null;
+
+        if (event.key === "ArrowLeft") {
+          nextWidth = currentWidth + MAP_INSIGHTS_KEY_STEP;
+        } else if (event.key === "ArrowRight") {
+          nextWidth = currentWidth - MAP_INSIGHTS_KEY_STEP;
+        } else if (event.key === "Home") {
+          nextWidth = bounds.min;
+        } else if (event.key === "End") {
+          nextWidth = bounds.max;
+        }
+
+        if (nextWidth == null) return;
+        event.preventDefault();
+        applyMapInsightsWidth(nextWidth, { refreshMap: true });
+      }
+
       function highlightMapCanvas() {
         if (!mapWorkbenchEls.canvasShell) return;
         mapWorkbenchEls.canvasShell.classList.add("context-target");
@@ -8758,7 +9615,23 @@
         }, 1200);
       }
 
+      function mountMapLayerControls() {
+        const mount = mapWorkbenchEls.layerControlMount;
+        if (!mount) return;
+        document.querySelectorAll("#page-map .leaflet-control-layers").forEach((control) => {
+          if (!mount.contains(control)) {
+            mount.appendChild(control);
+          }
+          const toggle = control.querySelector(".leaflet-control-layers-toggle");
+          if (toggle) {
+            toggle.setAttribute("title", "地图模式");
+            toggle.setAttribute("aria-label", "地图模式");
+          }
+        });
+      }
+
       function renderMapControlVisibility() {
+        mountMapLayerControls();
         if (mapWorkbenchEls.canvasShell) {
           mapWorkbenchEls.canvasShell.classList.toggle("controls-hidden", mapStore.controlsHidden);
         }
@@ -8816,6 +9689,11 @@
         const entries = [
           { key: "country", wrap: mapWorkbenchEls.countryFilterWrap, trigger: mapWorkbenchEls.countryFilter },
           { key: "progress", wrap: mapWorkbenchEls.progressFilterWrap, trigger: mapWorkbenchEls.progressFilter },
+          { key: "bessCountry", wrap: mapWorkbenchEls.bessCountryFilterWrap, trigger: mapWorkbenchEls.bessCountryFilter },
+          { key: "bessProgress", wrap: mapWorkbenchEls.bessProgressFilterWrap, trigger: mapWorkbenchEls.bessProgressFilter },
+          { key: "facilityCountry", wrap: mapWorkbenchEls.facilityCountryFilterWrap, trigger: mapWorkbenchEls.facilityCountryFilter },
+          { key: "facilityProgress", wrap: mapWorkbenchEls.facilityProgressFilterWrap, trigger: mapWorkbenchEls.facilityProgressFilter },
+          { key: "facilityType", wrap: mapWorkbenchEls.facilityTypeFilterWrap, trigger: mapWorkbenchEls.facilityTypeFilter },
           { key: "category", wrap: mapWorkbenchEls.categoryFilterWrap, trigger: mapWorkbenchEls.categoryFilter }
         ];
         entries.forEach(({ key, wrap, trigger }) => {
@@ -8832,7 +9710,11 @@
 
       function isFacilityProjectCategory(category) {
         const baseCategory = getProjectBaseCategory(category);
-        return baseCategory === "Warehouse" || baseCategory === "Service Center";
+        return FACILITY_LIST_CATEGORIES.includes(baseCategory);
+      }
+
+      function isProjectListCategory(category) {
+        return PROJECT_LIST_CATEGORIES.includes(getProjectBaseCategory(category));
       }
 
       function getProgressOptionsForCategory(category) {
@@ -8930,6 +9812,7 @@
         if (normalized === "wtg") return "WTG";
         if (normalized === "bess") return "BESS";
         if (normalized === "warehouse" || normalized === "仓库") return "Warehouse";
+        if (normalized === "blade yard" || normalized === "blade-yard" || normalized === "blade_yard" || normalized === "bladeyard" || compact === "bladeyard") return "Blade Yard";
         if (
           normalized === "training center" ||
           normalized === "training centre" ||
@@ -9112,6 +9995,46 @@
         return "";
       }
 
+      function hasNormalizedRowField(row, aliases) {
+        const normalizedKeys = new Set(Object.keys(row || {}).map((key) => normalizeFieldKey(key)));
+        return aliases.some((alias) => normalizedKeys.has(normalizeFieldKey(alias)));
+      }
+
+      function getUploadSheetType(sheetName) {
+        const compact = String(sheetName || "").trim().toLowerCase().replace(/[\s_\-]+/g, "");
+        if (!compact) return "";
+        if (compact.includes("设施") || compact.includes("facility")) return "facility";
+        if (compact.includes("项目") || compact.includes("project")) return "project";
+        return "";
+      }
+
+      function inferUploadRowsType(rows) {
+        const sampleRows = Array.isArray(rows) ? rows.slice(0, 8) : [];
+        if (sampleRows.some((row) => FACILITY_INVENTORY_FIELDS.some((field) => (
+          hasNormalizedRowField(row, field.capacityAliases) || hasNormalizedRowField(row, field.stockAliases)
+        )))) {
+          return "facility";
+        }
+        return "project";
+      }
+
+      function inferUploadRowType(row) {
+        if (FACILITY_INVENTORY_FIELDS.some((field) => (
+          hasNormalizedRowField(row, field.capacityAliases) || hasNormalizedRowField(row, field.stockAliases)
+        ))) {
+          return "facility";
+        }
+        const category = getProjectBaseCategory(getNormalizedRowValue(row, ["项目类别", "类别", "category", "type", "projectcategory", "facilitycategory"]));
+        if (isFacilityProjectCategory(category)) return "facility";
+        return "project";
+      }
+
+      function getUploadRowCategory(row, listType) {
+        return getNormalizedRowValue(row, listType === "facility"
+          ? ["类别", "设施类别", "category", "type", "facilitycategory"]
+          : ["项目类别", "category", "type", "projectcategory"]);
+      }
+
       function parseCoordinateQuery(value) {
         const match = String(value || "")
           .replace(/，/g, ",")
@@ -9169,6 +10092,10 @@
         }
         if (baseCategory === "Service Center") {
           const palette = ["#fff1ab", "#ffe07a", "#d4a016"];
+          return palette[findProgressIndex(FACILITY_PROGRESS_OPTIONS, normalizedProgress)] || palette[0];
+        }
+        if (baseCategory === "Blade Yard") {
+          const palette = ["#ffd5ce", "#ff9d91", "#cf4338"];
           return palette[findProgressIndex(FACILITY_PROGRESS_OPTIONS, normalizedProgress)] || palette[0];
         }
         return parseColorValue(fallbackColor);
@@ -9238,11 +10165,13 @@
         if (baseCategory === "WTG") return "A";
         if (baseCategory === "BESS") return "B";
         if (baseCategory === "Warehouse") return "C";
+        if (baseCategory === "Blade Yard") return "C";
         if (baseCategory === "Service Center") return "D";
         const lowered = String(category || "").trim().toLowerCase();
         if (lowered.includes("wind") || lowered.includes("turbine")) return "A";
         if (lowered.includes("battery") || lowered.includes("storage")) return "B";
         if (lowered.includes("warehouse")) return "C";
+        if (lowered.includes("blade")) return "C";
         return "D";
       }
 
@@ -9288,11 +10217,32 @@
           operatingTime: String(projectLike.operatingTime || "").trim(),
           remark: String(projectLike.remark || "").trim(),
           machineType: String(projectLike.machineType || "").trim(),
+          facilityInventory: isFacility ? (projectLike.facilityInventory || null) : null,
           progress,
           category,
           color: getAutoProjectColor(category, progress, projectLike.color),
           iconCode: getProjectIconCode(category)
         };
+      }
+
+      function parseFacilityInventory(row) {
+        return FACILITY_INVENTORY_FIELDS.reduce((acc, field) => {
+          acc[field.key] = {
+            capacity: String(getNormalizedRowValue(row, field.capacityAliases) ?? "").trim(),
+            stock: String(getNormalizedRowValue(row, field.stockAliases) ?? "").trim()
+          };
+          return acc;
+        }, {});
+      }
+
+      function formatFacilityInventoryRemark(inventory) {
+        return FACILITY_INVENTORY_FIELDS.map((field) => {
+          const item = inventory?.[field.key] || {};
+          const capacity = String(item.capacity || "").trim();
+          const stock = String(item.stock || "").trim();
+          if (!capacity && !stock) return "";
+          return `${field.label}: 容量 ${capacity || "-"} / 存量 ${stock || "-"}`;
+        }).filter(Boolean).join("; ");
       }
 
       function projectFromUploadRow(row) {
@@ -9314,6 +10264,38 @@
           category,
           color: getAutoProjectColor(category, progress, uploadedColor)
         });
+      }
+
+      function facilityFromUploadRow(row) {
+        const coordinates = parseUploadedCoordinates(row);
+        const progress = getNormalizedRowValue(row, ["进度", "项目进度", "progress", "status"]);
+        const category = getUploadRowCategory(row, "facility");
+        const inventory = parseFacilityInventory(row);
+        const inventoryRemark = formatFacilityInventoryRemark(inventory);
+        const uploadedRemark = String(getNormalizedRowValue(row, ["remark", "remarks", "备注"]) || "").trim();
+        return normalizeProject({
+          name: getNormalizedRowValue(row, ["名称", "设施名称", "name", "facilityname"]),
+          lng: coordinates?.lng,
+          lat: coordinates?.lat,
+          country: getNormalizedRowValue(row, ["国家", "国家信息", "country", "countryinfo"]),
+          capacity: "",
+          progress,
+          category,
+          remark: [inventoryRemark, uploadedRemark].filter(Boolean).join("; "),
+          facilityInventory: inventory,
+          color: getAutoProjectColor(category, progress)
+        });
+      }
+
+      function projectFromTypedUploadRow(record) {
+        const row = record?.row || record || {};
+        const listType = record?.listType || inferUploadRowType(row);
+        const category = getUploadRowCategory(row, listType);
+        const baseCategory = getProjectBaseCategory(category);
+        if (listType === "facility") {
+          return isFacilityProjectCategory(baseCategory) ? facilityFromUploadRow(row) : null;
+        }
+        return isProjectListCategory(baseCategory) ? projectFromUploadRow(row) : null;
       }
 
       function getProjectIconSvg(iconCode) {
@@ -9600,7 +10582,21 @@
       function renderRouteSummary() {
         if (!mapWorkbenchEls.routeSummary) return;
         const lines = routeSummaryText();
-        mapWorkbenchEls.routeSummary.innerHTML = `<span>${escapeHtml(lines.distance)}</span><span>${escapeHtml(lines.duration)}</span>`;
+        const showClearButton = mapStore.route.distance > 0 && !mapStore.route.loading;
+        mapWorkbenchEls.routeSummary.innerHTML = `
+          <div class="map-route-summary-lines">
+            <span>${escapeHtml(lines.distance)}</span>
+            <span>${escapeHtml(lines.duration)}</span>
+          </div>
+          ${showClearButton ? `
+            <button class="map-route-clear" type="button" data-route-clear="true" aria-label="清除导航信息" title="清除导航信息">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 6 6 18"></path>
+                <path d="m6 6 12 12"></path>
+              </svg>
+            </button>
+          ` : ""}
+        `;
         const isVisible = mapStore.route.selecting || mapStore.route.loading || mapStore.route.distance > 0;
         const isEmpty = !isVisible;
         mapWorkbenchEls.routeSummary.classList.toggle("empty", isEmpty);
@@ -9608,7 +10604,7 @@
         if (mapWorkbenchEls.routeBtn) {
           mapWorkbenchEls.routeBtn.classList.toggle("active", mapStore.route.selecting || mapStore.route.loading);
           mapWorkbenchEls.routeBtn.disabled = mapStore.route.loading;
-          mapWorkbenchEls.routeBtn.title = mapStore.route.selecting ? "导航选择中：请在地图上选择起点和终点" : "点击后依次选择起点和终点";
+          mapWorkbenchEls.routeBtn.title = mapStore.route.selecting ? "测距选择中：请在地图上选择起点和终点" : "点击后依次选择起点和终点测距";
         }
       }
 
@@ -9632,6 +10628,13 @@
         route.end = null;
         route.distance = 0;
         route.duration = 0;
+      }
+
+      function clearCurrentRoute() {
+        clearRouteArtifacts();
+        mapStore.route.selecting = false;
+        renderRouteSummary();
+        setMapStatus("导航信息已清除");
       }
 
       function startRouteSelection() {
@@ -9715,62 +10718,153 @@
 
       function getFilteredProjects() {
         return mapStore.projects.filter((project) => {
-          if (mapStore.filters.country.length && !mapStore.filters.country.includes(project.country)) {
-            return false;
+          const baseCategory = getProjectBaseCategory(project.category);
+          const capacity = Number(project.capacity) || 0;
+          if (baseCategory === "WTG") {
+            if (mapStore.filters.wtgHidden) {
+              return false;
+            }
+            if (mapStore.filters.country.length && !mapStore.filters.country.includes(project.country)) {
+              return false;
+            }
+            if (mapStore.filters.progress.length && !mapStore.filters.progress.includes(normalizeProjectProgress(project.category, project.progress))) {
+              return false;
+            }
+            if (capacity < mapStore.filters.capacityMin || capacity > mapStore.filters.capacityMax) {
+              return false;
+            }
+            return true;
           }
-          if (mapStore.filters.progress.length && !mapStore.filters.progress.includes(normalizeProjectProgress(project.category, project.progress))) {
-            return false;
+          if (baseCategory === "BESS") {
+            if (mapStore.filters.bessHidden) {
+              return false;
+            }
+            if (mapStore.filters.bessCountry.length && !mapStore.filters.bessCountry.includes(project.country)) {
+              return false;
+            }
+            if (mapStore.filters.bessProgress.length && !mapStore.filters.bessProgress.includes(normalizeProjectProgress(project.category, project.progress))) {
+              return false;
+            }
+            if (capacity < mapStore.filters.bessCapacityMin || capacity > mapStore.filters.bessCapacityMax) {
+              return false;
+            }
+            return true;
           }
-          if (mapStore.filters.category.length && !mapStore.filters.category.includes(project.category)) {
-            return false;
-          }
-          if (project.capacity < mapStore.filters.capacityMin || project.capacity > mapStore.filters.capacityMax) {
-            return false;
+          if (isFacilityProjectCategory(baseCategory)) {
+            if (mapStore.filters.facilityHidden) {
+              return false;
+            }
+            if (mapStore.filters.facilityCountry.length && !mapStore.filters.facilityCountry.includes(project.country)) {
+              return false;
+            }
+            if (mapStore.filters.facilityProgress.length && !mapStore.filters.facilityProgress.includes(normalizeProjectProgress(project.category, project.progress))) {
+              return false;
+            }
+            if (mapStore.filters.facilityType.length && !mapStore.filters.facilityType.includes(baseCategory)) {
+              return false;
+            }
+            return true;
           }
           return true;
         });
       }
 
-      function updateCapacityBounds(reset = false) {
-        const values = mapStore.projects.map((project) => Number(project.capacity)).filter(Number.isFinite);
+      function updateCapacityBounds(reset = false, category = "WTG") {
+        const isBess = category === "BESS";
+        const boundsKey = isBess ? "bessCapacityBounds" : "capacityBounds";
+        const minKey = isBess ? "bessCapacityMin" : "capacityMin";
+        const maxKey = isBess ? "bessCapacityMax" : "capacityMax";
+        const minInput = isBess ? mapWorkbenchEls.bessCapacityMinRange : mapWorkbenchEls.capacityMinRange;
+        const maxInput = isBess ? mapWorkbenchEls.bessCapacityMaxRange : mapWorkbenchEls.capacityMaxRange;
+        const valueEl = isBess ? mapWorkbenchEls.bessCapacityRangeValue : mapWorkbenchEls.capacityRangeValue;
+        const values = mapStore.projects
+          .filter((project) => getProjectBaseCategory(project.category) === category)
+          .map((project) => Number(project.capacity))
+          .filter(Number.isFinite);
         let min = values.length ? Math.min(...values) : 0;
         let max = values.length ? Math.max(...values) : 100;
         if (min === max) {
           max = min + 1;
         }
-        mapStore.capacityBounds = { min, max };
-        if (reset || !Number.isFinite(mapStore.filters.capacityMin) || !Number.isFinite(mapStore.filters.capacityMax)) {
-          mapStore.filters.capacityMin = min;
-          mapStore.filters.capacityMax = max;
+        mapStore[boundsKey] = { min, max };
+        if (reset || !Number.isFinite(mapStore.filters[minKey]) || !Number.isFinite(mapStore.filters[maxKey])) {
+          mapStore.filters[minKey] = min;
+          mapStore.filters[maxKey] = max;
         } else {
-          mapStore.filters.capacityMin = Math.max(min, Math.min(mapStore.filters.capacityMin, max));
-          mapStore.filters.capacityMax = Math.max(mapStore.filters.capacityMin, Math.min(mapStore.filters.capacityMax, max));
+          mapStore.filters[minKey] = Math.max(min, Math.min(mapStore.filters[minKey], max));
+          mapStore.filters[maxKey] = Math.max(mapStore.filters[minKey], Math.min(mapStore.filters[maxKey], max));
         }
-        if (mapWorkbenchEls.capacityMinRange && mapWorkbenchEls.capacityMaxRange) {
-          mapWorkbenchEls.capacityMinRange.min = String(min);
-          mapWorkbenchEls.capacityMinRange.max = String(max);
-          mapWorkbenchEls.capacityMaxRange.min = String(min);
-          mapWorkbenchEls.capacityMaxRange.max = String(max);
-          mapWorkbenchEls.capacityMinRange.value = String(mapStore.filters.capacityMin);
-          mapWorkbenchEls.capacityMaxRange.value = String(mapStore.filters.capacityMax);
+        if (minInput && maxInput) {
+          minInput.min = String(min);
+          minInput.max = String(max);
+          maxInput.min = String(min);
+          maxInput.max = String(max);
+          minInput.value = String(mapStore.filters[minKey]);
+          maxInput.value = String(mapStore.filters[maxKey]);
         }
-        if (mapWorkbenchEls.capacityRangeValue) {
-          mapWorkbenchEls.capacityRangeValue.textContent = `${formatMapCapacityValue(mapStore.filters.capacityMin)} - ${formatMapCapacityValue(mapStore.filters.capacityMax)}`;
+        if (valueEl) {
+          valueEl.textContent = `${formatMapCapacityValue(mapStore.filters[minKey])} - ${formatMapCapacityValue(mapStore.filters[maxKey])}`;
         }
-        renderCapacityRangeSlider();
+        renderCapacityRangeSlider(category);
       }
 
-      function renderCapacityRangeSlider() {
-        if (!mapWorkbenchEls.capacityRangeSelection) {
+      function renderCapacityRangeSlider(category = "WTG") {
+        const isBess = category === "BESS";
+        const selectionEl = isBess ? mapWorkbenchEls.bessCapacityRangeSelection : mapWorkbenchEls.capacityRangeSelection;
+        if (!selectionEl) {
           return;
         }
-        const boundsMin = Number(mapStore.capacityBounds?.min ?? 0);
-        const boundsMax = Number(mapStore.capacityBounds?.max ?? 0);
+        const bounds = isBess ? mapStore.bessCapacityBounds : mapStore.capacityBounds;
+        const minValue = isBess ? mapStore.filters.bessCapacityMin : mapStore.filters.capacityMin;
+        const maxValue = isBess ? mapStore.filters.bessCapacityMax : mapStore.filters.capacityMax;
+        const boundsMin = Number(bounds?.min ?? 0);
+        const boundsMax = Number(bounds?.max ?? 0);
         const spread = Math.max(1, boundsMax - boundsMin);
-        const minPercent = ((mapStore.filters.capacityMin - boundsMin) / spread) * 100;
-        const maxPercent = ((mapStore.filters.capacityMax - boundsMin) / spread) * 100;
-        mapWorkbenchEls.capacityRangeSelection.style.left = `${Math.max(0, Math.min(100, minPercent))}%`;
-        mapWorkbenchEls.capacityRangeSelection.style.width = `${Math.max(0, Math.min(100, maxPercent) - Math.max(0, Math.min(100, minPercent)))}%`;
+        const minPercent = ((minValue - boundsMin) / spread) * 100;
+        const maxPercent = ((maxValue - boundsMin) / spread) * 100;
+        selectionEl.style.left = `${Math.max(0, Math.min(100, minPercent))}%`;
+        selectionEl.style.width = `${Math.max(0, Math.min(100, maxPercent) - Math.max(0, Math.min(100, minPercent)))}%`;
+      }
+
+      function updateCapacityRangeTooltip(input) {
+        if (!input) return;
+        const sliderEl = input.closest(".dual-range-slider");
+        const tooltipEl = sliderEl?.querySelector(".dual-range-tooltip");
+        if (!sliderEl || !tooltipEl) return;
+        const min = Number(input.min || 0);
+        const max = Number(input.max || 100);
+        const value = Number(input.value || min);
+        const percent = Math.max(0, Math.min(100, ((value - min) / Math.max(1, max - min)) * 100));
+        tooltipEl.textContent = formatMapCapacityValue(value);
+        tooltipEl.value = tooltipEl.textContent;
+        const sliderWidth = sliderEl.getBoundingClientRect().width;
+        const tooltipWidth = tooltipEl.offsetWidth || 32;
+        if (sliderWidth > 0) {
+          const rawLeft = (percent / 100) * sliderWidth;
+          const left = Math.max(tooltipWidth / 2, Math.min(sliderWidth - (tooltipWidth / 2), rawLeft));
+          tooltipEl.style.left = `${left}px`;
+        } else {
+          tooltipEl.style.left = `${percent}%`;
+        }
+      }
+
+      function showCapacityRangeTooltip(input) {
+        const tooltipEl = input?.closest(".dual-range-slider")?.querySelector(".dual-range-tooltip");
+        if (!tooltipEl) return;
+        window.clearTimeout(Number(tooltipEl.dataset.hideTimer || 0));
+        updateCapacityRangeTooltip(input);
+        input.classList.add("range-active");
+        tooltipEl.classList.add("visible");
+      }
+
+      function hideCapacityRangeTooltip(input) {
+        const tooltipEl = input?.closest(".dual-range-slider")?.querySelector(".dual-range-tooltip");
+        if (!tooltipEl) return;
+        window.clearTimeout(Number(tooltipEl.dataset.hideTimer || 0));
+        tooltipEl.dataset.hideTimer = String(window.setTimeout(() => {
+          tooltipEl.classList.remove("visible");
+          input.classList.remove("range-active");
+        }, 520));
       }
 
       function renderFilterSelect(config) {
@@ -9799,25 +10893,73 @@
       }
 
       function renderFilterControls() {
-        const countries = [...new Set(mapStore.projects.map((project) => project.country).filter(Boolean))].sort((a, b) => a.localeCompare(b, "en"));
-        const progresses = [...new Set(mapStore.projects
+        const wtgProjects = mapStore.projects.filter((project) => getProjectBaseCategory(project.category) === "WTG");
+        const bessProjects = mapStore.projects.filter((project) => getProjectBaseCategory(project.category) === "BESS");
+        const facilityProjects = mapStore.projects.filter((project) => isFacilityProjectCategory(project.category));
+        const countries = [...new Set(wtgProjects.map((project) => project.country).filter(Boolean))].sort((a, b) => a.localeCompare(b, "en"));
+        const progresses = [...new Set(wtgProjects
           .map((project) => normalizeProjectProgress(project.category, project.progress))
           .filter(Boolean))]
           .sort((a, b) => {
             const orderDiff = getProjectProgressSortOrder(a) - getProjectProgressSortOrder(b);
             return orderDiff || a.localeCompare(b, "en");
           });
-        const categories = [...new Set(mapStore.projects.map((project) => project.category).filter(Boolean))].sort((a, b) => a.localeCompare(b, "en"));
+        const bessCountries = [...new Set(bessProjects.map((project) => project.country).filter(Boolean))].sort((a, b) => a.localeCompare(b, "en"));
+        const bessProgresses = [...new Set(bessProjects
+          .map((project) => normalizeProjectProgress(project.category, project.progress))
+          .filter(Boolean))]
+          .sort((a, b) => {
+            const orderDiff = getProjectProgressSortOrder(a) - getProjectProgressSortOrder(b);
+            return orderDiff || a.localeCompare(b, "en");
+          });
+        const facilityCountries = [...new Set(facilityProjects.map((project) => project.country).filter(Boolean))].sort((a, b) => a.localeCompare(b, "en"));
+        const facilityProgresses = [...new Set(facilityProjects
+          .map((project) => normalizeProjectProgress(project.category, project.progress))
+          .filter(Boolean))]
+          .sort((a, b) => {
+            const orderDiff = getProjectProgressSortOrder(a) - getProjectProgressSortOrder(b);
+            return orderDiff || a.localeCompare(b, "en");
+          });
+        const facilityTypes = [...new Set(facilityProjects
+          .map((project) => getProjectBaseCategory(project.category))
+          .filter(Boolean))]
+          .sort((a, b) => getProjectCategorySortOrder(a) - getProjectCategorySortOrder(b) || a.localeCompare(b, "en"));
         mapStore.filters.country = normalizeFilterSelection(mapStore.filters.country).filter((value) => countries.includes(value));
         mapStore.filters.progress = normalizeFilterSelection(mapStore.filters.progress).filter((value) => progresses.includes(value));
-        mapStore.filters.category = normalizeFilterSelection(mapStore.filters.category).filter((value) => categories.includes(value));
+        mapStore.filters.bessCountry = normalizeFilterSelection(mapStore.filters.bessCountry).filter((value) => bessCountries.includes(value));
+        mapStore.filters.bessProgress = normalizeFilterSelection(mapStore.filters.bessProgress).filter((value) => bessProgresses.includes(value));
+        mapStore.filters.facilityCountry = normalizeFilterSelection(mapStore.filters.facilityCountry).filter((value) => facilityCountries.includes(value));
+        mapStore.filters.facilityProgress = normalizeFilterSelection(mapStore.filters.facilityProgress).filter((value) => facilityProgresses.includes(value));
+        mapStore.filters.facilityType = normalizeFilterSelection(mapStore.filters.facilityType).filter((value) => facilityTypes.includes(value));
+        mapStore.filters.category = [];
+        mapStore.filters.wtgHidden = Boolean(mapStore.filters.wtgHidden);
+        mapStore.filters.bessHidden = Boolean(mapStore.filters.bessHidden);
+        mapStore.filters.facilityHidden = Boolean(mapStore.filters.facilityHidden);
+        if (mapWorkbenchEls.wtgFilterToggle) {
+          const isHidden = mapStore.filters.wtgHidden;
+          mapWorkbenchEls.wtgFilterToggle.classList.toggle("is-hidden", isHidden);
+          mapWorkbenchEls.wtgFilterToggle.setAttribute("aria-pressed", isHidden ? "false" : "true");
+          mapWorkbenchEls.wtgFilterToggle.title = isHidden ? "显示 WTG 项目" : "隐藏 WTG 项目";
+        }
+        if (mapWorkbenchEls.bessFilterToggle) {
+          const isHidden = mapStore.filters.bessHidden;
+          mapWorkbenchEls.bessFilterToggle.classList.toggle("is-hidden", isHidden);
+          mapWorkbenchEls.bessFilterToggle.setAttribute("aria-pressed", isHidden ? "false" : "true");
+          mapWorkbenchEls.bessFilterToggle.title = isHidden ? "显示 BESS 项目" : "隐藏 BESS 项目";
+        }
+        if (mapWorkbenchEls.facilityFilterToggle) {
+          const isHidden = mapStore.filters.facilityHidden;
+          mapWorkbenchEls.facilityFilterToggle.classList.toggle("is-hidden", isHidden);
+          mapWorkbenchEls.facilityFilterToggle.setAttribute("aria-pressed", isHidden ? "false" : "true");
+          mapWorkbenchEls.facilityFilterToggle.title = isHidden ? "显示 Facility" : "隐藏 Facility";
+        }
         renderFilterSelect({
           filterKey: "country",
           wrapEl: mapWorkbenchEls.countryFilterWrap,
           labelEl: mapWorkbenchEls.countryFilterLabel,
           menuEl: mapWorkbenchEls.countryFilterMenu,
           values: countries,
-          placeholder: "All Countries",
+          placeholder: "ALL",
           selectedValues: mapStore.filters.country
         });
         renderFilterSelect({
@@ -9826,20 +10968,57 @@
           labelEl: mapWorkbenchEls.progressFilterLabel,
           menuEl: mapWorkbenchEls.progressFilterMenu,
           values: progresses,
-          placeholder: "All Progress",
+          placeholder: "ALL",
           selectedValues: mapStore.filters.progress
         });
         renderFilterSelect({
-          filterKey: "category",
-          wrapEl: mapWorkbenchEls.categoryFilterWrap,
-          labelEl: mapWorkbenchEls.categoryFilterLabel,
-          menuEl: mapWorkbenchEls.categoryFilterMenu,
-          values: categories,
-          placeholder: "All Categories",
-          selectedValues: mapStore.filters.category
+          filterKey: "bessCountry",
+          wrapEl: mapWorkbenchEls.bessCountryFilterWrap,
+          labelEl: mapWorkbenchEls.bessCountryFilterLabel,
+          menuEl: mapWorkbenchEls.bessCountryFilterMenu,
+          values: bessCountries,
+          placeholder: "ALL",
+          selectedValues: mapStore.filters.bessCountry
+        });
+        renderFilterSelect({
+          filterKey: "bessProgress",
+          wrapEl: mapWorkbenchEls.bessProgressFilterWrap,
+          labelEl: mapWorkbenchEls.bessProgressFilterLabel,
+          menuEl: mapWorkbenchEls.bessProgressFilterMenu,
+          values: bessProgresses,
+          placeholder: "ALL",
+          selectedValues: mapStore.filters.bessProgress
+        });
+        renderFilterSelect({
+          filterKey: "facilityCountry",
+          wrapEl: mapWorkbenchEls.facilityCountryFilterWrap,
+          labelEl: mapWorkbenchEls.facilityCountryFilterLabel,
+          menuEl: mapWorkbenchEls.facilityCountryFilterMenu,
+          values: facilityCountries,
+          placeholder: "ALL",
+          selectedValues: mapStore.filters.facilityCountry
+        });
+        renderFilterSelect({
+          filterKey: "facilityProgress",
+          wrapEl: mapWorkbenchEls.facilityProgressFilterWrap,
+          labelEl: mapWorkbenchEls.facilityProgressFilterLabel,
+          menuEl: mapWorkbenchEls.facilityProgressFilterMenu,
+          values: facilityProgresses,
+          placeholder: "ALL",
+          selectedValues: mapStore.filters.facilityProgress
+        });
+        renderFilterSelect({
+          filterKey: "facilityType",
+          wrapEl: mapWorkbenchEls.facilityTypeFilterWrap,
+          labelEl: mapWorkbenchEls.facilityTypeFilterLabel,
+          menuEl: mapWorkbenchEls.facilityTypeFilterMenu,
+          values: facilityTypes,
+          placeholder: "ALL",
+          selectedValues: mapStore.filters.facilityType
         });
         renderFilterDropdownState();
         updateCapacityBounds();
+        updateCapacityBounds(false, "BESS");
       }
 
       function projectPopupContent(project) {
@@ -10697,7 +11876,7 @@
 
       function getProjectCategorySortOrder(category) {
         const baseCategory = getProjectBaseCategory(category);
-        const order = ["WTG", "BESS", "Warehouse", "Service Center"];
+        const order = ["WTG", "BESS", "Warehouse", "Service Center", "Blade Yard"];
         const index = order.indexOf(baseCategory);
         return index === -1 ? order.length : index;
       }
@@ -10759,6 +11938,7 @@
         renderFilterControls();
         if (options.resetCapacity) {
           updateCapacityBounds(true);
+          updateCapacityBounds(true, "BESS");
         }
         requestProjectMarkerRender();
         renderStats();
@@ -10832,7 +12012,7 @@
         mapWorkbenchEls.progressInput.value = project?.progress || "";
         mapWorkbenchEls.countryInput.value = project?.country || "";
         const category = getProjectBaseCategory(project?.category || "");
-        if (["WTG", "BESS", "Warehouse", "Service Center"].includes(category)) {
+        if (["WTG", "BESS", "Warehouse", "Service Center", "Blade Yard"].includes(category)) {
           mapWorkbenchEls.categoryInput.value = category;
         } else if (project?.category) {
           mapWorkbenchEls.categoryInput.value = "CUSTOM";
@@ -10879,6 +12059,10 @@
         }
       }
 
+      function confirmProjectDeletion(message) {
+        return window.confirm(`${message}\n\n删除后无法撤销。`);
+      }
+
       function handleProjectContextRequest(latlng) {
         mapStore.lastContextMenuAt = Date.now();
         openProjectModal(latlng);
@@ -10888,14 +12072,19 @@
         const ext = getExtension(file.name);
         if (ext === "json") {
           const raw = JSON.parse(await file.text());
-          return Array.isArray(raw) ? raw : Array.isArray(raw.projects) ? raw.projects : [];
+          const rows = Array.isArray(raw) ? raw : Array.isArray(raw.projects) ? raw.projects : [];
+          return rows.map((row) => ({ row, listType: inferUploadRowType(row), sheetName: "JSON" }));
         }
         if (!window.XLSX) {
           throw new Error("XLSX 库未加载成功");
         }
         const workbook = window.XLSX.read(await file.arrayBuffer(), { type: "array" });
-        const firstSheet = workbook.SheetNames[0];
-        return window.XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], { defval: "" });
+        return workbook.SheetNames.flatMap((sheetName) => {
+          const rows = window.XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: "" });
+          if (!rows.length) return [];
+          const listType = getUploadSheetType(sheetName) || inferUploadRowsType(rows);
+          return rows.map((row) => ({ row, listType, sheetName }));
+        });
       }
 
       function readArrayBufferByXhr(url) {
@@ -10919,49 +12108,64 @@
         });
       }
 
+      async function readDefaultLibraryBuffer(fileName) {
+        const defaultUrl = new URL(`./${fileName}`, window.location.href).href;
+        try {
+          const response = await fetch(defaultUrl);
+          if (!response.ok) {
+            throw new Error(`${fileName} 读取失败`);
+          }
+          return await response.arrayBuffer();
+        } catch (fetchError) {
+          return readArrayBufferByXhr(defaultUrl);
+        }
+      }
+
+      async function readDefaultLibraryRecords(fileName, listType) {
+        const buffer = await readDefaultLibraryBuffer(fileName);
+        const workbook = window.XLSX.read(buffer, { type: "array" });
+        return workbook.SheetNames.flatMap((sheetName) => {
+          const rows = window.XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { defval: "" });
+          if (!rows.length) return [];
+          const resolvedListType = listType || getUploadSheetType(sheetName) || inferUploadRowsType(rows);
+          return rows.map((row) => ({ row, listType: resolvedListType, sheetName }));
+        });
+      }
+
       async function loadDefaultProjectLibrary() {
         if (mapStore.defaultLibraryLoaded || mapStore.defaultLibraryLoading || mapStore.projects.length) {
           return;
         }
         mapStore.defaultLibraryLoading = true;
-        const defaultUrl = new URL("./project_list.xlsx", window.location.href).href;
         try {
           if (!window.XLSX) {
             throw new Error("XLSX 库未加载成功");
           }
 
-          let buffer;
-          try {
-            const response = await fetch(defaultUrl);
-            if (!response.ok) {
-              throw new Error("项目库默认文件读取失败");
-            }
-            buffer = await response.arrayBuffer();
-          } catch (fetchError) {
-            buffer = await readArrayBufferByXhr(defaultUrl);
-          }
-
-          const workbook = window.XLSX.read(buffer, { type: "array" });
-          const firstSheet = workbook.SheetNames[0];
-          const rows = window.XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet], { defval: "" });
-          const projects = rows.map(projectFromUploadRow).filter(Boolean);
-          if (!projects.length) {
-            throw new Error("默认项目库中没有可识别项目");
+          const [projectRecords, facilityRecords] = await Promise.all([
+            readDefaultLibraryRecords(DEFAULT_PROJECT_LIBRARY_FILE, "project"),
+            readDefaultLibraryRecords(DEFAULT_FACILITY_LIBRARY_FILE, "facility")
+          ]);
+          const projects = projectRecords.map(projectFromTypedUploadRow).filter(Boolean);
+          const facilities = facilityRecords.map(projectFromTypedUploadRow).filter(Boolean);
+          const defaultProjects = [...projects, ...facilities];
+          if (!defaultProjects.length) {
+            throw new Error("默认项目库中没有可识别项目或设施");
           }
           if (mapStore.projects.length) {
             return;
           }
 
-          mapStore.projects = projects;
+          mapStore.projects = defaultProjects;
           mapStore.defaultLibraryLoaded = true;
           refreshProjectWorkbench({ resetCapacity: true });
           if (mapStore.instance) {
-            const bounds = L.latLngBounds(projects.map((project) => [project.lat, project.lng]));
+            const bounds = L.latLngBounds(defaultProjects.map((project) => [project.lat, project.lng]));
             if (bounds.isValid()) {
               mapStore.instance.fitBounds(bounds.pad(0.14), { animate: false });
             }
           }
-          setMapStatus(`已加载默认项目库 ${projects.length} 个项目`);
+          setMapStatus(`已加载默认项目库 ${projects.length} 个项目，${facilities.length} 个设施`);
         } catch (error) {
           console.warn("Default project library load failed:", error);
           setMapStatus(error.message || "默认项目库加载失败");
@@ -10982,13 +12186,14 @@
       }
 
       function handleProjectUpload(file) {
-        parseProjectUploadFile(file).then((rows) => {
-          const projects = rows.map(projectFromUploadRow).filter(Boolean);
+        parseProjectUploadFile(file).then((records) => {
+          const projects = records.map(projectFromTypedUploadRow).filter(Boolean);
+          const skippedCount = Math.max(0, records.length - projects.length);
           if (!projects.length) {
-            throw new Error("未识别到可导入的项目数据");
+            throw new Error("未识别到可导入的数据：项目清单仅支持 WTG/BESS，设施清单仅支持 Warehouse / Service Center。");
           }
           addProjects(projects, { fitToProjects: true, resetCapacity: true });
-          setMapStatus(`已导入 ${projects.length} 个项目`);
+          setMapStatus(`已导入 ${projects.length} 条数据${skippedCount ? `，跳过 ${skippedCount} 条不符合清单类别或格式的数据` : ""}`);
           switchPage("map");
         }).catch((error) => {
           setMapStatus(error.message || "项目导入失败");
@@ -11005,6 +12210,10 @@
 
       function downloadTextFile(filename, content, mimeType = "text/csv;charset=utf-8") {
         const blob = new Blob([content], { type: mimeType });
+        downloadBlob(filename, blob);
+      }
+
+      function downloadBlob(filename, blob) {
         const url = URL.createObjectURL(blob);
         const link = document.createElement("a");
         link.href = url;
@@ -11017,11 +12226,55 @@
 
       function buildProjectTemplateCsv() {
         const rows = [
-          ["项目名称", "坐标(纬度,经度)", "国家信息", "容量", "价格", "运营时间(含预计)", "remark", "机型", "项目进度", "项目类别"],
+          PROJECT_UPLOAD_HEADERS,
           ["Demo WTG Project", "31.2304,121.4737", "China", "500", "", "2027 Q4", "Sample WTG remark", "EN-182", "Construction", "WTG"],
           ["Demo BESS Project", "25.0330,121.5654", "Japan", "320", "", "2026 Q3", "Sample BESS remark", "", "Awarded", "BESS"]
         ];
         return "\uFEFF" + rows.map((row) => row.map(escapeCsvCell).join(",")).join("\r\n");
+      }
+
+      function buildTemplateWorkbookBlob(sheetName, rows) {
+        if (!window.XLSX) {
+          return null;
+        }
+        const workbook = window.XLSX.utils.book_new();
+        const sheet = window.XLSX.utils.aoa_to_sheet(rows);
+        sheet["!cols"] = (rows[0] || []).map((header) => ({ wch: Math.max(10, String(header).length + 4) }));
+        window.XLSX.utils.book_append_sheet(workbook, sheet, sheetName);
+        const workbookData = window.XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+        return new Blob([workbookData], {
+          type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        });
+      }
+
+      function getProjectTemplateRows() {
+        return [
+          PROJECT_UPLOAD_HEADERS,
+          ["Demo WTG Project", "31.2304,121.4737", "China", "500", "", "2027 Q4", "Sample WTG remark", "EN-182", "Construction", "WTG"],
+          ["Demo BESS Project", "25.0330,121.5654", "Japan", "320", "", "2026 Q3", "Sample BESS remark", "", "Awarded", "BESS"]
+        ];
+      }
+
+      function getFacilityTemplateRows() {
+        return [
+          FACILITY_UPLOAD_HEADERS,
+          ["Shanghai Warehouse", "31.2304,121.4737", "China", "Operating", "Warehouse", "80", "35", "20", "8", "30", "12", "40", "16"],
+          ["Tokyo Service Center", "35.6762,139.6503", "Japan", "Planning", "Service Center", "", "", "", "", "", "", "", ""]
+        ];
+      }
+
+      function downloadUploadTemplate(type) {
+        const isFacilityTemplate = type === "facility";
+        const rows = isFacilityTemplate ? getFacilityTemplateRows() : getProjectTemplateRows();
+        const sheetName = isFacilityTemplate ? FACILITY_UPLOAD_SHEET_NAME : PROJECT_UPLOAD_SHEET_NAME;
+        const fileBaseName = isFacilityTemplate ? "facility-upload-template" : "project-upload-template";
+        const workbookBlob = buildTemplateWorkbookBlob(sheetName, rows);
+        if (workbookBlob) {
+          downloadBlob(`${fileBaseName}.xlsx`, workbookBlob);
+          return;
+        }
+        const csvContent = "\uFEFF" + rows.map((row) => row.map(escapeCsvCell).join(",")).join("\r\n");
+        downloadTextFile(`${fileBaseName}.csv`, csvContent);
       }
 
       function buildProjectExportCsv() {
@@ -11259,32 +12512,10 @@
         if (!mapWorkbenchEls.libraryPanel || !mapWorkbenchEls.grid) return;
         mapWorkbenchEls.libraryPanel.classList.toggle("collapsed", mapStore.libraryCollapsed);
         mapWorkbenchEls.grid.classList.toggle("library-collapsed", mapStore.libraryCollapsed);
-        if (mapStore.instance) {
-          setTimeout(() => {
-            const map = mapStore.instance;
-            const keepGlobalView = mapStore.worldBounds && map.getZoom() <= map.getMinZoom() + 0.01;
-            const currentCenter = map.getCenter();
-            const currentZoom = map.getZoom();
-            map.invalidateSize();
-            if (mapStore.worldBounds) {
-              map.fitBounds(mapStore.worldBounds, {
-                animate: false,
-                padding: [0, 0]
-              });
-              const nextMinZoom = map.getZoom();
-              map.setMinZoom(nextMinZoom);
-              if (keepGlobalView) {
-                map.fitBounds(mapStore.worldBounds, {
-                  animate: false,
-                  padding: [0, 0]
-                });
-              } else {
-                map.setView(currentCenter, Math.max(currentZoom, nextMinZoom), {
-                  animate: false
-                });
-              }
-            }
-          }, 120);
+        if (mapWorkbenchEls.libraryToggle) {
+          const label = mapStore.libraryCollapsed ? "展开项目库" : "折叠项目库";
+          mapWorkbenchEls.libraryToggle.setAttribute("aria-label", label);
+          mapWorkbenchEls.libraryToggle.setAttribute("title", label);
         }
       }
 
@@ -11295,6 +12526,7 @@
         }
 
         if (appState.map.instance) {
+          applyMapInsightsWidth(mapStore.insightsWidth, { refreshMap: true });
           requestAnimationFrame(() => appState.map.instance.invalidateSize());
           return;
         }
@@ -11339,7 +12571,7 @@
           zoomSnap: 0.25
         });
 
-        L.control.layers(
+        const layerControl = L.control.layers(
           {
             "英文地图": enStreetLayer,
             "中文地图": zhStreetLayer,
@@ -11350,6 +12582,7 @@
           null,
           { position: "topright" }
         ).addTo(map);
+        mountMapLayerControls();
 
         L.control.scale({
           imperial: false,
@@ -11414,12 +12647,23 @@
         renderProjectMarkers();
         renderRouteSummary();
         renderLibraryCollapseState();
+        applyMapInsightsWidth(mapStore.insightsWidth, { refreshMap: true });
         renderMapControlVisibility();
         renderMapFullscreenState();
         updateFootprintMode();
         setMapStatus("Current base map: English");
         setMapStatus("Current base map: English");
       };
+
+      if (mapWorkbenchEls.canvasShell && window.MutationObserver) {
+        const layerControlObserver = new MutationObserver(() => {
+          mountMapLayerControls();
+        });
+        layerControlObserver.observe(mapWorkbenchEls.canvasShell, {
+          childList: true,
+          subtree: true
+        });
+      }
 
       if (mapWorkbenchEls.librarySearchInput) {
         mapWorkbenchEls.librarySearchInput.value = mapStore.librarySearchKeyword;
@@ -11431,12 +12675,31 @@
       loadDefaultProjectLibrary();
       renderRouteSummary();
       renderLibraryCollapseState();
+      applyMapInsightsWidth(mapStore.insightsWidth);
 
       mapWorkbenchEls.routeBtn?.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
         if (mapStore.route.loading) return;
         startRouteSelection();
+      });
+
+      mapWorkbenchEls.routeSummary?.addEventListener("click", (event) => {
+        const clearButton = event.target.closest("[data-route-clear]");
+        if (!clearButton) return;
+        event.preventDefault();
+        event.stopPropagation();
+        clearCurrentRoute();
+      });
+
+      mapWorkbenchEls.resizeHandle?.addEventListener("pointerdown", startMapInsightsResize);
+      mapWorkbenchEls.resizeHandle?.addEventListener("lostpointercapture", stopMapInsightsResize);
+      mapWorkbenchEls.resizeHandle?.addEventListener("keydown", handleMapResizeKeyboard);
+      document.addEventListener("pointermove", handleMapInsightsResizeMove);
+      document.addEventListener("pointerup", stopMapInsightsResize);
+      document.addEventListener("pointercancel", stopMapInsightsResize);
+      window.addEventListener("resize", () => {
+        applyMapInsightsWidth(mapStore.insightsWidth, { refreshMap: true });
       });
 
       mapWorkbenchEls.controlsToggle?.addEventListener("click", () => {
@@ -11503,8 +12766,41 @@
         event.target.value = "";
       });
 
-      mapWorkbenchEls.templateBtn?.addEventListener("click", () => {
-        downloadTextFile("project-upload-template.csv", buildProjectTemplateCsv());
+      function renderProjectTemplateMenuState(open) {
+        mapWorkbenchEls.templateMenu?.classList.toggle("open", open);
+        mapWorkbenchEls.templateBtn?.setAttribute("aria-expanded", open ? "true" : "false");
+      }
+
+      mapWorkbenchEls.templateBtn?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        renderProjectTemplateMenuState(!mapWorkbenchEls.templateMenu?.classList.contains("open"));
+      });
+
+      mapWorkbenchEls.projectTemplateBtn?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        renderProjectTemplateMenuState(false);
+        downloadUploadTemplate("project");
+      });
+
+      mapWorkbenchEls.facilityTemplateBtn?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        renderProjectTemplateMenuState(false);
+        downloadUploadTemplate("facility");
+      });
+
+      document.addEventListener("click", (event) => {
+        if (!mapWorkbenchEls.templateMenu?.contains(event.target)) {
+          renderProjectTemplateMenuState(false);
+        }
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          renderProjectTemplateMenuState(false);
+        }
       });
 
       mapWorkbenchEls.exportBtn?.addEventListener("click", () => {
@@ -11523,6 +12819,12 @@
           event.stopPropagation();
           const category = subgroupDeleteButton.dataset.projectCategory || "";
           const progress = subgroupDeleteButton.dataset.projectProgress || "";
+          const matchedProjects = mapStore.projects.filter((item) => {
+            return getProjectBaseCategory(item.category) === category && String(item.progress || "").trim() === progress;
+          });
+          if (!matchedProjects.length || !confirmProjectDeletion(`确认删除 ${category} / ${progress} 分组下的 ${matchedProjects.length} 个项目吗？`)) {
+            return;
+          }
           mapStore.projects = mapStore.projects.filter((item) => {
             return !(getProjectBaseCategory(item.category) === category && String(item.progress || "").trim() === progress);
           });
@@ -11535,6 +12837,10 @@
           event.preventDefault();
           event.stopPropagation();
           const category = groupDeleteButton.dataset.projectCategory || "";
+          const matchedProjects = mapStore.projects.filter((item) => getProjectBaseCategory(item.category) === category);
+          if (!matchedProjects.length || !confirmProjectDeletion(`确认删除 ${category} 分组下的 ${matchedProjects.length} 个项目吗？`)) {
+            return;
+          }
           mapStore.projects = mapStore.projects.filter((item) => getProjectBaseCategory(item.category) !== category);
           refreshProjectWorkbench({ resetCapacity: true });
           setMapStatus(`已删除 ${category} 分组下的全部项目`);
@@ -11544,6 +12850,9 @@
         if (deleteButton) {
           const projectId = deleteButton.dataset.projectDelete;
           const project = mapStore.projects.find((item) => item.id === projectId);
+          if (!project || !confirmProjectDeletion(`确认删除项目「${project.name}」吗？`)) {
+            return;
+          }
           mapStore.projects = mapStore.projects.filter((item) => item.id !== projectId);
           refreshProjectWorkbench({ resetCapacity: true });
           setMapStatus(project ? `已删除项目 ${project.name}` : "项目已删除");
@@ -11552,6 +12861,30 @@
         const focusButton = event.target.closest("[data-project-focus]");
         if (!focusButton) return;
         zoomToProject(focusButton.dataset.projectFocus);
+      });
+
+      mapWorkbenchEls.wtgFilterToggle?.addEventListener("click", (event) => {
+        event.preventDefault();
+        mapStore.filters.wtgHidden = !mapStore.filters.wtgHidden;
+        renderFilterControls();
+        requestProjectMarkerRender();
+        renderStats();
+      });
+
+      mapWorkbenchEls.bessFilterToggle?.addEventListener("click", (event) => {
+        event.preventDefault();
+        mapStore.filters.bessHidden = !mapStore.filters.bessHidden;
+        renderFilterControls();
+        requestProjectMarkerRender();
+        renderStats();
+      });
+
+      mapWorkbenchEls.facilityFilterToggle?.addEventListener("click", (event) => {
+        event.preventDefault();
+        mapStore.filters.facilityHidden = !mapStore.filters.facilityHidden;
+        renderFilterControls();
+        requestProjectMarkerRender();
+        renderStats();
       });
 
       mapWorkbenchEls.countryFilter?.addEventListener("click", (event) => {
@@ -11566,13 +12899,52 @@
         toggleFilterDropdown("progress");
       });
 
+      mapWorkbenchEls.bessCountryFilter?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleFilterDropdown("bessCountry");
+      });
+
+      mapWorkbenchEls.bessProgressFilter?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleFilterDropdown("bessProgress");
+      });
+
+      mapWorkbenchEls.facilityCountryFilter?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleFilterDropdown("facilityCountry");
+      });
+
+      mapWorkbenchEls.facilityProgressFilter?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleFilterDropdown("facilityProgress");
+      });
+
+      mapWorkbenchEls.facilityTypeFilter?.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggleFilterDropdown("facilityType");
+      });
+
       mapWorkbenchEls.categoryFilter?.addEventListener("click", (event) => {
         event.preventDefault();
         event.stopPropagation();
         toggleFilterDropdown("category");
       });
 
-      [mapWorkbenchEls.countryFilterMenu, mapWorkbenchEls.progressFilterMenu, mapWorkbenchEls.categoryFilterMenu].forEach((menuEl) => {
+      [
+        mapWorkbenchEls.countryFilterMenu,
+        mapWorkbenchEls.progressFilterMenu,
+        mapWorkbenchEls.bessCountryFilterMenu,
+        mapWorkbenchEls.bessProgressFilterMenu,
+        mapWorkbenchEls.facilityCountryFilterMenu,
+        mapWorkbenchEls.facilityProgressFilterMenu,
+        mapWorkbenchEls.facilityTypeFilterMenu,
+        mapWorkbenchEls.categoryFilterMenu
+      ].forEach((menuEl) => {
         menuEl?.addEventListener("click", (event) => {
           event.stopPropagation();
           const actionButton = event.target.closest("[data-filter-key], [data-filter-clear]");
@@ -11605,49 +12977,84 @@
         }
       });
 
-      function handleCapacityRangeInput(type) {
-        const minValue = Number(mapWorkbenchEls.capacityMinRange?.value ?? mapStore.filters.capacityMin);
-        const maxValue = Number(mapWorkbenchEls.capacityMaxRange?.value ?? mapStore.filters.capacityMax);
+      function handleCapacityRangeInput(type, category = "WTG") {
+        const isBess = category === "BESS";
+        const minInput = isBess ? mapWorkbenchEls.bessCapacityMinRange : mapWorkbenchEls.capacityMinRange;
+        const maxInput = isBess ? mapWorkbenchEls.bessCapacityMaxRange : mapWorkbenchEls.capacityMaxRange;
+        const minKey = isBess ? "bessCapacityMin" : "capacityMin";
+        const maxKey = isBess ? "bessCapacityMax" : "capacityMax";
+        const minValue = Number(minInput?.value ?? mapStore.filters[minKey]);
+        const maxValue = Number(maxInput?.value ?? mapStore.filters[maxKey]);
         if (type === "min") {
-          mapStore.filters.capacityMin = Math.min(minValue, maxValue);
-          if (mapWorkbenchEls.capacityMinRange) {
-            mapWorkbenchEls.capacityMinRange.value = String(mapStore.filters.capacityMin);
+          mapStore.filters[minKey] = Math.min(minValue, maxValue);
+          if (minInput) {
+            minInput.value = String(mapStore.filters[minKey]);
           }
-          if (mapWorkbenchEls.capacityMaxRange && mapStore.filters.capacityMin > maxValue) {
-            mapWorkbenchEls.capacityMaxRange.value = String(mapStore.filters.capacityMin);
+          if (maxInput && mapStore.filters[minKey] > maxValue) {
+            maxInput.value = String(mapStore.filters[minKey]);
           }
         } else {
-          mapStore.filters.capacityMax = Math.max(minValue, maxValue);
-          if (mapWorkbenchEls.capacityMaxRange) {
-            mapWorkbenchEls.capacityMaxRange.value = String(mapStore.filters.capacityMax);
+          mapStore.filters[maxKey] = Math.max(minValue, maxValue);
+          if (maxInput) {
+            maxInput.value = String(mapStore.filters[maxKey]);
           }
-          if (mapWorkbenchEls.capacityMinRange && mapStore.filters.capacityMax < minValue) {
-            mapWorkbenchEls.capacityMinRange.value = String(mapStore.filters.capacityMax);
+          if (minInput && mapStore.filters[maxKey] < minValue) {
+            minInput.value = String(mapStore.filters[maxKey]);
           }
         }
-        mapStore.filters.capacityMin = Number(mapWorkbenchEls.capacityMinRange?.value ?? mapStore.filters.capacityMin);
-        mapStore.filters.capacityMax = Number(mapWorkbenchEls.capacityMaxRange?.value ?? mapStore.filters.capacityMax);
-        updateCapacityBounds();
+        mapStore.filters[minKey] = Number(minInput?.value ?? mapStore.filters[minKey]);
+        mapStore.filters[maxKey] = Number(maxInput?.value ?? mapStore.filters[maxKey]);
+        updateCapacityBounds(false, category);
         requestProjectMarkerRender();
         renderStats();
       }
 
-      mapWorkbenchEls.capacityMinRange?.addEventListener("input", () => {
-        handleCapacityRangeInput("min");
-      });
+      function bindCapacityRangeInput(input, type, category = "WTG") {
+        if (!input) return;
+        input.addEventListener("pointerdown", (event) => {
+          if (event.pointerType === "mouse" && event.button !== 0) {
+            return;
+          }
+          input.dataset.capacityDragging = "true";
+          try {
+            input.setPointerCapture(event.pointerId);
+          } catch (error) {
+            // Some range implementations do not allow pointer capture; the input event still keeps the tooltip in sync.
+          }
+          showCapacityRangeTooltip(input);
+        });
+        input.addEventListener("input", () => {
+          handleCapacityRangeInput(type, category);
+          if (input.dataset.capacityDragging === "true") {
+            showCapacityRangeTooltip(input);
+          }
+        });
+        ["pointerup", "pointercancel", "lostpointercapture", "blur"].forEach((eventName) => {
+          input.addEventListener(eventName, () => {
+            if (input.dataset.capacityDragging !== "true") return;
+            delete input.dataset.capacityDragging;
+            hideCapacityRangeTooltip(input);
+          });
+        });
+      }
 
-      mapWorkbenchEls.capacityMaxRange?.addEventListener("input", () => {
-        handleCapacityRangeInput("max");
-      });
+      bindCapacityRangeInput(mapWorkbenchEls.capacityMinRange, "min");
+      bindCapacityRangeInput(mapWorkbenchEls.capacityMaxRange, "max");
+      bindCapacityRangeInput(mapWorkbenchEls.bessCapacityMinRange, "min", "BESS");
+      bindCapacityRangeInput(mapWorkbenchEls.bessCapacityMaxRange, "max", "BESS");
 
       mapWorkbenchEls.modalClose?.addEventListener("click", closeProjectModal);
       mapWorkbenchEls.modalCancel?.addEventListener("click", closeProjectModal);
       mapWorkbenchEls.modalDelete?.addEventListener("click", () => {
         if (!mapStore.editingProjectId) return;
-        mapStore.projects = mapStore.projects.filter((project) => project.id !== mapStore.editingProjectId);
+        const project = mapStore.projects.find((item) => item.id === mapStore.editingProjectId);
+        if (!project || !confirmProjectDeletion(`确认删除项目「${project.name}」吗？`)) {
+          return;
+        }
+        mapStore.projects = mapStore.projects.filter((item) => item.id !== mapStore.editingProjectId);
         refreshProjectWorkbench({ resetCapacity: true });
         closeProjectModal();
-        setMapStatus("Project deleted");
+        setMapStatus(`已删除项目 ${project.name}`);
       });
       mapWorkbenchEls.categoryInput?.addEventListener("change", () => {
         syncProjectCategoryField();
