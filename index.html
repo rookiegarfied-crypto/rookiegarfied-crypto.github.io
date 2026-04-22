@@ -3319,7 +3319,7 @@
 
     .project-library-list {
       display: grid;
-      gap: 10px;
+      gap: 3px;
     }
 
     .project-library-empty {
@@ -3333,34 +3333,39 @@
     }
 
     .project-library-item {
-      display: grid;
-      gap: 10px;
-      padding: 14px;
-      border-radius: 20px;
-      border: 1px solid rgba(23, 35, 31, 0.08);
-      background: rgba(255, 255, 255, 0.86);
+      display: block;
+      min-width: 0;
+      padding: 3px 4px;
+      border-radius: 6px;
+      border: 0;
+      background: transparent;
+    }
+
+    .project-library-item:hover {
+      background: rgba(23, 35, 31, 0.05);
     }
 
     .project-library-top {
       display: grid;
-      grid-template-columns: 40px minmax(0, 1fr) auto;
-      gap: 10px;
-      align-items: start;
+      grid-template-columns: 20px minmax(0, 1fr) auto;
+      gap: 6px;
+      align-items: center;
+      min-height: 24px;
     }
 
     .project-marker-badge {
-      width: 40px;
-      height: 40px;
-      border-radius: 14px;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
       display: grid;
       place-items: center;
       color: #fff;
-      box-shadow: 0 10px 18px rgba(24, 42, 37, 0.16);
+      box-shadow: none;
     }
 
     .project-marker-badge svg {
-      width: 22px;
-      height: 22px;
+      width: 11px;
+      height: 11px;
     }
 
     .project-library-title {
@@ -3370,7 +3375,10 @@
     }
 
     .project-library-title strong {
-      font-size: 0.78rem;
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      color: rgba(23, 35, 31, 0.84);
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -3384,38 +3392,23 @@
       color: var(--muted);
     }
 
+    .project-library-item .project-library-title span,
+    .project-library-item .project-library-meta,
+    .project-library-item .project-library-coords {
+      display: none;
+    }
+
     .project-library-actions {
-      display: grid;
-      gap: 8px;
-      justify-items: end;
-    }
-
-    .project-library-zoom {
-      min-height: 28px;
-      padding: 0 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(23, 35, 31, 0.1);
-      background: #fff;
-      color: var(--text);
-      font-size: 0.66rem;
-      font-weight: 700;
-    }
-
-    .project-library-delete {
-      min-height: 28px;
-      padding: 0 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(214, 60, 60, 0.18);
-      background: rgba(214, 60, 60, 0.08);
-      color: #a83232;
-      font-size: 0.66rem;
-      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      justify-content: flex-end;
     }
 
     .project-library-group,
     .project-library-subgroup {
       display: grid;
-      gap: 10px;
+      gap: 2px;
     }
 
     .project-library-group summary,
@@ -3425,13 +3418,19 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
-      padding: 12px 14px;
-      border-radius: 18px;
-      background: rgba(255, 255, 255, 0.82);
-      border: 1px solid rgba(23, 35, 31, 0.08);
+      gap: 8px;
+      min-height: 28px;
+      padding: 3px 4px;
+      border-radius: 6px;
+      background: transparent;
+      border: 0;
       color: var(--text);
       user-select: none;
+    }
+
+    .project-library-group summary:hover,
+    .project-library-subgroup summary:hover {
+      background: rgba(23, 35, 31, 0.05);
     }
 
     .project-library-group summary::-webkit-details-marker,
@@ -3443,18 +3442,36 @@
     .project-library-subgroup-title {
       display: inline-flex;
       align-items: center;
-      gap: 10px;
+      gap: 7px;
       min-width: 0;
       font-weight: 700;
+      font-size: 0.72rem;
+      color: rgba(23, 35, 31, 0.9);
+    }
+
+    .project-library-subgroup-icon {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 50%;
+      color: #fff;
+    }
+
+    .project-library-subgroup-icon svg {
+      width: 10px;
+      height: 10px;
+      stroke-width: 2;
     }
 
     .project-library-group-title::before,
     .project-library-subgroup-title::before {
       content: "";
-      width: 8px;
-      height: 8px;
-      border-right: 1.5px solid currentColor;
-      border-bottom: 1.5px solid currentColor;
+      width: 7px;
+      height: 7px;
+      border-right: 1.4px solid currentColor;
+      border-bottom: 1.4px solid currentColor;
       transform: rotate(45deg);
       transition: transform 0.18s ease;
       flex: 0 0 auto;
@@ -3470,38 +3487,68 @@
     .project-library-group-count,
     .project-library-subgroup-count {
       flex: 0 0 auto;
-      padding: 3px 8px;
+      min-width: 24px;
+      padding: 2px 6px;
       border-radius: 999px;
       background: rgba(11, 119, 106, 0.08);
       color: var(--muted);
-      font-size: 0.64rem;
+      font-size: 0.6rem;
       font-weight: 700;
+      line-height: 1.25;
+      text-align: center;
     }
 
     .project-library-summary-actions {
       display: inline-flex;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
       flex: 0 0 auto;
     }
 
+    .project-library-zoom,
+    .project-library-delete,
     .project-library-group-delete,
     .project-library-subgroup-delete {
-      min-height: 28px;
-      padding: 0 10px;
-      border-radius: 999px;
-      border: 1px solid rgba(214, 60, 60, 0.14);
-      background: rgba(214, 60, 60, 0.08);
+      width: 22px;
+      height: 22px;
+      min-height: 22px;
+      padding: 0;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 5px;
+      border: 0;
+      background: transparent;
+      color: rgba(23, 35, 31, 0.58);
+    }
+
+    .project-library-zoom:hover {
+      background: rgba(11, 119, 106, 0.1);
+      color: var(--primary);
+    }
+
+    .project-library-delete:hover,
+    .project-library-group-delete:hover,
+    .project-library-subgroup-delete:hover {
+      background: rgba(214, 60, 60, 0.1);
       color: #a83232;
-      font-size: 0.64rem;
-      font-weight: 700;
+    }
+
+    .project-library-zoom svg,
+    .project-library-delete svg,
+    .project-library-group-delete svg,
+    .project-library-subgroup-delete svg {
+      width: 13px;
+      height: 13px;
+      stroke-width: 2;
     }
 
     .project-library-group-body,
     .project-library-subgroup-body {
       display: grid;
-      gap: 10px;
+      gap: 1px;
+      margin-left: 10px;
       padding-left: 10px;
+      border-left: 1px solid rgba(23, 35, 31, 0.08);
     }
 
     .workbench-map-stage {
@@ -9227,6 +9274,10 @@
         { key: "main_bearing", label: "Main Bearing", capacityAliases: ["main_bearing容量", "main bearing容量", "mainbearing容量", "main bearing capacity", "mainbearingcapacity"], stockAliases: ["main_bearing存量", "main bearing存量", "mainbearing存量", "main bearing stock", "mainbearingstock"] }
       ];
       const PROJECT_NAME_VISIBILITY_METERS = 50000;
+      const PROJECT_OVERLAP_SPREAD_VISIBILITY_METERS = PROJECT_NAME_VISIBILITY_METERS;
+      const PROJECT_OVERLAP_DETECT_DISTANCE_PX = 28;
+      const PROJECT_OVERLAP_SPREAD_MIN_RADIUS_PX = 22;
+      const PROJECT_OVERLAP_SPREAD_MAX_RADIUS_PX = 96;
       const PROJECT_CIRCLE_VISIBILITY_METERS = 500000;
       const PROJECT_LABEL_MARKER_LIMIT = 160;
       const PROJECT_CANVAS_MARKER_LIMIT = 320;
@@ -9374,6 +9425,15 @@
               <path d="M15 17h.01"></path>
             </svg>
           `
+        },
+        E: {
+          label: "Blade Yard",
+          svg: `
+            <svg viewBox="0 0 24 24" fill="none" stroke="none">
+              <rect x="2.8" y="9.8" width="3" height="4.4" rx=".35" fill="currentColor"></rect>
+              <path d="M5.8 10.1C9.8 9.4 16.2 9.2 21.7 12c-5.5 2.8-11.9 2.6-15.9 1.9.55-1.15.55-2.65 0-3.8Z" fill="currentColor"></path>
+            </svg>
+          `
         }
       };
 
@@ -9413,6 +9473,13 @@
           <path d="M9 13h.01"></path>
           <path d="M15 13h.01"></path>
           <path d="M15 17h.01"></path>
+        </svg>
+      `;
+      PROJECT_ICON_LIBRARY.E.label = "Blade Yard";
+      PROJECT_ICON_LIBRARY.E.svg = `
+        <svg viewBox="0 0 24 24" fill="none" stroke="none">
+          <rect x="2.8" y="9.8" width="3" height="4.4" rx=".35" fill="currentColor"></rect>
+          <path d="M5.8 10.1C9.8 9.4 16.2 9.2 21.7 12c-5.5 2.8-11.9 2.6-15.9 1.9.55-1.15.55-2.65 0-3.8Z" fill="currentColor"></path>
         </svg>
       `;
 
@@ -10087,16 +10154,14 @@
           return palette[findProgressIndex(STANDARD_PROGRESS_OPTIONS, normalizedProgress)] || palette[0];
         }
         if (baseCategory === "Warehouse") {
-          const palette = ["#ffc5bc", "#ff8f86", "#cf4338"];
-          return palette[findProgressIndex(FACILITY_PROGRESS_OPTIONS, normalizedProgress)] || palette[0];
+          return "#cf4338";
         }
         if (baseCategory === "Service Center") {
           const palette = ["#fff1ab", "#ffe07a", "#d4a016"];
           return palette[findProgressIndex(FACILITY_PROGRESS_OPTIONS, normalizedProgress)] || palette[0];
         }
         if (baseCategory === "Blade Yard") {
-          const palette = ["#ffd5ce", "#ff9d91", "#cf4338"];
-          return palette[findProgressIndex(FACILITY_PROGRESS_OPTIONS, normalizedProgress)] || palette[0];
+          return "#7b4fd6";
         }
         return parseColorValue(fallbackColor);
       }
@@ -10165,13 +10230,13 @@
         if (baseCategory === "WTG") return "A";
         if (baseCategory === "BESS") return "B";
         if (baseCategory === "Warehouse") return "C";
-        if (baseCategory === "Blade Yard") return "C";
+        if (baseCategory === "Blade Yard") return "E";
         if (baseCategory === "Service Center") return "D";
         const lowered = String(category || "").trim().toLowerCase();
         if (lowered.includes("wind") || lowered.includes("turbine")) return "A";
         if (lowered.includes("battery") || lowered.includes("storage")) return "B";
         if (lowered.includes("warehouse")) return "C";
-        if (lowered.includes("blade")) return "C";
+        if (lowered.includes("blade")) return "E";
         return "D";
       }
 
@@ -10409,6 +10474,168 @@
         return changed;
       }
 
+      function shouldSpreadOverlappingProjectMarkers() {
+        if (!mapStore.instance || isFootprintBaseName(mapStore.activeBaseName)) {
+          return false;
+        }
+        return getProjectMarkerSampleDistanceMeters() <= PROJECT_OVERLAP_SPREAD_VISIBILITY_METERS;
+      }
+
+      function buildProjectMarkerOverlapLayout(projects, markerScaleContext = buildProjectMarkerScaleContext(projects)) {
+        const layout = new Map();
+        projects.forEach((project) => {
+          layout.set(project.id, {
+            latlng: [project.lat, project.lng],
+            spread: false,
+            count: 1
+          });
+        });
+
+        if (!shouldSpreadOverlappingProjectMarkers() || projects.length < 2) {
+          return layout;
+        }
+
+        const map = mapStore.instance;
+        const entries = projects
+          .map((project) => ({
+            project,
+            point: map.latLngToLayerPoint([project.lat, project.lng]),
+            visualConfig: getProjectMarkerVisualConfig(project, markerScaleContext)
+          }))
+          .filter((entry) => Number.isFinite(entry.point.x) && Number.isFinite(entry.point.y));
+
+        if (entries.length < 2) {
+          return layout;
+        }
+
+        const parents = entries.map((_, index) => index);
+        const find = (index) => {
+          let current = index;
+          while (parents[current] !== current) {
+            parents[current] = parents[parents[current]];
+            current = parents[current];
+          }
+          return current;
+        };
+        const union = (left, right) => {
+          const rootLeft = find(left);
+          const rootRight = find(right);
+          if (rootLeft !== rootRight) {
+            parents[rootRight] = rootLeft;
+          }
+        };
+        const cellSize = PROJECT_OVERLAP_DETECT_DISTANCE_PX;
+        const thresholdSq = PROJECT_OVERLAP_DETECT_DISTANCE_PX * PROJECT_OVERLAP_DETECT_DISTANCE_PX;
+        const buckets = new Map();
+        const getBucketKey = (x, y) => `${x}:${y}`;
+
+        entries.forEach((entry, index) => {
+          const cellX = Math.floor(entry.point.x / cellSize);
+          const cellY = Math.floor(entry.point.y / cellSize);
+          for (let x = cellX - 1; x <= cellX + 1; x += 1) {
+            for (let y = cellY - 1; y <= cellY + 1; y += 1) {
+              const bucket = buckets.get(getBucketKey(x, y));
+              if (!bucket) continue;
+              bucket.forEach((otherIndex) => {
+                const otherPoint = entries[otherIndex].point;
+                const dx = entry.point.x - otherPoint.x;
+                const dy = entry.point.y - otherPoint.y;
+                if (dx * dx + dy * dy <= thresholdSq) {
+                  union(index, otherIndex);
+                }
+              });
+            }
+          }
+          const key = getBucketKey(cellX, cellY);
+          if (!buckets.has(key)) {
+            buckets.set(key, []);
+          }
+          buckets.get(key).push(index);
+        });
+
+        const clusters = new Map();
+        entries.forEach((entry, index) => {
+          const root = find(index);
+          if (!clusters.has(root)) {
+            clusters.set(root, []);
+          }
+          clusters.get(root).push(entry);
+        });
+
+        clusters.forEach((cluster) => {
+          if (cluster.length < 2) return;
+          cluster.sort((left, right) => {
+            const leftCategory = getProjectCategorySortOrder(left.project.category);
+            const rightCategory = getProjectCategorySortOrder(right.project.category);
+            if (leftCategory !== rightCategory) return leftCategory - rightCategory;
+            return String(left.project.name || "").localeCompare(String(right.project.name || ""), "en", { sensitivity: "base" })
+              || String(left.project.id || "").localeCompare(String(right.project.id || ""));
+          });
+
+          const center = cluster.reduce((acc, entry) => {
+            acc.x += entry.point.x;
+            acc.y += entry.point.y;
+            return acc;
+          }, { x: 0, y: 0 });
+          center.x /= cluster.length;
+          center.y /= cluster.length;
+
+          const maxCoreSize = Math.max(...cluster.map((entry) => Number(entry.visualConfig.coreSize) || 22));
+          const spacing = Math.max(28, maxCoreSize + 9);
+          const firstRingRadius = Math.max(PROJECT_OVERLAP_SPREAD_MIN_RADIUS_PX, maxCoreSize + 7);
+          const firstRingCapacity = Math.max(6, Math.floor((Math.PI * 2 * firstRingRadius) / spacing));
+          const getSpreadOffset = (index) => {
+            if (cluster.length === 2) {
+              return {
+                x: (index === 0 ? -1 : 1) * firstRingRadius,
+                y: 0
+              };
+            }
+            if (cluster.length <= firstRingCapacity) {
+              const angle = -Math.PI / 2 + (Math.PI * 2 * index) / cluster.length;
+              return {
+                x: Math.cos(angle) * firstRingRadius,
+                y: Math.sin(angle) * firstRingRadius
+              };
+            }
+
+            let ringStart = 0;
+            let ringIndex = 0;
+            let ringRadius = firstRingRadius;
+            let ringCapacity = firstRingCapacity;
+            while (index >= ringStart + ringCapacity) {
+              ringStart += ringCapacity;
+              ringIndex += 1;
+              ringRadius = Math.min(PROJECT_OVERLAP_SPREAD_MAX_RADIUS_PX, firstRingRadius + ringIndex * spacing);
+              ringCapacity = Math.max(8, Math.floor((Math.PI * 2 * ringRadius) / spacing));
+            }
+            const localIndex = index - ringStart;
+            const angle = -Math.PI / 2
+              + (Math.PI * 2 * localIndex) / ringCapacity
+              + (ringIndex % 2 ? Math.PI / ringCapacity : 0);
+            return {
+              x: Math.cos(angle) * ringRadius,
+              y: Math.sin(angle) * ringRadius
+            };
+          };
+
+          cluster.forEach((entry, index) => {
+            const offset = getSpreadOffset(index);
+            const spreadPoint = L.point(
+              center.x + offset.x,
+              center.y + offset.y
+            );
+            layout.set(entry.project.id, {
+              latlng: map.layerPointToLatLng(spreadPoint),
+              spread: true,
+              count: cluster.length
+            });
+          });
+        });
+
+        return layout;
+      }
+
       function getRenderableProjects(projects) {
         if (!mapStore.instance || projects.length <= PROJECT_CANVAS_MARKER_LIMIT) {
           return projects;
@@ -10431,8 +10658,8 @@
         return "compact";
       }
 
-      function createLightweightProjectMarker(project, visualConfig = getProjectMarkerVisualConfig(project, buildProjectMarkerScaleContext(mapStore.projects))) {
-        return L.circleMarker([project.lat, project.lng], {
+      function createLightweightProjectMarker(project, visualConfig = getProjectMarkerVisualConfig(project, buildProjectMarkerScaleContext(mapStore.projects)), latlng = [project.lat, project.lng]) {
+        return L.circleMarker(latlng, {
           renderer: mapStore.canvasRenderer,
           radius: visualConfig.circleRadius,
           color: "#ffffff",
@@ -11600,11 +11827,14 @@
         const renderableProjects = getRenderableProjects(filteredProjects);
         const markerScaleContext = buildProjectMarkerScaleContext(filteredProjects);
         const markerMode = getProjectMarkerRenderMode(renderableProjects);
+        const overlapLayout = buildProjectMarkerOverlapLayout(renderableProjects, markerScaleContext);
         renderableProjects.forEach((project) => {
           const visualConfig = getProjectMarkerVisualConfig(project, markerScaleContext);
+          const markerLayout = overlapLayout.get(project.id);
+          const markerLatLng = markerLayout?.latlng || [project.lat, project.lng];
           const marker = markerMode === "canvas"
-            ? createLightweightProjectMarker(project, visualConfig)
-            : L.marker([project.lat, project.lng], {
+            ? createLightweightProjectMarker(project, visualConfig, markerLatLng)
+            : L.marker(markerLatLng, {
                 icon: createProjectMarkerIcon(project, markerMode === "detailed", visualConfig)
               });
           marker.on("click", (event) => {
@@ -11897,6 +12127,54 @@
           parts.push(`机型 ${escapeHtml(project.machineType)}`);
         }
         return parts.join(" · ");
+      }
+
+      function getProjectLibraryActionIcon(type) {
+        if (type === "locate") {
+          return `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="7"></circle>
+              <path d="M12 3v3"></path>
+              <path d="M12 18v3"></path>
+              <path d="M3 12h3"></path>
+              <path d="M18 12h3"></path>
+              <circle cx="12" cy="12" r="1.6"></circle>
+            </svg>
+          `;
+        }
+        return `
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M3 6h18"></path>
+            <path d="M8 6V4h8v2"></path>
+            <path d="M19 6l-1 14H6L5 6"></path>
+            <path d="M10 11v5"></path>
+            <path d="M14 11v5"></path>
+          </svg>
+        `;
+      }
+
+      function getProjectLibraryGroupKey(project) {
+        const baseCategory = getProjectBaseCategory(project?.category);
+        return isFacilityProjectCategory(baseCategory) ? "Facilities" : (baseCategory || "Other");
+      }
+
+      function getProjectLibrarySubgroupKey(project) {
+        const baseCategory = getProjectBaseCategory(project?.category);
+        return isFacilityProjectCategory(baseCategory)
+          ? baseCategory
+          : (String(project?.progress || "").trim() || "Unspecified");
+      }
+
+      function renderProjectLibrarySubgroupTitle(label, project = null) {
+        if (!project || !isFacilityProjectCategory(project.category)) {
+          return escapeHtml(label);
+        }
+        const iconCode = getProjectIconCode(label);
+        const color = getAutoProjectColor(label, project.progress, project.color);
+        return `
+          <span class="project-library-subgroup-icon" style="background:${escapeHtml(color)}">${getProjectIconSvg(iconCode)}</span>
+          <span>${escapeHtml(label)}</span>
+        `;
       }
 
       function renderProjectLibrary() {
@@ -12383,64 +12661,71 @@
           return;
         }
         const grouped = sortedProjects.reduce((acc, project) => {
-          const categoryKey = getProjectBaseCategory(project.category) || "Other";
-          const progressKey = String(project.progress || "").trim() || "Unspecified";
-          acc[categoryKey] = acc[categoryKey] || {};
-          acc[categoryKey][progressKey] = acc[categoryKey][progressKey] || [];
-          acc[categoryKey][progressKey].push(project);
+          const groupKey = getProjectLibraryGroupKey(project);
+          const subgroupKey = getProjectLibrarySubgroupKey(project);
+          acc[groupKey] = acc[groupKey] || {};
+          acc[groupKey][subgroupKey] = acc[groupKey][subgroupKey] || [];
+          acc[groupKey][subgroupKey].push(project);
           return acc;
         }, {});
 
-        mapWorkbenchEls.libraryList.innerHTML = Object.entries(grouped).map(([category, progressGroups]) => {
-          const categoryProjects = Object.values(progressGroups).flat();
-          const progressMarkup = Object.entries(progressGroups)
+        mapWorkbenchEls.libraryList.innerHTML = Object.entries(grouped).map(([groupName, subgroups]) => {
+          const isFacilityGroup = groupName === "Facilities";
+          const groupProjects = Object.values(subgroups).flat();
+          const subgroupMarkup = Object.entries(subgroups)
             .sort((a, b) => {
-              const orderDiff = getProjectProgressSortOrder(a[0]) - getProjectProgressSortOrder(b[0]);
+              const orderDiff = isFacilityGroup
+                ? getProjectCategorySortOrder(a[0]) - getProjectCategorySortOrder(b[0])
+                : getProjectProgressSortOrder(a[0]) - getProjectProgressSortOrder(b[0]);
               return orderDiff !== 0 ? orderDiff : a[0].localeCompare(b[0], "en");
             })
-            .map(([progress, projects]) => `
+            .map(([subgroupName, projects]) => {
+              const firstProject = projects[0];
+              const subgroupDeleteAttrs = isFacilityGroup
+                ? `data-project-subgroup-type="facility-category" data-project-category="${escapeHtml(subgroupName)}"`
+                : `data-project-subgroup-type="progress" data-project-category="${escapeHtml(groupName)}" data-project-progress="${escapeHtml(subgroupName)}"`;
+              const deleteLabel = isFacilityGroup
+                ? `删除 Facilities / ${subgroupName}`
+                : `删除 ${groupName} / ${subgroupName}`;
+              return `
               <details class="project-library-subgroup" open>
                 <summary>
-                  <span class="project-library-subgroup-title">${escapeHtml(progress)}</span>
+                  <span class="project-library-subgroup-title">${renderProjectLibrarySubgroupTitle(subgroupName, firstProject)}</span>
                   <span class="project-library-summary-actions">
                     <span class="project-library-subgroup-count">${projects.length}</span>
-                    <button class="project-library-subgroup-delete" type="button" data-project-subgroup-delete="true" data-project-category="${escapeHtml(category)}" data-project-progress="${escapeHtml(progress)}">删除</button>
+                    <button class="project-library-subgroup-delete" type="button" data-project-subgroup-delete="true" ${subgroupDeleteAttrs} aria-label="${escapeHtml(deleteLabel)}" title="删除">${getProjectLibraryActionIcon("delete")}</button>
                   </span>
                 </summary>
                 <div class="project-library-subgroup-body">
-                  ${projects.map((project) => {
-                    const metaLine = buildProjectLibraryMeta(project);
-                    return `
-                      <article class="project-library-item" data-project-id="${escapeHtml(project.id)}">
-                        <div class="project-library-top">
-                          <div class="project-marker-badge" style="background:${escapeHtml(project.color)}">${getProjectIconSvg(getProjectIconCode(project.category))}</div>
-                          <div class="project-library-title">
-                            <strong>${escapeHtml(project.name)}</strong>
-                            <span>${escapeHtml(project.country || "Country N/A")} · ${escapeHtml(project.progress)}</span>
-                          </div>
-                          <div class="project-library-actions">
-                            <button class="project-library-zoom" type="button" data-project-focus="${escapeHtml(project.id)}">定位</button>
-                            <button class="project-library-delete" type="button" data-project-delete="${escapeHtml(project.id)}">删除</button>
-                          </div>
+                  ${projects.map((project) => `
+                    <article class="project-library-item" data-project-id="${escapeHtml(project.id)}">
+                      <div class="project-library-top">
+                        <div class="project-marker-badge" style="background:${escapeHtml(project.color)}">${getProjectIconSvg(getProjectIconCode(project.category))}</div>
+                        <div class="project-library-title">
+                          <strong title="${escapeHtml(project.name)}">${escapeHtml(project.name)}</strong>
                         </div>
-                        ${metaLine ? `<div class="project-library-meta">${metaLine}</div>` : ""}
-                      </article>
-                    `;
-                  }).join("")}
+                        <div class="project-library-actions">
+                          <button class="project-library-zoom" type="button" data-project-focus="${escapeHtml(project.id)}" aria-label="定位 ${escapeHtml(project.name)}" title="定位">${getProjectLibraryActionIcon("locate")}</button>
+                          <button class="project-library-delete" type="button" data-project-delete="${escapeHtml(project.id)}" aria-label="删除 ${escapeHtml(project.name)}" title="删除">${getProjectLibraryActionIcon("delete")}</button>
+                        </div>
+                      </div>
+                    </article>
+                  `).join("")}
                 </div>
               </details>
-            `).join("");
+            `;
+            }).join("");
 
           return `
             <details class="project-library-group" open>
               <summary>
-                <span class="project-library-group-title">${escapeHtml(category)}</span>
+                <span class="project-library-group-title">${escapeHtml(groupName)}</span>
                 <span class="project-library-summary-actions">
-                  <span class="project-library-group-count">${categoryProjects.length}</span>
-                  <button class="project-library-group-delete" type="button" data-project-group-delete="true" data-project-category="${escapeHtml(category)}">删除</button>
+                  <span class="project-library-group-count">${groupProjects.length}</span>
+                  <button class="project-library-group-delete" type="button" data-project-group-delete="true" data-project-group-type="${isFacilityGroup ? "facilities" : "category"}" data-project-category="${escapeHtml(groupName)}" aria-label="删除 ${escapeHtml(groupName)} 分组" title="删除">${getProjectLibraryActionIcon("delete")}</button>
                 </span>
               </summary>
-              <div class="project-library-group-body">${progressMarkup}</div>
+              <div class="project-library-group-body">${subgroupMarkup}</div>
             </details>
           `;
         }).join("");
@@ -12817,31 +13102,48 @@
         if (subgroupDeleteButton) {
           event.preventDefault();
           event.stopPropagation();
+          const subgroupType = subgroupDeleteButton.dataset.projectSubgroupType || "progress";
           const category = subgroupDeleteButton.dataset.projectCategory || "";
           const progress = subgroupDeleteButton.dataset.projectProgress || "";
           const matchedProjects = mapStore.projects.filter((item) => {
+            if (subgroupType === "facility-category") {
+              return getProjectBaseCategory(item.category) === category;
+            }
             return getProjectBaseCategory(item.category) === category && String(item.progress || "").trim() === progress;
           });
-          if (!matchedProjects.length || !confirmProjectDeletion(`确认删除 ${category} / ${progress} 分组下的 ${matchedProjects.length} 个项目吗？`)) {
+          const subgroupLabel = subgroupType === "facility-category" ? `Facilities / ${category}` : `${category} / ${progress}`;
+          if (!matchedProjects.length || !confirmProjectDeletion(`确认删除 ${subgroupLabel} 分组下的 ${matchedProjects.length} 个项目吗？`)) {
             return;
           }
           mapStore.projects = mapStore.projects.filter((item) => {
+            if (subgroupType === "facility-category") {
+              return getProjectBaseCategory(item.category) !== category;
+            }
             return !(getProjectBaseCategory(item.category) === category && String(item.progress || "").trim() === progress);
           });
           refreshProjectWorkbench({ resetCapacity: true });
-          setMapStatus(`已删除 ${category} / ${progress} 分组下的全部项目`);
+          setMapStatus(`已删除 ${subgroupLabel} 分组下的全部项目`);
           return;
         }
         const groupDeleteButton = event.target.closest("[data-project-group-delete]");
         if (groupDeleteButton) {
           event.preventDefault();
           event.stopPropagation();
+          const groupType = groupDeleteButton.dataset.projectGroupType || "category";
           const category = groupDeleteButton.dataset.projectCategory || "";
-          const matchedProjects = mapStore.projects.filter((item) => getProjectBaseCategory(item.category) === category);
+          const matchedProjects = mapStore.projects.filter((item) => (
+            groupType === "facilities"
+              ? isFacilityProjectCategory(item.category)
+              : getProjectBaseCategory(item.category) === category
+          ));
           if (!matchedProjects.length || !confirmProjectDeletion(`确认删除 ${category} 分组下的 ${matchedProjects.length} 个项目吗？`)) {
             return;
           }
-          mapStore.projects = mapStore.projects.filter((item) => getProjectBaseCategory(item.category) !== category);
+          mapStore.projects = mapStore.projects.filter((item) => (
+            groupType === "facilities"
+              ? !isFacilityProjectCategory(item.category)
+              : getProjectBaseCategory(item.category) !== category
+          ));
           refreshProjectWorkbench({ resetCapacity: true });
           setMapStatus(`已删除 ${category} 分组下的全部项目`);
           return;
